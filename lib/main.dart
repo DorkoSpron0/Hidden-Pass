@@ -1,19 +1,137 @@
 import 'package:flutter/material.dart';
-import 'package:hidden_pass/UI/SCREENS/home_screen.dart';
-import 'package:hidden_pass/UI/UTILS/theme_data.dart';
+import 'dart:async'; // Para usar Timer
 
 void main() {
-  runApp(const MainApp());
+  runApp(const MyApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const HomeScreen(),
-      theme: customThemeData(),
+      title: 'Hidden Pass',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const SplashScreen(), // Pantalla inicial
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Hacemos que la pantalla de inicio cambie después de 3 segundos
+    Timer(const Duration(seconds: 2), () {
+      // Navegar a la pantalla siguiente
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xFF23232F),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/images/LogoSimple.png',
+              width: 600,
+              height: 625,
+            ),
+          ]
+        ),
+      ),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xFF23232F),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/images/LogoSimple.png',
+              width: 346,
+              height: 361,
+            ),
+            // Text(
+            //   'HIDDEN PASS',
+            //   style: TextStyle(fontSize: 50, 
+            //   fontWeight: FontWeight.bold,
+            //   color: Colors.white),
+            // ),
+            // espacio entre el boton y el texto
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context, MaterialPageRoute(builder: (context) =>LoginScreen())
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xff5d5d5d),
+                padding: EdgeInsets.symmetric(horizontal: 130, vertical: 20),
+              ),
+              child: Text('Registrarse',
+                style: TextStyle(color: Colors.white,
+                ),
+              
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 102, vertical: 20),
+                backgroundColor: Color(0xff323232),
+                side: BorderSide(color: Color(0xff5d5d5d), width: 2),
+                
+              ),
+              onPressed: () {
+                //Luego pongo la accion
+              },
+              child: Text('Ya tengo una cuenta',
+              style: TextStyle(color: Colors.white),
+            ),
+            ),
+          ],
+        )
+      ),
+    );
+  }
+}
+class LoginScreen extends StatelessWidget{
+  const LoginScreen({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text(
+          'Esta será la pantalla donde irá el login',
+        ),
+      ),
     );
   }
 }
