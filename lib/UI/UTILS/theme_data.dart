@@ -6,13 +6,13 @@ ThemeData customThemeData() {
     fontFamily: 'Onest',
     colorScheme: const ColorScheme(
         brightness: Brightness.dark,
-        primary: Color(0xff323232),
+        primary: Color(0xFF23232F),
         onPrimary: Colors.white,
         secondary: Color(0xff5D5D5D),
         onSecondary: Colors.white,
         error: Colors.red,
         onError: Colors.white,
-        surface: Color(0xff323232),
+        surface: Color(0xFF23232F),
         onSurface: Colors.white),
     textTheme: const TextTheme(
       titleLarge: TextStyle(
