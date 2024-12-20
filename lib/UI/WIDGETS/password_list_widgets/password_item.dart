@@ -15,7 +15,7 @@ class PasswordItem extends StatelessWidget {
             Row(
               children: [
                 Image.asset(
-                  'assets/images/LogoSimple.png',
+                  'assets/images/be.png',
                   width: 80,
                   height: 80,
                 ),
@@ -32,7 +32,10 @@ class PasswordItem extends StatelessWidget {
                 ),
               ],
             ),
-            Icon(Icons.content_copy)
+            IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.content_copy)
+            )
           ],
         ),
       ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 ThemeData customThemeData() {
   return ThemeData(
-    useMaterial3: true,
     fontFamily: 'Onest',
     colorScheme: const ColorScheme(
         brightness: Brightness.dark,
@@ -12,7 +11,7 @@ ThemeData customThemeData() {
         onSecondary: Colors.white,
         error: Colors.red,
         onError: Colors.white,
-        surface: Color(0xFF23232F),
+        surface: Color(0XFF242424),
         onSurface: Colors.white),
     textTheme: const TextTheme(
       titleLarge: TextStyle(

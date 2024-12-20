@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Hidden Pass',
+      title: 'Hidden Pas',
       theme: customThemeData(),
       debugShowCheckedModeBanner: false,
       home: const PasswordsListScreen(), // Pantalla inicial

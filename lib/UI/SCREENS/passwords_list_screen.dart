@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hidden_pass/UI/WIDGETS/password_list_widgets/list_passwords.dart';
+import 'package:hidden_pass/UI/WIDGETS/appbar_widget.dart';
+import 'package:hidden_pass/UI/WIDGETS/bottom_navigation_bar_widget.dart';
+import 'package:hidden_pass/UI/WIDGETS/password_list_widgets/list_favorite_passwords.dart';
 import 'package:hidden_pass/UI/WIDGETS/password_list_widgets/password_item.dart';
 // import 'package:hidden_pass/UI/WIDGETS/password_list_widgets/card_widget.dart';
 
@@ -11,23 +13,18 @@ class PasswordsListScreen extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: AppBar(
-        leading: Icon(Icons.account_circle_sharp),
-        centerTitle: true,
-        title: Text(
-          "Contraseñas",
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        actions: [
-          Icon(Icons.add),
-        ],
+      appBar: appBarWidget(context),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.add),
       ),
-      body: SingleChildScrollView(
+      bottomNavigationBar: bottomNavigationBarWidget(context),
+      body: Expanded(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: 50,
+              height: 30,
             ),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 20),
@@ -36,7 +33,12 @@ class PasswordsListScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
-            ListPasswords(size: size),
+            ListPasswords(
+              size: size,
+              image: Image.asset('assets/images/adobe.png'),
+              titleCard: "Title",
+              descriptionCard: "Description",
+            ),
             SizedBox(
               height: 50,
             ),
@@ -47,16 +49,18 @@ class PasswordsListScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              height: size.height * .5,
-              child: ListView.builder(
-                itemCount: 16,
-                scrollDirection: Axis.vertical,
-                itemBuilder: (context, index) => PasswordItem(),
-                shrinkWrap: true,
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                height: size.height * .3,
+                child: ListView.builder(
+                  itemCount: 16,
+                  scrollDirection: Axis.vertical,
+                  itemBuilder: (context, index) => PasswordItem(),
+                  shrinkWrap: true,
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),
