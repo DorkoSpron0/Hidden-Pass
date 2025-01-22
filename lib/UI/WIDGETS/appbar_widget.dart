@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 AppBar appBarWidget(BuildContext context) {
   return AppBar(
+    backgroundColor: Color(0XFF242424),
     toolbarHeight: 80,
     title: Text(
       "Contraseñas",
