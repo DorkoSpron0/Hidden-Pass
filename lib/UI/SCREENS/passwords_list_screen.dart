@@ -54,11 +54,19 @@ class PasswordsListScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 height: size.height * .3,
                 child: ListView.builder(
-                  itemCount: 6,
+                  itemCount: 8,
                   scrollDirection: Axis.vertical,
-                  itemBuilder: (context, index) => PasswordItem(
-                    title: "Behance",
-                    imageURL: "assets/images/be.png",
+                  itemBuilder: (context, index) => Column(
+                    children: [
+                      PasswordItem(
+                        title: "Behance",
+                        imageURL: "assets/images/be.png",
+                      ),
+                      Divider(
+                        color: Color.fromARGB(255, 82, 82, 82),
+                        height: 20.0,
+                      )
+                    ],
                   ),
                   shrinkWrap: true,
                 ),
