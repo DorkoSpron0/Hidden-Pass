@@ -26,7 +26,15 @@ class ListPasswords extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              color: Color(0XFF395B64).withValues(alpha: .2),
+              color: Colors.black.withAlpha(80),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(20),
+                  blurRadius: 10,
+                  spreadRadius: 10,
+                  offset: Offset(0, 4),
+                ),
+              ],
             ),
             child: Stack(
               children: [

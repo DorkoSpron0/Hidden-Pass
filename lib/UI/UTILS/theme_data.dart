@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 ThemeData customThemeData() {
   return ThemeData(
     fontFamily: 'Onest',
+    appBarTheme: AppBarTheme(
+      elevation: 0,
+      backgroundColor: Color(0XFF242424),
+    ),
     colorScheme: const ColorScheme(
         brightness: Brightness.dark,
         primary: Color(0xFF23232F),

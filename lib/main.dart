@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       title: 'Hidden Pas',
       theme: customThemeData(),
       debugShowCheckedModeBanner: false,
-      home: const PasswordsListScreen(), // Pantalla inicial
+      home: const SplashScreen(), // Pantalla inicial
     );
   }
 }
@@ -46,7 +46,6 @@ class SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF23232F),
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Image.asset(
@@ -66,7 +65,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF23232F),
       body: Center(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -126,6 +124,11 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.forward_10_outlined),
+        onPressed: () => Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => PasswordsListScreen())),
+      ),
       body: Center(
         child: Text(
           'Esta será la pantalla donde irá el login',
