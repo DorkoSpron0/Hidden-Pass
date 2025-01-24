@@ -32,36 +32,34 @@ class PasswordItem extends StatelessWidget {
         hoverColor: Colors.green,
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 10),
-          child: Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Image.asset(
-                      imageURL,
-                      width: 60,
-                      height: 60,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: Theme.of(context).textTheme.titleMedium,
-                          textAlign: TextAlign.start,
-                        ),
-                        Text(
-                          "design.steve@gmail.com",
-                          style: Theme.of(context).textTheme.titleSmall,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                IconButton(onPressed: () {}, icon: Icon(Icons.content_copy))
-              ],
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Image.asset(
+                    imageURL,
+                    width: 60,
+                    height: 60,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: Theme.of(context).textTheme.titleMedium,
+                        textAlign: TextAlign.start,
+                      ),
+                      Text(
+                        "design.steve@gmail.com",
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              IconButton(onPressed: () {}, icon: Icon(Icons.content_copy))
+            ],
           ),
         ),
       ),

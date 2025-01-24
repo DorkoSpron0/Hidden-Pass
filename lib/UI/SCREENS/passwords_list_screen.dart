@@ -12,6 +12,7 @@ class PasswordsListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: appBarWidget(context),
         // floatingActionButton: FloatingActionButton(
         //   onPressed: () {},
