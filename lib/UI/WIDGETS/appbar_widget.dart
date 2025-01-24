@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 AppBar appBarWidget(BuildContext context) {
   return AppBar(
+    elevation: 0,
     backgroundColor: Color(0XFF242424),
+    automaticallyImplyLeading: false, // Ocultar la flecha de retroceso
     toolbarHeight: 80,
     title: Text(
       "Contraseñas",

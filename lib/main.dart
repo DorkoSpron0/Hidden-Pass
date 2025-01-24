@@ -46,7 +46,6 @@ class SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF23232F),
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Image.asset(
@@ -66,7 +65,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF23232F),
       body: Center(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -127,9 +125,9 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.forward),
         onPressed: () => Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => PasswordsListScreen())),
-        child: Icon(Icons.forward),
       ),
       body: Center(
         child: Text(

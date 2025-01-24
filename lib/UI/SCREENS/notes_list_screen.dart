@@ -7,7 +7,7 @@ class NotesListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: appBarWidget(context),
-      bottomNavigationBar: bottomNavigationBarWidget(context),
+      //bottomNavigationBar: bottomNavigationBarWidget(context),
       body: Center(
         child: Text("Tasks List!"),
       ),
