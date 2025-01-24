@@ -125,7 +125,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.forward_10_outlined),
+        child: Icon(Icons.forward),
         onPressed: () => Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => PasswordsListScreen())),
       ),
