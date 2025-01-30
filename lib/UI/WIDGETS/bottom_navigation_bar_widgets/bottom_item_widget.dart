@@ -8,14 +8,15 @@ class BottomItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        alignment: Alignment.center,
-        child: IconButton(
-          onPressed: () {},
-          icon: Icon(
-            icon,
-            color: Colors.white,
-            size: 24,
-          ),
-        ));
+      alignment: Alignment.center,
+      child: IconButton(
+        onPressed: () {},
+        icon: Icon(
+          icon,
+          color: Colors.white,
+          size: 24,
+        ),
+      ),
+    );
   }
 }
