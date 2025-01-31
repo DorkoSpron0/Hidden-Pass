@@ -38,8 +38,17 @@ class NoteItemWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Nota 1"),
-                Text("Enim cupidatat quis non ut."),
+                Text(
+                  "Nota 1",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  "Enim cupidatat quis non ut.",
+                  style: TextStyle(color: Colors.grey),
+                ),
               ],
             ),
             Icon(Icons.arrow_forward_ios)

@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/UI/WIDGETS/notes_widgets/note_item_widget.dart';
 
-class NotesListScreen extends StatefulWidget {
-  @override
-  State<NotesListScreen> createState() => _NotesListScreenState();
-}
-
-class _NotesListScreenState extends State<NotesListScreen> {
+class NotesListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,8 +10,6 @@ class _NotesListScreenState extends State<NotesListScreen> {
         itemCount: 20,
         scrollDirection: Axis.vertical,
         itemBuilder: (context, index) => Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             NoteItemWidget(),
             SizedBox(
@@ -24,6 +17,7 @@ class _NotesListScreenState extends State<NotesListScreen> {
             )
           ],
         ),
+        shrinkWrap: true,
       ),
     );
   }

@@ -20,11 +20,13 @@ class _PasswordsListScreenState extends State<PasswordsListScreen> {
     SettingsScreen()
   ];
 
+  final List<String> _titles = ["Contraseñas", "Notas", "Configuración"];
+
 // TODO - AFTER SETTINGS GLOBAL STATE - REFACTOR CODE
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarWidget(context),
+      appBar: appBarWidget(context, _titles[_selectedIndex]),
       body: Stack(
         children: [
           IndexedStack(
@@ -42,8 +44,8 @@ class _PasswordsListScreenState extends State<PasswordsListScreen> {
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withAlpha(50),
-                    blurRadius: 10,
-                    spreadRadius: 5,
+                    blurRadius: 0,
+                    spreadRadius: 3,
                     offset: Offset(0, 0),
                   ),
                 ],
