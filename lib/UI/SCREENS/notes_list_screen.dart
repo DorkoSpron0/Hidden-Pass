@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/UI/WIDGETS/notes_widgets/note_item_widget.dart';
 
 class NotesListScreen extends StatefulWidget {
   @override
@@ -10,8 +11,19 @@ class _NotesListScreenState extends State<NotesListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       //bottomNavigationBar: bottomNavigationBarWidget(context),
-      body: Center(
-        child: Text("Notes List!"),
+      body: ListView.builder(
+        itemCount: 20,
+        scrollDirection: Axis.vertical,
+        itemBuilder: (context, index) => Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            NoteItemWidget(),
+            SizedBox(
+              height: 20,
+            )
+          ],
+        ),
       ),
     );
   }
