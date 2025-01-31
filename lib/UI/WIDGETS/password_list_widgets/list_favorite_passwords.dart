@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class ListPasswords extends StatelessWidget {
+class ListFavoritePasswords extends StatelessWidget {
   final String titleCard;
   final String descriptionCard;
   final Image image;
   final Size size;
 
-  const ListPasswords(
+  const ListFavoritePasswords(
       {super.key,
       required this.size,
       required this.titleCard,

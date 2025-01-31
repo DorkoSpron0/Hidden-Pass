@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class NoteItemWidget extends StatelessWidget {
-  const NoteItemWidget({super.key});
+  final String title;
+  final String description;
+  final bool isFavorite;
+  NoteItemWidget({super.key, required this.title, required this.description, this.isFavorite = false});
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +42,14 @@ class NoteItemWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Nota 1",
+                  title,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  "Enim cupidatat quis non ut.",
+                  description,
                   style: TextStyle(color: Colors.grey),
                 ),
               ],

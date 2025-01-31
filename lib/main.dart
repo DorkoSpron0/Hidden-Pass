@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/UI/PROVIDERS/navigation_provider.dart';
 import 'dart:async';
 
 import 'package:hidden_pass/UI/SCREENS/passwords_list_screen.dart';
-import 'package:hidden_pass/UI/UTILS/theme_data.dart'; // Para usar Timer
+import 'package:hidden_pass/UI/UTILS/theme_data.dart';
+import 'package:provider/provider.dart'; // Para usar Timer
 
 void main() {
   runApp(const MyApp());
@@ -13,11 +15,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Hidden Pas',
-      theme: customThemeData(),
-      debugShowCheckedModeBanner: false,
-      home: const SplashScreen(), // Pantalla inicial
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<NavigationProvider>(create: (_) => NavigationProvider())
+      ],
+      builder: (context, _) {
+        return MaterialApp(
+        title: 'Hidden Pas',
+        theme: customThemeData(),
+        debugShowCheckedModeBanner: false,
+        home: const SplashScreen(), // Pantalla inicial
+      );
+      }
     );
   }
 }

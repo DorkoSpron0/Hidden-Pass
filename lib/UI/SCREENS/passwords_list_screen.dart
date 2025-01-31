@@ -1,121 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/UI/PROVIDERS/navigation_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/notes_list_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/settings_screen.dart';
 import 'package:hidden_pass/UI/WIDGETS/appbar_widget.dart';
+import 'package:hidden_pass/UI/WIDGETS/bottom_navigation_bar_widget.dart';
 import 'package:hidden_pass/UI/WIDGETS/password_list_widgets/password_list_body_widget.dart';
+import 'package:provider/provider.dart';
 
-class PasswordsListScreen extends StatefulWidget {
+class PasswordsListScreen extends StatelessWidget {
+
   const PasswordsListScreen({super.key});
 
   @override
-  State<PasswordsListScreen> createState() => _PasswordsListScreenState();
-}
-
-class _PasswordsListScreenState extends State<PasswordsListScreen> {
-  int _selectedIndex = 0;
-
-  final List<Widget> _pages = [
-    PasswordListBodyWidget(),
-    NotesListScreen(),
-    SettingsScreen()
-  ];
-
-  final List<String> _titles = ["Contraseñas", "Notas", "Configuración"];
-
-// TODO - AFTER SETTINGS GLOBAL STATE - REFACTOR CODE
-  @override
   Widget build(BuildContext context) {
+
+    NavigationProvider watch = context.watch<NavigationProvider>(); // get Navigation GlobalIndex
+
+    final List<Widget> pages = [
+      PasswordListBodyWidget(),
+      NotesListScreen(),
+      SettingsScreen()
+    ];
+
+    final List<String> titles = ["Contraseñas", "Notas", "Configuración"];
+
     return Scaffold(
-      appBar: appBarWidget(context, _titles[_selectedIndex]),
+      appBar: appBarWidget(context, titles[watch.index]),
       body: Stack(
         children: [
-          IndexedStack(
-            index: _selectedIndex,
-            children: _pages,
+          AnimatedSwitcher(
+            duration: Duration(milliseconds: 300),
+            transitionBuilder: (child, animation) {
+              return FadeTransition(opacity: animation, child: child,);
+            },
+            child: IndexedStack( // Indexed stack para que no recargue cada vez que se navega
+              key: ValueKey(watch.index),
+              index: watch.index,
+              children: pages,
+            ),
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: Container(
-              height: 65,
-              margin: const EdgeInsets.only(right: 24, left: 24, bottom: 24),
-              decoration: BoxDecoration(
-                color: Color(0XFF131313),
-                borderRadius: BorderRadius.circular(20.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withAlpha(50),
-                    blurRadius: 0,
-                    spreadRadius: 3,
-                    offset: Offset(0, 0),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    child: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _selectedIndex = 0;
-                        });
-                      },
-                      icon: Icon(
-                        Icons.home,
-                        color: _selectedIndex == 0 ? Colors.blue : Colors.white,
-                        size: 24,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _selectedIndex = 1;
-                        });
-                      },
-                      icon: Icon(
-                        Icons.message,
-                        color: _selectedIndex == 1 ? Colors.blue : Colors.white,
-                        size: 24,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _selectedIndex = 2;
-                        });
-                      },
-                      icon: Icon(
-                        Icons.search,
-                        color: _selectedIndex == 2 ? Colors.blue : Colors.white,
-                        size: 24,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _selectedIndex = 2;
-                        });
-                      },
-                      icon: Icon(
-                        Icons.settings,
-                        color: _selectedIndex == 2 ? Colors.blue : Colors.white,
-                        size: 24,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            child: BottomNavigationBarWidget()
           )
         ],
       ),
