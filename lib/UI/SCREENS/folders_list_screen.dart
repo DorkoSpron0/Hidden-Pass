@@ -10,15 +10,15 @@ class FoldersListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     List<FolderModel> folderList = [
-      FolderModel(title: "Folder 1", description: "Dont care", url: "assets/images/adobe.png"),
-      FolderModel(title: "Folder 1", description: "Dont care", url: "assets/images/be.png"),
-      FolderModel(title: "Folder 1", description: "Dont care", url: "assets/images/dinsey.png"),
-      FolderModel(title: "Folder 1", description: "Dont care", url: "assets/images/netflix.png"),
-      FolderModel(title: "Folder 1", description: "Dont care", url: "assets/images/photo.png"),
-      FolderModel(title: "Folder 1", description: "Dont care", url: "assets/images/spotify.png"),
-      FolderModel(title: "Folder 1", description: "Dont care", url: "assets/images/steam.png"),
-      FolderModel(title: "Folder 1", description: "Dont care", url: "assets/images/adobe.png"),
-      FolderModel(title: "Folder 1", description: "Dont care", url: "assets/images/adobe.png"),
+      FolderModel(title: "Email Folder", description: "Description importante muy larga", url: "assets/images/adobe.png"),
+      FolderModel(title: "Bank Folder", description: "Description Dont care", url: "assets/images/be.png"),
+      FolderModel(title: "Disney Folder", description: "Description care", url: "assets/images/dinsey.png"),
+      FolderModel(title: "Netflix Folder", description: "Description", url: "assets/images/netflix.png"),
+      FolderModel(title: "PhotoShop 1", description: "Description <3", url: "assets/images/photo.png"),
+      FolderModel(title: "Folder 1", description: "Emails folder", url: "assets/images/spotify.png"),
+      FolderModel(title: "Folder 1", description: "por folder", url: "assets/images/steam.png"),
+      FolderModel(title: "Folder 1", description: "videos fodler", url: "assets/images/adobe.png"),
+      FolderModel(title: "Folder 1", description: "entertaiment folder", url: "assets/images/adobe.png"),
       FolderModel(title: "Folder 1", description: "Dont care", url: "assets/images/dinsey.png"),
       FolderModel(title: "Folder 1", description: "Dont care", url: "assets/images/be.png"),
     ];
@@ -26,15 +26,15 @@ class FoldersListScreen extends StatelessWidget {
     return Scaffold(
       appBar: appBarWidget(context, "Carpetas"),
       body: GridView.builder(
+        shrinkWrap: true,
         itemCount: folderList.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2), 
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 0.75), 
         itemBuilder: (context, index) => Column(
           children: [
             InkWell(
               onTap: (){},
               child: FolderWidget(titleCard: folderList[index].title, descriptionCard: folderList[index].description, image: Image.asset(folderList[index].url)),
             ),
-            SizedBox(height: 20.0,)
           ],
         )
       )

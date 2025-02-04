@@ -14,7 +14,7 @@ class FolderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 200,
-      height: 180,
+      height: 250,
       margin: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
@@ -43,14 +43,15 @@ class FolderWidget extends StatelessWidget {
                         color: Colors.white70,
                         fontSize: 16,
                         fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis,
                   ),
-                  Text(
-                    descriptionCard,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 15,
-                    ),
-                  )
+                  // Text(
+                  //   descriptionCard,
+                  //   style: const TextStyle(
+                  //     color: Colors.white70,
+                  //     fontSize: 14,
+                  //   ),
+                  // )
                 ],
               )),
         ],
