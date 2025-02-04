@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/UI/WIDGETS/folder_widgets/folder_widget.dart';
 
 class ListFavoritePasswords extends StatelessWidget {
   final String titleCard;
@@ -21,48 +22,7 @@ class ListFavoritePasswords extends StatelessWidget {
         itemCount: 3,
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          return Container(
-            width: 200,
-            margin: const EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.black.withAlpha(80),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withAlpha(20),
-                  blurRadius: 10,
-                  spreadRadius: 10,
-                  offset: Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Stack(
-              children: [
-                Positioned(
-                    left: 50, right: 50, top: 10, bottom: 50, child: image),
-                Positioned(
-                    bottom: 15,
-                    left: 20,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          titleCard,
-                          style: const TextStyle(
-                              color: Colors.white70, fontSize: 16),
-                        ),
-                        Text(
-                          descriptionCard,
-                          style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    )),
-              ],
-            ),
-          );
+          return FolderWidget(titleCard: titleCard, descriptionCard: descriptionCard, image: image);
         },
       ),
     );

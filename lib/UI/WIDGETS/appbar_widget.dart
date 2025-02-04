@@ -4,7 +4,7 @@ AppBar appBarWidget(BuildContext context, String title) {
   return AppBar(
     elevation: 0,
     backgroundColor: Color(0XFF242424),
-    automaticallyImplyLeading: false, // Ocultar la flecha de retroceso
+    automaticallyImplyLeading: true, // Ocultar la flecha de retroceso
     toolbarHeight: 80,
     title: Text(
       title,
