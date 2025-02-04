@@ -15,27 +15,19 @@ class BottomNavigationBarWidget extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: Colors.black.withAlpha(50),
-            blurRadius: 10,
-            spreadRadius: 10,
-            offset: Offset(0, 4),
+            blurRadius: 0,
+            spreadRadius: 3,
+            offset: Offset(0, 0),
           ),
         ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          BottomItemWidget(
-            icon: Icons.home_filled,
-          ),
-          BottomItemWidget(
-            icon: Icons.message,
-          ),
-          BottomItemWidget(
-            icon: Icons.search,
-          ),
-          BottomItemWidget(
-            icon: Icons.settings,
-          ),
+          BottomItemWidget(icon: Icons.home, index: 0),
+          BottomItemWidget(icon: Icons.message, index: 1),
+          BottomItemWidget(icon: Icons.search, index: 2),
+          BottomItemWidget(icon: Icons.settings, index: 2),
         ],
       ),
     );

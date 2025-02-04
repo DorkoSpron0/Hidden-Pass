@@ -4,9 +4,10 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 class PasswordItem extends StatelessWidget {
   final String title;
   final String imageURL;
+  final String email;
 
   //const PasswordItem({super.key});
-  const PasswordItem({super.key, required this.title, required this.imageURL});
+  const PasswordItem({super.key, required this.title, required this.imageURL, required this.email});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,7 @@ class PasswordItem extends StatelessWidget {
                         textAlign: TextAlign.start,
                       ),
                       Text(
-                        "design.steve@gmail.com",
+                        email,
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                     ],
