@@ -31,6 +31,11 @@ ThemeData customThemeData() {
           fontSize: 15,
           fontWeight: FontWeight.w500,
           color: Colors.grey,
+        ),
+        bodySmall: TextStyle(
+          fontSize: 14,
+          color: Colors.grey,
+          decoration: TextDecoration.underline
         )),
   );
 }

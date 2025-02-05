@@ -7,9 +7,9 @@ import 'package:hidden_pass/UI/WIDGETS/bottom_navigation_bar_widget.dart';
 import 'package:hidden_pass/UI/WIDGETS/password_list_widgets/password_list_body_widget.dart';
 import 'package:provider/provider.dart';
 
-class PasswordsListScreen extends StatelessWidget {
+class PricipalPageScreen extends StatelessWidget {
 
-  const PasswordsListScreen({super.key});
+  const PricipalPageScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

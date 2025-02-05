@@ -26,7 +26,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
         children: [
           BottomItemWidget(icon: Icons.home, index: 0),
           BottomItemWidget(icon: Icons.message, index: 1),
-          BottomItemWidget(icon: Icons.search, index: 2),
+          //BottomItemWidget(icon: Icons.search, index: 2),
           BottomItemWidget(icon: Icons.settings, index: 2),
         ],
       ),

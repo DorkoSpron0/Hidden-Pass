@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hidden_pass/UI/PROVIDERS/navigation_provider.dart';
 import 'dart:async';
 
-import 'package:hidden_pass/UI/SCREENS/passwords_list_screen.dart';
+import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:hidden_pass/UI/UTILS/theme_data.dart';
 import 'package:provider/provider.dart'; // Para usar Timer
 
@@ -16,18 +16,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<NavigationProvider>(create: (_) => NavigationProvider())
-      ],
-      builder: (context, _) {
-        return MaterialApp(
-        title: 'Hidden Pas',
-        theme: customThemeData(),
-        debugShowCheckedModeBanner: false,
-        home: const SplashScreen(), // Pantalla inicial
-      );
-      }
-    );
+        providers: [
+          ChangeNotifierProvider<NavigationProvider>(
+              create: (_) => NavigationProvider())
+        ],
+        builder: (context, _) {
+          return MaterialApp(
+            title: 'Hidden Pas',
+            theme: customThemeData(),
+            debugShowCheckedModeBanner: false,
+            home: const SplashScreen(), // Pantalla inicial
+          );
+        });
   }
 }
 
@@ -135,8 +135,11 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.forward),
-        onPressed: () => Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => PasswordsListScreen())),
+        onPressed: () => Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => PricipalPageScreen()),
+          (Route<dynamic> route) => false, // Elimina todas las pantallas anteriores (No puede retroceder)
+        ),
       ),
       body: Center(
         child: Text(
