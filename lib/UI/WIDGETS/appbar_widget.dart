@@ -6,19 +6,20 @@ AppBar appBarWidget(BuildContext context, String title) {
     backgroundColor: Color(0XFF242424),
     automaticallyImplyLeading: true, // Ocultar la flecha de retroceso
     toolbarHeight: 80,
-    title: Text(
+    leading: IconButton(
+      onPressed: (){}, 
+      icon: Icon(Icons.account_circle_rounded),
+      iconSize: 40.0,
+    ),
+    title: Center(child: Text(
       title,
       style: Theme.of(context).textTheme.titleMedium,
+      ),
     ),
     actions: [
       IconButton(
         onPressed: () {},
         icon: Icon(Icons.search),
-        iconSize: 40,
-      ),
-      IconButton(
-        onPressed: () {},
-        icon: Icon(Icons.account_circle_sharp),
         iconSize: 40,
       ),
     ],

@@ -3,7 +3,7 @@ import 'package:hidden_pass/UI/PROVIDERS/navigation_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/notes_list_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/settings_screen.dart';
 import 'package:hidden_pass/UI/WIDGETS/appbar_widget.dart';
-import 'package:hidden_pass/UI/WIDGETS/bottom_navigation_bar_widget.dart';
+import 'package:hidden_pass/UI/WIDGETS/bottom_navigation_bar.dart';
 import 'package:hidden_pass/UI/WIDGETS/password_list_widgets/password_list_body_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -39,11 +39,14 @@ class PricipalPageScreen extends StatelessWidget {
               children: pages,
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: BottomNavigationBarWidget()
-          )
         ],
+      ),
+      bottomNavigationBar: BottomNavigationBarWidget(),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Color(0XFF131313),
+        //shape: CircleBorder(), Boton circular
+          onPressed: () {},
+          child: Icon(Icons.add, size: 30.0),
       ),
     );
   }

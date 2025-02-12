@@ -24,7 +24,7 @@ ThemeData customThemeData() {
           color: Colors.white,
         ),
         titleMedium: TextStyle(
-          fontSize: 16,
+          fontSize: 20,
           fontWeight: FontWeight.w700,
         ),
         titleSmall: TextStyle(
