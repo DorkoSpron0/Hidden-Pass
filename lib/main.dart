@@ -94,7 +94,7 @@ class HomeScreen extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()));
+                  MaterialPageRoute(builder: (context) => RegisterScreen()));
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xff5d5d5d),
@@ -128,24 +128,131 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.forward),
-        onPressed: () => Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => PricipalPageScreen()),
-          (Route<dynamic> route) => false, // Elimina todas las pantallas anteriores (No puede retroceder)
-        ),
-      ),
-      body: Center(
-        child: Text(
-          'Esta será la pantalla donde irá el login',
-        ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          bool isSmallScreen = constraints.maxWidth < 600; // Determina si es móvil o tablet/PC
+
+          return SingleChildScrollView(
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: isSmallScreen ? 20 : 80, // Ajusta margen
+                  vertical: isSmallScreen ? 20 : 80, // Ajusta espaciado
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: isSmallScreen ? 100 : 50),
+                    Text(
+                      "TE DAMOS LA BIENVENIDA A",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: isSmallScreen ? 24 : 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: isSmallScreen ? 20 : 30),
+                    Image.asset(
+                      'assets/images/LogoSimple.png',
+                      width: isSmallScreen ? 250 : 400,
+                      height: isSmallScreen ? 250 : 400,
+                      fit: BoxFit.contain,
+                    ),
+                    SizedBox(height: isSmallScreen ? 20 : 30),
+                    Text(
+                      "Gestiona tus contraseñas de forma segura y eficiente. Protege tu privacidad y la de tus datos valiosos. Nuestra app asegura que tus claves estén a salvo. Tu tranquilidad y seguridad son nuestra prioridad.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: isSmallScreen ? 16 : 20,
+                        color: Colors.white70,
+                      ),
+                    ),
+                    SizedBox(height: isSmallScreen ? 30 : 40),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => const PricipalPageScreen()),
+                        (Route<dynamic> route) => false,
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isSmallScreen ? 40 : 80,
+                          vertical: isSmallScreen ? 15 : 20,
+                        ),
+                        backgroundColor: const Color(0xff323232),
+                        side: const BorderSide(color: Color(0xff5d5d5d), width: 2),
+                        
+                      ),
+                      child: Text(
+                        'Continuar',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: isSmallScreen ? 16 : 20,
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: (){
+                        Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => const RegisterMail()),
+                        (Route<dynamic> route) => false);
+                      }, 
+                      child: Text("mail",
+                        style: TextStyle(
+                        color: Colors.white,
+                        fontSize: isSmallScreen ? 16 : 20,
+                        ),
+                      ),
+                      
+                      ),
+                    SizedBox(height: isSmallScreen ? 30 : 50),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+class RegisterMail extends StatelessWidget {
+  const RegisterMail({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          bool isSmallScreen = constraints.maxWidth < 600; // Determina si es móvil o tablet/PC
+          return SingleChildScrollView(
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: isSmallScreen ? 20 : 80, // Ajusta margen
+                  vertical: isSmallScreen ? 20 : 80, // Ajusta espaciado
+                ),
+                ///////////// voy aquí
+              ),
+            ),
+          ); 
+        },
+      ),
+    );
+  }
+}
+
