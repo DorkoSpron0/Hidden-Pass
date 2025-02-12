@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/UI/WIDGETS/bottom_navigation_bar_widgets/bottom_item_widget.dart';
 
-class BottomNavigationBarWidget extends StatelessWidget {
-  const BottomNavigationBarWidget({super.key});
+class BottomNavigationBarFloatingWidget extends StatelessWidget {
+  const BottomNavigationBarFloatingWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
