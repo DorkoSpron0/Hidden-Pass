@@ -11,8 +11,14 @@ class RegisterMail extends StatefulWidget {
 }
 
 class _RegisterMailState extends State<RegisterMail> {
-  // Controlador para el campo de correo electrónico
   final TextEditingController _emailController = TextEditingController();
+
+  // Expresión regular para validar un email
+  bool _isValidEmail(String email) {
+    final RegExp emailRegExp = RegExp(
+        r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+    return emailRegExp.hasMatch(email);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +69,8 @@ class _RegisterMailState extends State<RegisterMail> {
                           ],
                         ),
                         child: TextField(
-                          controller: _emailController, // Asignamos el controlador
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             hintText: "Correo electrónico",
                             hintStyle: TextStyle(color: Colors.grey),
@@ -92,7 +99,7 @@ class _RegisterMailState extends State<RegisterMail> {
                   },
                 ),
               ),
-              // Flecha inferior derecha
+              // Flecha inferior derecha con validación de correo
               Positioned(
                 bottom: 40,
                 right: 20,
@@ -113,14 +120,17 @@ class _RegisterMailState extends State<RegisterMail> {
                     iconSize: 36,
                     icon: Icon(Icons.arrow_forward, color: Colors.white),
                     onPressed: () {
-                      // Verificar si el campo de correo electrónico está vacío
-                      if (_emailController.text.isEmpty) {
-                        // Mostrar un mensaje de error si el campo está vacío
+                      String email = _emailController.text.trim();
+                      
+                      if (email.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text("Por favor ingresa un correo electrónico")),
                         );
+                      } else if (!_isValidEmail(email)) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Por favor ingresa un correo válido")),
+                        );
                       } else {
-                        // Si el campo no está vacío, navegar a la siguiente pantalla
                         Navigator.push(
                           context,
                           MaterialPageRoute(

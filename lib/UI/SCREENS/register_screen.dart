@@ -43,7 +43,7 @@ class RegisterScreen extends StatelessWidget {
                     "Gestiona tus contraseñas de forma segura y eficiente. Protege tu privacidad y la de tus datos valiosos.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: isSmallScreen ? 14 : 18,
+                      fontSize: isSmallScreen ? 14 : 20,
                       color: Colors.white70,
                     ),
                   ),
