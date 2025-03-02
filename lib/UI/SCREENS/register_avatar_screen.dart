@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/register_password_screen.dart';
 
 class RegisterAvatar extends StatefulWidget {
@@ -136,7 +137,7 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
                       if (_selectedAvatar != null) {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const RegisterPassword()),
+                          MaterialPageRoute(builder: (context) => const PricipalPageScreen()),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
