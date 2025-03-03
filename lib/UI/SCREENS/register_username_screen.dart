@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/UI/SCREENS/register_mail_screen.dart';
+import 'package:hidden_pass/UI/SCREENS/register_screen.dart';
 
 class RegisterUsername extends StatefulWidget {
   const RegisterUsername({super.key});
@@ -81,7 +82,12 @@ class _RegisterUsernameState extends State<RegisterUsername> {
                   iconSize: 36,
                   icon: Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RegisterScreen()
+                      )
+                    );
                   },
                 ),
               ),

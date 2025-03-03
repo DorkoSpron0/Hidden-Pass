@@ -71,13 +71,14 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
   }
 
   void sendData() async {
-    var url = Uri.parse('https://localhost:8081/api/v1/hidden_pass/users/register'); // Asegúrate de que la URL esté bien
+    var url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/users/register'); // Asegúrate de que la URL esté bien
 
     // Crear el cuerpo de la solicitud
     var body = json.encode({
       'username': widget.username,
       'email': widget.email,
       'password': widget.password,
+      'avatar': _selectedAvatar, // Añadir la imagen seleccionada al cuerpo de la solicitud
     });
 
     // Realizar la solicitud POST
@@ -180,7 +181,19 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
                   child: IconButton(
                     iconSize: iconSize,
                     icon: Icon(Icons.arrow_forward, color: Colors.white),
-                    onPressed: sendData,
+                    onPressed: (){
+                      if (_selectedAvatar == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Debes selccionar un avatar para poder avanzar")));
+                      } else{
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PricipalPageScreen(),
+                          ),
+                        );
+                      sendData();
+                    }
+                    }
                   ),
                 ),
               ),
