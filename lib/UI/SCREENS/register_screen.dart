@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/UI/SCREENS/register_mail_screen.dart';
+import 'package:hidden_pass/UI/SCREENS/register_username_screen.dart';
 import 'package:hidden_pass/main.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -57,7 +58,7 @@ class RegisterScreen extends StatelessWidget {
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const RegisterMail()),
+                                builder: (context) => const RegisterUsername()),
                             (Route<dynamic> route) => false,
                           );
                         },

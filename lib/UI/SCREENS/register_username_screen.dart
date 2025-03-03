@@ -1,23 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:hidden_pass/UI/SCREENS/register_avatar_screen.dart';
+import 'package:hidden_pass/UI/SCREENS/register_mail_screen.dart';
 
-class RegisterPassword extends StatefulWidget {
-  final String username;
-  final String email;
-  const RegisterPassword({super.key, required this.username, required this.email, required String password});
+class RegisterUsername extends StatefulWidget {
+  const RegisterUsername({super.key});
 
   @override
-  _RegisterPasswordState createState() => _RegisterPasswordState();
+  _RegisterUsernameState createState() => _RegisterUsernameState();
 }
 
-class _RegisterPasswordState extends State<RegisterPassword> {
-  final TextEditingController _passwordController = TextEditingController();
-
-  bool _isValidPassword(String password) {
-    final RegExp passwordRegExp = RegExp(
-        r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$");
-    return passwordRegExp.hasMatch(password);
-  }
+class _RegisterUsernameState extends State<RegisterUsername> {
+  final TextEditingController _usernameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +36,7 @@ class _RegisterPasswordState extends State<RegisterPassword> {
                       SizedBox(
                         width: containerWidth,
                         child: Text(
-                          "Ingresa tu contraseña",
+                          "Ingresa tu nombre de usuario",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: isSmallScreen ? 20 : 28,
@@ -68,13 +60,12 @@ class _RegisterPasswordState extends State<RegisterPassword> {
                           ],
                         ),
                         child: TextField(
-                          controller: _passwordController,
-                          obscureText: true,
+                          controller: _usernameController,
                           decoration: InputDecoration(
-                            hintText: "Contraseña",
+                            hintText: "Nombre de usuario",
                             hintStyle: TextStyle(color: Colors.grey),
                             border: InputBorder.none,
-                            prefixIcon: Icon(Icons.lock, color: Colors.grey),
+                            prefixIcon: Icon(Icons.account_circle, color: Colors.grey),
                           ),
                         ),
                       ),
@@ -115,20 +106,18 @@ class _RegisterPasswordState extends State<RegisterPassword> {
                     iconSize: 36,
                     icon: Icon(Icons.arrow_forward, color: Colors.white),
                     onPressed: () {
-                      String password = _passwordController.text.trim();
-                      if (password.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Por favor ingresa una contraseña")));
-                      } else if (!_isValidPassword(password)) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("La contraseña debe contener al menos 8 caracteres, una letra mayúscula, una minúscula, un número y un carácter especial")));
+                      String username = _usernameController.text.trim();
+                      if (username.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Por favor ingresa un nombre de usuario")));
                       } else {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => RegisterAvatar(username: widget.username, email: widget.email, password: password),
+                            builder: (context) => RegisterMail(username: username),
                           ),
                         );
                       }
-                    },
+                    }
                   ),
                 ),
               ),

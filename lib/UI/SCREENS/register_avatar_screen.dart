@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/register_password_screen.dart';
 
 class RegisterAvatar extends StatefulWidget {
-  const RegisterAvatar({super.key});
+  final String email;
+  final String password;
+  final String username;
+
+  const RegisterAvatar({
+    super.key,
+    required this.email,
+    required this.password,
+    required this.username,
+  });
 
   @override
   _RegisterAvatarState createState() => _RegisterAvatarState();
@@ -25,7 +36,6 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
     setState(() {
       _selectedAvatar = avatarPath;
     });
-    Navigator.pop(context);
   }
 
   void _showAvatarSelection() {
@@ -58,6 +68,50 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
         );
       },
     );
+  }
+
+  // Método para enviar los datos del usuario y el avatar al API
+  Future<void> _sendUserData() async {
+    if (_selectedAvatar == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Por favor, elige un avatar antes de continuar")),
+      );
+      return;
+    }
+
+    // Crear el modelo con los datos
+    final Map<String, dynamic> userData = {
+      'username': widget.username,
+      'email': widget.email,
+      'password': widget.password,
+      
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse('https:localhost:8081/api/v1/hidden_pass/users/register'), // Cambiar localhost a 127.0.0.1
+        headers: {'Content-Type': 'application/json'},
+        
+      );
+      print(json.encode(userData));
+
+      if (response.statusCode == 200) {
+        // Si la petición fue exitosa
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PricipalPageScreen()),
+        );
+      } else {
+        // Si hubo un error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error en el registro: ${response.body}")),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error al enviar la solicitud: $e")),
+      );
+    }
   }
 
   @override
@@ -115,7 +169,15 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
                   iconSize: iconSize,
                   icon: Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterPassword()));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => RegisterPassword(
+                                email: widget.email,
+                                password: widget.password,
+                                username: widget.username,
+                              )),
+                    );
                   },
                 ),
               ),
@@ -133,18 +195,7 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
                   child: IconButton(
                     iconSize: iconSize,
                     icon: Icon(Icons.arrow_forward, color: Colors.white),
-                    onPressed: () {
-                      if (_selectedAvatar != null) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const PricipalPageScreen()),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Por favor, elige un avatar antes de continuar")),
-                        );
-                      }
-                    },
+                    onPressed: _sendUserData,
                   ),
                 ),
               ),
