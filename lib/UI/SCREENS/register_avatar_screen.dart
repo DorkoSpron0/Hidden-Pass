@@ -70,47 +70,31 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
     );
   }
 
-  // Método para enviar los datos del usuario y el avatar al API
-  Future<void> _sendUserData() async {
-    if (_selectedAvatar == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Por favor, elige un avatar antes de continuar")),
-      );
-      return;
-    }
+  void sendData() async {
+    var url = Uri.parse('https://localhost:8081/api/v1/hidden_pass/users/register'); // Asegúrate de que la URL esté bien
 
-    // Crear el modelo con los datos
-    final Map<String, dynamic> userData = {
+    // Crear el cuerpo de la solicitud
+    var body = json.encode({
       'username': widget.username,
       'email': widget.email,
       'password': widget.password,
-      
-    };
+    });
 
-    try {
-      final response = await http.post(
-        Uri.parse('https:localhost:8081/api/v1/hidden_pass/users/register'), // Cambiar localhost a 127.0.0.1
-        headers: {'Content-Type': 'application/json'},
-        
-      );
-      print(json.encode(userData));
+    // Realizar la solicitud POST
+    var response = await http.post(
+      url,
+      body: body,
+      headers: {'Content-Type': 'application/json'},
+    );
 
-      if (response.statusCode == 200) {
-        // Si la petición fue exitosa
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => PricipalPageScreen()),
-        );
-      } else {
-        // Si hubo un error
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error en el registro: ${response.body}")),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error al enviar la solicitud: $e")),
-      );
+    print(body);
+
+    if (response.statusCode == 201) {
+      var data = json.decode(response.body); // Decodifica la respuesta del servidor
+      print('Datos enviados y recibidos: $data');
+    } else {
+      print('Error en la solicitud: ${response.statusCode}');
+      print('Cuerpo de la respuesta: ${response.body}'); // Imprimir el cuerpo de la respuesta para depuración
     }
   }
 
@@ -172,11 +156,12 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => RegisterPassword(
-                                email: widget.email,
-                                password: widget.password,
-                                username: widget.username,
-                              )),
+                        builder: (context) => RegisterPassword(
+                          email: widget.email,
+                          password: widget.password,
+                          username: widget.username,
+                        ),
+                      ),
                     );
                   },
                 ),
@@ -195,7 +180,7 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
                   child: IconButton(
                     iconSize: iconSize,
                     icon: Icon(Icons.arrow_forward, color: Colors.white),
-                    onPressed: _sendUserData,
+                    onPressed: sendData,
                   ),
                 ),
               ),
