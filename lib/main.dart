@@ -113,7 +113,7 @@ class HomeScreen extends StatelessWidget {
             onPressed: () {
               // Navegar a la pantalla de login
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => UserLogin()));
+                  MaterialPageRoute(builder: (context) => UserLogin(email: '', password: '',)));
             },
             child: Text(
               'Ya tengo una cuenta',

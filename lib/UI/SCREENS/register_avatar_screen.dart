@@ -71,8 +71,9 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
   }
 
   void sendData() async {
-    var url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/users/register'); // Asegúrate de que la URL esté bien
+    var url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/users/register'); // Asegúrate de que la URL esté bien
 
+  // http://10.0.2.2:8081/api/v1/hidden_pass/users/register
     // Crear el cuerpo de la solicitud
     var body = json.encode({
       'username': widget.username,
