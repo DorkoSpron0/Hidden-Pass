@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/UI/PROVIDERS/navigation_provider.dart';
+import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/notes_list_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/settings_screen.dart';
 import 'package:hidden_pass/UI/WIDGETS/appbar_widget.dart';
@@ -15,6 +16,7 @@ class PricipalPageScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     NavigationProvider watch = context.watch<NavigationProvider>(); // get Navigation GlobalIndex
+    TokenAuthProvider watchAuth = context.watch<TokenAuthProvider>();
 
     final List<Widget> pages = [
       PasswordListBodyWidget(),
@@ -23,6 +25,8 @@ class PricipalPageScreen extends StatelessWidget {
     ];
 
     final List<String> titles = ["Contraseñas", "Notas", "Configuración"];
+
+    print(watchAuth.token);
 
     return Scaffold(
       appBar: appBarWidget(context, titles[watch.index]),
