@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/register_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:provider/provider.dart';
 
 class UserLogin extends StatefulWidget {
   final String email;
@@ -17,8 +20,6 @@ class _RegisterMailState extends State<UserLogin> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscureText = true;
-
-
 
 void sendData(String email, String password) async {
   var url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/users/login'); // Asegúrate de que la URL esté bien
@@ -36,9 +37,10 @@ void sendData(String email, String password) async {
     body: body,
     headers: {'Content-Type': 'application/json'},
   );
-  print(response.body);
   if(response.statusCode == 200){
-    print(response);
+
+    context.read<TokenAuthProvider>().setToken(token: response.body);
+    
     Navigator.push(
       context, 
       MaterialPageRoute(
@@ -47,12 +49,13 @@ void sendData(String email, String password) async {
       )
     );
   } else{
-    print(response);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("credenciales incorrectas")));
   }
 }
   @override
   Widget build(BuildContext context) {
+
+
     
     return Scaffold(
       body: LayoutBuilder(

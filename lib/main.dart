@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/UI/PROVIDERS/navigation_provider.dart';
+import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'dart:async';
 
@@ -20,7 +21,10 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider<NavigationProvider>(
-              create: (_) => NavigationProvider())
+              create: (_) => NavigationProvider()),
+
+          ChangeNotifierProvider<TokenAuthProvider>(
+            create: (_) => TokenAuthProvider())
         ],
         builder: (context, _) {
           return MaterialApp(
