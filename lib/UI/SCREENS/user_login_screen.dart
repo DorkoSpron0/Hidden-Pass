@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
+import 'package:hidden_pass/UI/SCREENS/recover_password_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/register_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -157,10 +158,19 @@ void sendData(String email, String password) async {
                           '¿Olvidaste tu contraseña?',
                           style: TextStyle(color: Colors.grey),
                         ),
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const PricipalPageScreen()),
-                        ),
+                        onTap: () => {
+                          if (_emailController.text.isNotEmpty) { // Verifica si el texto del controlador no está vacío
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const CodigoVerificacion()),
+                            ),
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text("Por favor ingresa un correo válido")),
+                            ),
+                            // Agrega el punto y coma
+                          },
+                        }
 
                       ),
                     ],
