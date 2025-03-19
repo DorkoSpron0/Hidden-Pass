@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/register_screen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import 'package:provider/provider.dart';
 
 class UserLogin extends StatefulWidget {
-  const UserLogin({super.key});
+  final String email;
+  final String password;
+  const UserLogin({super.key, required this.email, required this.password});
 
   @override
   _RegisterMailState createState() => _RegisterMailState();
@@ -14,8 +21,42 @@ class _RegisterMailState extends State<UserLogin> {
   final TextEditingController _passwordController = TextEditingController();
   bool _obscureText = true;
 
+void sendData(String email, String password) async {
+  var url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/users/login'); // Asegúrate de que la URL esté bien
+
+// http://10.0.2.2:8081/api/v1/hidden_pass/users/register
+  // Crear el cuerpo de la solicitud
+  var body = json.encode({
+    'email': email,
+    'master_password': password
+  });
+
+  // Realizar la solicitud POST
+  var response = await http.post(
+    url,
+    body: body,
+    headers: {'Content-Type': 'application/json'},
+  );
+  if(response.statusCode == 200){
+
+    context.read<TokenAuthProvider>().setToken(token: response.body);
+    
+    Navigator.push(
+      context, 
+      MaterialPageRoute(
+        
+        builder: (context) => const PricipalPageScreen()
+      )
+    );
+  } else{
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("credenciales incorrectas")));
+  }
+}
   @override
   Widget build(BuildContext context) {
+
+
+    
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -160,19 +201,11 @@ class _RegisterMailState extends State<UserLogin> {
                     iconSize: 36,
                     icon: Icon(Icons.arrow_forward, color: Colors.white),
                     onPressed: () {
-                      if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Por favor ingresa tu correo y contraseña")),
-                        );
-                      } else {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const PricipalPageScreen(),
-                          ),
-                        );
-                      }
-                    },
+                      
+
+                    sendData(_emailController.text.trim(), _passwordController.text.trim());
+                    }
+
                   ),
                   ),
                 ),

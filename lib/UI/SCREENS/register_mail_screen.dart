@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/UI/SCREENS/register_password_screen.dart';
-import 'package:hidden_pass/UI/SCREENS/register_screen.dart';
-
 
 class RegisterMail extends StatefulWidget {
-  const RegisterMail({super.key});
+  final String username;
+  const RegisterMail({super.key, required this.username});
 
   @override
   _RegisterMailState createState() => _RegisterMailState();
@@ -91,15 +90,11 @@ class _RegisterMailState extends State<RegisterMail> {
                   iconSize: 36,
                   icon: Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const RegisterScreen()),
-                    );
+                    Navigator.pop(context);
                   },
                 ),
               ),
-              // Flecha inferior derecha con validación de correo
+              // Flecha inferior derecha
               Positioned(
                 bottom: 40,
                 right: 20,
@@ -121,24 +116,24 @@ class _RegisterMailState extends State<RegisterMail> {
                     icon: Icon(Icons.arrow_forward, color: Colors.white),
                     onPressed: () {
                       String email = _emailController.text.trim();
-                      
                       if (email.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Por favor ingresa un correo electrónico")),
-                        );
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Por favor ingresa un correo electrónico")));
                       } else if (!_isValidEmail(email)) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Por favor ingresa un correo válido")),
-                        );
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Por favor ingresa un correo válido")));
                       } else {
+                        // Aquí no pasamos el parámetro `password` ya que se ingresará en la siguiente pantalla
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const RegisterPassword(),
+                            builder: (context) => RegisterPassword(
+                              username: widget.username,
+                              email: email,
+                              password: '', // Se pasa una cadena vacía, ya que el password se pedirá en la siguiente pantalla
+                            ),
                           ),
                         );
                       }
-                    },
+                    }
                   ),
                 ),
               ),

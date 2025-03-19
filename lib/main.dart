@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/UI/PROVIDERS/navigation_provider.dart';
+import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'dart:async';
 
@@ -20,7 +21,10 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider<NavigationProvider>(
-              create: (_) => NavigationProvider())
+              create: (_) => NavigationProvider()),
+
+          ChangeNotifierProvider<TokenAuthProvider>(
+            create: (_) => TokenAuthProvider())
         ],
         builder: (context, _) {
           return MaterialApp(
@@ -113,7 +117,7 @@ class HomeScreen extends StatelessWidget {
             onPressed: () {
               // Navegar a la pantalla de login
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => UserLogin()));
+                  MaterialPageRoute(builder: (context) => UserLogin(email: '', password: '',)));
             },
             child: Text(
               'Ya tengo una cuenta',
