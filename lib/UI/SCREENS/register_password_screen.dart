@@ -12,6 +12,7 @@ class RegisterPassword extends StatefulWidget {
 
 class _RegisterPasswordState extends State<RegisterPassword> {
   final TextEditingController _passwordController = TextEditingController();
+  bool _isPasswordVisible = false; // Variable para controlar la visibilidad de la contraseña
 
   bool _isValidPassword(String password) {
     final RegExp passwordRegExp = RegExp(
@@ -69,12 +70,23 @@ class _RegisterPasswordState extends State<RegisterPassword> {
                         ),
                         child: TextField(
                           controller: _passwordController,
-                          obscureText: true,
+                          obscureText: !_isPasswordVisible, // Cambiar visibilidad de la contraseña
                           decoration: InputDecoration(
                             hintText: "Contraseña",
                             hintStyle: TextStyle(color: Colors.grey),
                             border: InputBorder.none,
                             prefixIcon: Icon(Icons.lock, color: Colors.grey),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _isPasswordVisible ? Icons.visibility : Icons.visibility_off, // Cambiar icono según el estado
+                                color: Colors.grey,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible; // Cambiar el estado al presionar el icono
+                                });
+                              },
+                            ),
                           ),
                         ),
                       ),

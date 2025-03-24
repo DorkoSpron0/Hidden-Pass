@@ -1,9 +1,14 @@
+import 'dart:convert';
+import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/UI/SCREENS/register_avatar_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/user_login_screen.dart';
+import 'package:provider/provider.dart';
 
 class Newpassword extends StatefulWidget {
-  const Newpassword({super.key});
+  final String email;
+  const Newpassword({super.key, required this.email});
 
   @override
   _NewpasswordState createState() => _NewpasswordState();
@@ -11,6 +16,39 @@ class Newpassword extends StatefulWidget {
 
 class _NewpasswordState extends State<Newpassword> {
   final TextEditingController _passwordController = TextEditingController();
+  bool _isPasswordVisible = false; // Variable para controlar la visibilidad de la contraseña
+
+  void sendNewPassword(String email, String newPassword) async {
+    var url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/update/password');
+    // final tokenAuthProvider = Provider.of<TokenAuthProvider>(context, listen: false);
+    // final token = tokenAuthProvider.token;
+
+    var body = json.encode({
+      'email': email,
+      'new_password': newPassword,
+    });
+
+    var response = await http.post(
+      url,
+      body: body,
+      headers: {'Content-Type': 'application/json',
+      // 'Authorization': 'Bearer $token'
+      },
+    );
+
+    if (response.statusCode == 200) {
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const UserLogin(),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Credenciales incorrectas")));
+      print(body);
+    }
+  }
 
   bool _isValidPassword(String password) {
     final RegExp passwordRegExp = RegExp(
@@ -68,12 +106,23 @@ class _NewpasswordState extends State<Newpassword> {
                         ),
                         child: TextField(
                           controller: _passwordController,
-                          obscureText: true,
+                          obscureText: !_isPasswordVisible,  // Cambiar la visibilidad según la variable
                           decoration: InputDecoration(
                             hintText: "Contraseña",
                             hintStyle: TextStyle(color: Colors.grey),
                             border: InputBorder.none,
                             prefixIcon: Icon(Icons.lock, color: Colors.grey),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _isPasswordVisible ? Icons.visibility : Icons.visibility_off, // Cambiar icono dependiendo de la visibilidad
+                                color: Colors.grey,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;  // Cambiar el estado
+                                });
+                              },
+                            ),
                           ),
                         ),
                       ),
@@ -120,12 +169,7 @@ class _NewpasswordState extends State<Newpassword> {
                       } else if (!_isValidPassword(password)) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("La contraseña debe contener al menos 8 caracteres, una letra mayúscula, una minúscula, un número y un carácter especial")));
                       } else {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UserLogin(email: '', password: '',),
-                          ),
-                        );
+                        sendNewPassword(widget.email, password);
                       }
                     },
                   ),

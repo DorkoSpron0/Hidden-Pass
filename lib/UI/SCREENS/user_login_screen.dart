@@ -9,9 +9,7 @@ import 'dart:convert';
 import 'package:provider/provider.dart';
 
 class UserLogin extends StatefulWidget {
-  final String email;
-  final String password;
-  const UserLogin({super.key, required this.email, required this.password});
+  const UserLogin({super.key});
 
   @override
   _RegisterMailState createState() => _RegisterMailState();
@@ -25,7 +23,7 @@ class _RegisterMailState extends State<UserLogin> {
 void sendData(String email, String password) async {
   var url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/users/login'); // Asegúrate de que la URL esté bien
 
-// http://10.0.2.2:8081/api/v1/hidden_pass/users/register
+  // http://10.0.2.2:8081/api/v1/hidden_pass/users/register
   // Crear el cuerpo de la solicitud
   var body = json.encode({
     'email': email,
@@ -47,6 +45,34 @@ void sendData(String email, String password) async {
       MaterialPageRoute(
         
         builder: (context) => const PricipalPageScreen()
+      )
+    );
+  } else{
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("credenciales incorrectas")));
+  }
+}
+
+void sendEmail(String email) async {
+
+  var url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/codes/send');
+
+  var body= json.encode({
+    'email': email,
+  });
+
+  var response = await http.post(
+    url,
+    body: body,
+    headers: {'Content-Type': 'application/json'},
+  );
+
+  if(response.statusCode == 200){
+    
+    Navigator.push(
+      context, 
+      MaterialPageRoute(
+        
+        builder: (context) => CodigoVerificacion(email: email,)
       )
     );
   } else{
@@ -159,11 +185,11 @@ void sendData(String email, String password) async {
                           style: TextStyle(color: Colors.grey),
                         ),
                         onTap: () => {
+                          
                           if (_emailController.text.isNotEmpty) { // Verifica si el texto del controlador no está vacío
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const CodigoVerificacion()),
-                            ),
+                            
+                            sendEmail(_emailController.text.trim())
+  
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text("Por favor ingresa un correo válido")),
