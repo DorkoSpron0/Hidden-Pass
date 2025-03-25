@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/DOMAIN/MODELS/notes_model.dart';
+import 'package:hidden_pass/UI/SCREENS/see_notes_screen.dart';
 import 'package:hidden_pass/UI/WIDGETS/notes_widgets/note_item_widget.dart';
 
 class NotesListScreen extends StatelessWidget {
@@ -20,19 +21,28 @@ class NotesListScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      //bottomNavigationBar: bottomNavigationBarWidget(context),
       body: ListView.builder(
         itemCount: notesList.length,
         scrollDirection: Axis.vertical,
         itemBuilder: (context, index) => Column(
           children: [
-            NoteItemWidget(
-              title: notesList[index].title,
-              description: notesList[index].description,
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NoteDetailsScreen(
+                      note: notesList[index],
+                    ),
+                  ),
+                );
+              },
+              child: NoteItemWidget(
+                title: notesList[index].title,
+                description: notesList[index].description,
+              ),
             ),
-            SizedBox(
-              height: 20,
-            )
+            SizedBox(height: 20),
           ],
         ),
         shrinkWrap: true,

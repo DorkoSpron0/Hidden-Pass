@@ -1,10 +1,7 @@
 import 'dart:convert';
-import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:hidden_pass/UI/SCREENS/register_avatar_screen.dart';
+import 'package:http/http.dart' as http;
 import 'package:hidden_pass/UI/SCREENS/user_login_screen.dart';
-import 'package:provider/provider.dart';
 
 class Newpassword extends StatefulWidget {
   final String email;
@@ -16,37 +13,37 @@ class Newpassword extends StatefulWidget {
 
 class _NewpasswordState extends State<Newpassword> {
   final TextEditingController _passwordController = TextEditingController();
-  bool _isPasswordVisible = false; // Variable para controlar la visibilidad de la contraseña
+  bool _isPasswordVisible = false;
 
   void sendNewPassword(String email, String newPassword) async {
     var url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/update/password');
-    // final tokenAuthProvider = Provider.of<TokenAuthProvider>(context, listen: false);
-    // final token = tokenAuthProvider.token;
 
     var body = json.encode({
       'email': email,
       'new_password': newPassword,
     });
 
-    var response = await http.post(
-      url,
-      body: body,
-      headers: {'Content-Type': 'application/json',
-      // 'Authorization': 'Bearer $token'
-      },
-    );
-
-    if (response.statusCode == 200) {
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const UserLogin(),
-        ),
+    try {
+      var response = await http.post(
+        url,
+        body: body,
+        headers: {'Content-Type': 'application/json'},
       );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Credenciales incorrectas")));
-      print(body);
+
+      if (response.statusCode == 200) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const UserLogin(),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Credenciales incorrectas")));
+        print('Error en la solicitud: ${response.statusCode}, ${response.body}');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error al conectar con el servidor")));
+      print('Error de conexión: $e');
     }
   }
 
@@ -106,7 +103,7 @@ class _NewpasswordState extends State<Newpassword> {
                         ),
                         child: TextField(
                           controller: _passwordController,
-                          obscureText: !_isPasswordVisible,  // Cambiar la visibilidad según la variable
+                          obscureText: !_isPasswordVisible,
                           decoration: InputDecoration(
                             hintText: "Contraseña",
                             hintStyle: TextStyle(color: Colors.grey),
@@ -114,12 +111,12 @@ class _NewpasswordState extends State<Newpassword> {
                             prefixIcon: Icon(Icons.lock, color: Colors.grey),
                             suffixIcon: IconButton(
                               icon: Icon(
-                                _isPasswordVisible ? Icons.visibility : Icons.visibility_off, // Cambiar icono dependiendo de la visibilidad
+                                _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
                                 color: Colors.grey,
                               ),
                               onPressed: () {
                                 setState(() {
-                                  _isPasswordVisible = !_isPasswordVisible;  // Cambiar el estado
+                                  _isPasswordVisible = !_isPasswordVisible;
                                 });
                               },
                             ),
@@ -130,7 +127,6 @@ class _NewpasswordState extends State<Newpassword> {
                   ),
                 ),
               ),
-              // Flecha superior izquierda
               Positioned(
                 top: 40,
                 left: 20,
@@ -142,7 +138,6 @@ class _NewpasswordState extends State<Newpassword> {
                   },
                 ),
               ),
-              // Flecha inferior derecha
               Positioned(
                 bottom: 40,
                 right: 20,
