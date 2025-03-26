@@ -18,29 +18,33 @@ class _NewpasswordState extends State<Newpassword> {
 
   void sendNewPassword() async {
     
-    final response = await http.put(
-    Uri.parse("http://localhost:8081/api/v1/hidden_pass/users/update/password"),
-    headers: {'Content-Type': 'application/json; charset=UTF-8'},
+  var url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/users/update/password');
 
-    body: jsonEncode(
-      {
-        'email': '3107325209m@gmail.com',
-        'new_password': '20011960mVi*'
-      }
-    )
+  // http://10.0.2.2:8081/api/v1/hidden_pass/users/register
+  // Crear el cuerpo de la solicitud
+  var body = json.encode({
+    'email': widget.email,
+    'new_password': _Newpassword,
+  });
+  
+  // Realizar la solicitud POST
+  var response = await http.put(
+    url,
+    body: body,
+    headers: {'Content-Type': 'application/json'}
   );
-print(response.statusCode);
-      if (response.statusCode == 200) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const UserLogin(),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Credenciales incorrectas")));
-        print('Error en la solicitud: ${response.statusCode}, ${response.body}');
-      }
+  
+    if (response.statusCode == 200) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const UserLogin(),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Credenciales incorrectas")));
+      print('Error en la solicitud: ${response.statusCode}, ${response.body}');
+    }
     
   }
 
