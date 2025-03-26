@@ -12,24 +12,24 @@ class Newpassword extends StatefulWidget {
 }
 
 class _NewpasswordState extends State<Newpassword> {
+  String? _Newpassword;
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
 
-  void sendNewPassword(String email, String newPassword) async {
-    var url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/update/password');
+  void sendNewPassword() async {
+    
+    final response = await http.put(
+    Uri.parse("http://localhost:8081/api/v1/hidden_pass/users/update/password"),
+    headers: {'Content-Type': 'application/json; charset=UTF-8'},
 
-    var body = json.encode({
-      'email': email,
-      'new_password': newPassword,
-    });
-
-    try {
-      var response = await http.post(
-        url,
-        body: body,
-        headers: {'Content-Type': 'application/json'},
-      );
-
+    body: jsonEncode(
+      {
+        'email': '3107325209m@gmail.com',
+        'new_password': '20011960mVi*'
+      }
+    )
+  );
+print(response.statusCode);
       if (response.statusCode == 200) {
         Navigator.push(
           context,
@@ -41,16 +41,13 @@ class _NewpasswordState extends State<Newpassword> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Credenciales incorrectas")));
         print('Error en la solicitud: ${response.statusCode}, ${response.body}');
       }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error al conectar con el servidor")));
-      print('Error de conexión: $e');
-    }
+    
   }
 
-  bool _isValidPassword(String password) {
+  bool _isValidPassword(String newPassword) {
     final RegExp passwordRegExp = RegExp(
         r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$");
-    return passwordRegExp.hasMatch(password);
+    return passwordRegExp.hasMatch(newPassword);
   }
 
   @override
@@ -158,13 +155,13 @@ class _NewpasswordState extends State<Newpassword> {
                     iconSize: 36,
                     icon: Icon(Icons.arrow_forward, color: Colors.white),
                     onPressed: () {
-                      String password = _passwordController.text.trim();
-                      if (password.isEmpty) {
+                      String _Newpassword =_passwordController.text.trim();
+                      if (_Newpassword.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Por favor ingresa una contraseña")));
-                      } else if (!_isValidPassword(password)) {
+                      } else if (!_isValidPassword(_Newpassword)) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("La contraseña debe contener al menos 8 caracteres, una letra mayúscula, una minúscula, un número y un carácter especial")));
                       } else {
-                        sendNewPassword(widget.email, password);
+                        sendNewPassword();
                       }
                     },
                   ),
