@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/UI/PROVIDERS/navigation_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/notes_list_screen.dart';
+import 'package:hidden_pass/UI/SCREENS/all_passwords_list_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/settings_screen.dart';
 import 'package:hidden_pass/UI/WIDGETS/appbar_widget.dart';
 import 'package:hidden_pass/UI/WIDGETS/bottom_navigation_bar.dart';
@@ -19,6 +20,7 @@ class PricipalPageScreen extends StatelessWidget {
     final List<Widget> pages = [
       PasswordListBodyWidget(),
       NotesListScreen(),
+      AllPasswordsScreen(),
       SettingsScreen()
     ];
 
@@ -45,9 +47,15 @@ class PricipalPageScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0XFF131313),
         //shape: CircleBorder(), Boton circular
-          onPressed: () {},
+          onPressed: () {
+            // Navegar a la pantalla de agregar contraseña
+            Navigator.pushNamed(context, '/new_Password_Screen');
+
+          },
           child: Icon(Icons.add, size: 30.0),
       ),
     );
   }
+  
+  AllPasswordsScreen() {}
 }
