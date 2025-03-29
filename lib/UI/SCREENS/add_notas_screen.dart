@@ -17,7 +17,7 @@ class AddNoteScreen extends StatefulWidget {
 class _AddNoteScreenState extends State<AddNoteScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _bodyController = TextEditingController();
-  String _selectedPriority = 'baja'; // Valor por defecto de la prioridad
+  String _selectedPriority = 'BAJA'; 
 
   void addNote(NoteModel note) async {
     final userId = context.read<IdUserProvider>().idUser;
@@ -36,7 +36,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
         url,
         headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
         body: jsonEncode({
-          'priorityName': _selectedPriority, 
+          'priorityName': note.priorityName, 
           'title': note.title,
           'description': note.description,
         }),
@@ -44,8 +44,9 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
 
       print("Response status: ${response.statusCode}");
       print("Response body: ${response.body}"); 
+      print(response.statusCode);
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
       
         Navigator.pushReplacement(
           context,
@@ -63,6 +64,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
         SnackBar(content: Text('en el proceso: $e')),
       );
       print('Error: $e');
+      print('token: $token');
     }
   }
 
@@ -145,7 +147,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                               _selectedPriority = newValue!;
                             });
                           },
-                          items: ['baja', 'media', 'alta', 'critica']
+                          items: ['BAJA', 'MEDIA', 'ALTA', 'CRITICA']
                               .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,

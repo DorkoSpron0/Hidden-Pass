@@ -1,8 +1,13 @@
+import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
+import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
+import 'package:hidden_pass/UI/SCREENS/user_login_screen.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/register_password_screen.dart';
+import 'package:provider/provider.dart';
 
 class RegisterAvatar extends StatefulWidget {
   final String email;
@@ -92,8 +97,27 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
     print(body);
 
     if (response.statusCode == 201) {
-      var data = json.decode(response.body); // Decodifica la respuesta del servidor
-      print('Datos enviados y recibidos: $data');
+
+      // context.read<TokenAuthProvider>().setToken(token: response.body);
+      
+      // void decodificarToken(String token) {
+      //   try {
+      //     final jwt = JWT.decode(token);
+      //     print("Payload del JWT: ${jwt.payload}");
+      //     final sub = jwt.payload['sub'];
+      //     print('ID de usuario almacenado: $sub');
+      //     context.read<IdUserProvider>().setidUser(idUser: sub);
+      //   } catch (e) {
+      //     print("Error al decodificar el JWT: $e");
+      //   }
+      // }
+
+      // decodificarToken(response.body);
+      // var data = json.decode(response.body); // Decodifica la respuesta del servidor
+      // print('Datos enviados y recibidos: $data');
+      print('codigo: ${response.statusCode}');
+      print('Cuerpo de la respuesta: ${response.body}');
+
     } else {
       print('Error en la solicitud: ${response.statusCode}');
       print('Cuerpo de la respuesta: ${response.body}'); // Imprimir el cuerpo de la respuesta para depuración
@@ -189,7 +213,7 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => PricipalPageScreen(),
+                            builder: (context) => UserLogin(),
                           ),
                         );
                       sendData();
