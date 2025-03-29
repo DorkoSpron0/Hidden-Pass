@@ -12,19 +12,19 @@ class Newpassword extends StatefulWidget {
 }
 
 class _NewpasswordState extends State<Newpassword> {
-  String? _Newpassword;
+
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
 
-  void sendNewPassword() async {
+  void sendNewPassword(String email, String newPassword) async {
     
   var url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/users/update/password');
 
   // http://10.0.2.2:8081/api/v1/hidden_pass/users/register
-  // Crear el cuerpo de la solicitud
+  
   var body = json.encode({
-    'email': widget.email,
-    'new_password': _Newpassword,
+    'email': email,
+    'new_password': newPassword,
   });
   
   // Realizar la solicitud POST
@@ -159,13 +159,13 @@ class _NewpasswordState extends State<Newpassword> {
                     iconSize: 36,
                     icon: Icon(Icons.arrow_forward, color: Colors.white),
                     onPressed: () {
-                      String _Newpassword =_passwordController.text.trim();
-                      if (_Newpassword.isEmpty) {
+                      String newPassword =_passwordController.text.trim();
+                      if (newPassword.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Por favor ingresa una contraseña")));
-                      } else if (!_isValidPassword(_Newpassword)) {
+                      } else if (!_isValidPassword(newPassword)) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("La contraseña debe contener al menos 8 caracteres, una letra mayúscula, una minúscula, un número y un carácter especial")));
                       } else {
-                        sendNewPassword();
+                        sendNewPassword(widget.email, newPassword); 
                       }
                     },
                   ),

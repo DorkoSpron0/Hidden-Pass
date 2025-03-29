@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/navigation_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
@@ -24,7 +25,12 @@ class MyApp extends StatelessWidget {
               create: (_) => NavigationProvider()),
 
           ChangeNotifierProvider<TokenAuthProvider>(
-            create: (_) => TokenAuthProvider())
+            create: (_) => TokenAuthProvider()),
+
+          ChangeNotifierProvider<IdUserProvider>(
+            create: (_) => IdUserProvider(),
+          ),
+ 
         ],
         builder: (context, _) {
           return MaterialApp(

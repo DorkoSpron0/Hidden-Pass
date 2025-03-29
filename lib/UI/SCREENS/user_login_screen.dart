@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/recover_password_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/register_screen.dart';
+import 'package:hidden_pass/main.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
 import 'package:provider/provider.dart';
 
@@ -38,12 +41,30 @@ class _RegisterMailState extends State<UserLogin> {
       headers: {'Content-Type': 'application/json'},
     );
     if (response.statusCode == 200) {
+      
       context.read<TokenAuthProvider>().setToken(token: response.body);
+      
+      void decodificarToken(String token) {
+        try {
+          final jwt = JWT.decode(token);
+          print("Payload del JWT: ${jwt.payload}");
+          final sub = jwt.payload['sub'];
+          print('ID de usuario almacenado: $sub');
+          context.read<IdUserProvider>().setidUser(idUser: sub);
+        } catch (e) {
+          print("Error al decodificar el JWT: $e");
+        }
+      }
 
+      decodificarToken(response.body);
+
+      
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const PricipalPageScreen()));
+        context,
+        MaterialPageRoute(
+            builder: (context) => const PricipalPageScreen())
+      );
+
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("credenciales incorrectas")));
@@ -236,7 +257,7 @@ class _RegisterMailState extends State<UserLogin> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const RegisterScreen()),
+                          builder: (context) => const HomeScreen()),
                     );
                   },
                 ),
