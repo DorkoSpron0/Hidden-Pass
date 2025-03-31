@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/DOMAIN/HIVE/NoteHiveObject.dart';
 import 'package:hidden_pass/DOMAIN/MODELS/notes_model.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
@@ -21,41 +23,53 @@ class _NotesListScreenState extends State<NotesListScreen> {
     final token = context.read<TokenAuthProvider>().token;
 
     if (token == null || token.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Debe de estar logueado para poder realizar este proceso')),
-      );
-      return;
-    }
 
-    final url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/notes/$userId');
+      final box = Hive.box<NoteHiveObject>('notes');
+      final notes = box.values.toList();
 
-    try {
-      final response = await http.get(url, headers: {
-        'Authorization': 'Bearer $token',
-      });
 
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-
-        setState(() {
-          notesList = data.map((noteData) {
-            return NoteModel(
-              noteData['id_priority']['name'],
-              noteData['title'],
-              noteData['description'],
-            );
-          }).toList();
-          isLoading = false;
-        });
-      } else {
-        throw Exception('Error al cargar las notas');
-      }
-    } catch (e) {
-      print('Error: $e');
       setState(() {
+        notesList = notes.map((noteData) {
+          return NoteModel(
+            noteData.priorityName,
+            noteData.title,
+            noteData.description,
+          );
+        }).toList();
         isLoading = false;
       });
+    }else{
+      final url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/notes/$userId');
+
+      try {
+        final response = await http.get(url, headers: {
+          'Authorization': 'Bearer $token',
+        });
+
+        if (response.statusCode == 200) {
+          final List<dynamic> data = json.decode(response.body);
+
+          setState(() {
+            notesList = data.map((noteData) {
+              return NoteModel(
+                noteData['id_priority']['name'],
+                noteData['title'],
+                noteData['description'],
+              );
+            }).toList();
+            isLoading = false;
+          });
+        } else {
+          throw Exception('Error al cargar las notas');
+        }
+      } catch (e) {
+        print('Error: $e');
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
+
   }
 
   @override
@@ -68,7 +82,6 @@ class _NotesListScreenState extends State<NotesListScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final horizontalPadding = 16.0;
-
     return Scaffold(
       body: isLoading
           ? Center(child: CircularProgressIndicator())

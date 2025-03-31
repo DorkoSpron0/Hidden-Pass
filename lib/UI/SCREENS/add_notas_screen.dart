@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/DOMAIN/HIVE/NoteHiveObject.dart';
 import 'package:hidden_pass/DOMAIN/MODELS/notes_model.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/notes_list_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:hidden_pass/main.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
@@ -17,7 +19,9 @@ class AddNoteScreen extends StatefulWidget {
 class _AddNoteScreenState extends State<AddNoteScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _bodyController = TextEditingController();
-  String _selectedPriority = 'BAJA'; 
+  String _selectedPriority = 'BAJA';
+
+  final box = Hive.box<NoteHiveObject>('notes');
 
   void addNote(NoteModel note) async {
     final userId = context.read<IdUserProvider>().idUser;
@@ -25,47 +29,64 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
     final url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/notes/$userId');
 
     if (token == null || token.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Debe de estar logueado para poder realizar este proceso')),
-      );
-      return;
-    }
-    try {
-     
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
-        body: jsonEncode({
-          'priorityName': note.priorityName, 
-          'title': note.title,
-          'description': note.description,
-        }),
-      );
 
-      print("Response status: ${response.statusCode}");
-      print("Response body: ${response.body}"); 
-      print(response.statusCode);
+      try{
+        final newNote = NoteHiveObject(
+            note.priorityName,
+            note.title,
+            note.description
+        );
 
-      if (response.statusCode == 200) {
-      
+        box.add(newNote);
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => PricipalPageScreen(),
           ),
         );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al crear la nota: ${response.statusCode}')),
-        );
+      }catch(e){
+        print(e.toString());
       }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('en el proceso: $e')),
-      );
-      print('Error: $e');
-      print('token: $token');
+    }else{
+      try {
+
+        final response = await http.post(
+          url,
+          headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
+          body: jsonEncode({
+            'priorityName': note.priorityName,
+            'title': note.title,
+            'description': note.description,
+          }),
+        );
+
+        print("Response status: ${response.statusCode}");
+        print("Response body: ${response.body}");
+        print(response.statusCode);
+
+        if (response.statusCode == 200) {
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PricipalPageScreen(),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error al crear la nota: ${response.statusCode}')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('en el proceso: $e')),
+        );
+        print('Error: $e');
+        print('token: $token');
+      }
     }
+
   }
 
   @override
