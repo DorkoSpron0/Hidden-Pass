@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/UI/SCREENS/register_avatar_screen.dart';
-import 'package:hidden_pass/UI/SCREENS/register_mail_screen.dart';
 
 class RegisterPassword extends StatefulWidget {
-  const RegisterPassword({super.key});
+  final String username;
+  final String email;
+  const RegisterPassword({super.key, required this.username, required this.email, required String password});
 
   @override
   _RegisterPasswordState createState() => _RegisterPasswordState();
@@ -11,8 +12,8 @@ class RegisterPassword extends StatefulWidget {
 
 class _RegisterPasswordState extends State<RegisterPassword> {
   final TextEditingController _passwordController = TextEditingController();
+  bool _isPasswordVisible = false; // Variable para controlar la visibilidad de la contraseña
 
-  // Expresión regular para validar la contraseña
   bool _isValidPassword(String password) {
     final RegExp passwordRegExp = RegExp(
         r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$");
@@ -44,7 +45,7 @@ class _RegisterPasswordState extends State<RegisterPassword> {
                       SizedBox(
                         width: containerWidth,
                         child: Text(
-                          "Ingresa tu contraseña maestra",
+                          "Ingresa tu contraseña",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: isSmallScreen ? 20 : 28,
@@ -52,33 +53,40 @@ class _RegisterPasswordState extends State<RegisterPassword> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 10),
-                      SizedBox(
-                        width: containerWidth,
-                        child: Text(
-                          "Debe contener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: isSmallScreen ? 14 : 16,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
                       SizedBox(height: 20),
-
-                      // 🔒 Campo Contraseña
                       Container(
                         width: containerWidth,
                         padding: EdgeInsets.symmetric(horizontal: 20),
-                        decoration: _inputBoxDecoration(),
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.grey),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 10,
+                            ),
+                          ],
+                        ),
                         child: TextField(
                           controller: _passwordController,
-                          obscureText: true,
+                          obscureText: !_isPasswordVisible, // Cambiar visibilidad de la contraseña
                           decoration: InputDecoration(
                             hintText: "Contraseña",
                             hintStyle: TextStyle(color: Colors.grey),
                             border: InputBorder.none,
                             prefixIcon: Icon(Icons.lock, color: Colors.grey),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _isPasswordVisible ? Icons.visibility : Icons.visibility_off, // Cambiar icono según el estado
+                                color: Colors.grey,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible; // Cambiar el estado al presionar el icono
+                                });
+                              },
+                            ),
                           ),
                         ),
                       ),
@@ -86,8 +94,7 @@ class _RegisterPasswordState extends State<RegisterPassword> {
                   ),
                 ),
               ),
-
-              // 🔙 Flecha superior izquierda (Regresar)
+              // Flecha superior izquierda
               Positioned(
                 top: 40,
                 left: 20,
@@ -95,14 +102,11 @@ class _RegisterPasswordState extends State<RegisterPassword> {
                   iconSize: 36,
                   icon: Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
-                    Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => const RegisterMail())
-                    );
+                    Navigator.pop(context);
                   },
                 ),
               ),
-
-              // 🔜 Flecha inferior derecha con validación
+              // Flecha inferior derecha
               Positioned(
                 bottom: 40,
                 right: 20,
@@ -124,24 +128,16 @@ class _RegisterPasswordState extends State<RegisterPassword> {
                     icon: Icon(Icons.arrow_forward, color: Colors.white),
                     onPressed: () {
                       String password = _passwordController.text.trim();
-
                       if (password.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Por favor ingresa una contraseña")),
-                        );
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Por favor ingresa una contraseña")));
                       } else if (!_isValidPassword(password)) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text(
-                                  "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.")),
-                        );
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("La contraseña debe contener al menos 8 caracteres, una letra mayúscula, una minúscula, un número y un carácter especial")));
                       } else {
-                        Navigator.pushAndRemoveUntil(
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const RegisterAvatar(),
+                            builder: (context) => RegisterAvatar(username: widget.username, email: widget.email, password: password),
                           ),
-                          (Route<dynamic> route) => false,
                         );
                       }
                     },
@@ -152,21 +148,6 @@ class _RegisterPasswordState extends State<RegisterPassword> {
           );
         },
       ),
-    );
-  }
-
-  // 🔲 Estilo del contenedor de entrada
-  BoxDecoration _inputBoxDecoration() {
-    return BoxDecoration(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(10),
-      border: Border.all(color: Colors.grey),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.1),
-          blurRadius: 10,
-        ),
-      ],
     );
   }
 }
