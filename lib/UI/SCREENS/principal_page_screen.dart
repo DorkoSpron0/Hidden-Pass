@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/UI/PROVIDERS/navigation_provider.dart';
+import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
+import 'package:hidden_pass/UI/SCREENS/add_notas_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/notes_list_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/settings_screen.dart';
 import 'package:hidden_pass/UI/WIDGETS/appbar_widget.dart';
@@ -15,15 +17,17 @@ class PricipalPageScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     NavigationProvider watch = context.watch<NavigationProvider>(); // get Navigation GlobalIndex
+    TokenAuthProvider watchAuth = context.watch<TokenAuthProvider>();
 
     final List<Widget> pages = [
       PasswordListBodyWidget(),
       NotesListScreen(),
-      AllPasswordsScreen(),
       SettingsScreen()
     ];
 
     final List<String> titles = ["Contraseñas", "Notas", "Configuración"];
+
+    print(watchAuth.token);
 
     return Scaffold(
       appBar: appBarWidget(context, titles[watch.index]),
@@ -46,15 +50,24 @@ class PricipalPageScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0XFF131313),
         //shape: CircleBorder(), Boton circular
-          onPressed: () {
-            // Navegar a la pantalla de agregar contraseña
-            Navigator.pushNamed(context, '/new_Password_Screen');
-
+          onPressed: () async {
+            if (watch.index == 1) { // 1 es el índice de la pantalla de notas
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AddNoteScreen()),
+            );
+            if (result == true) {
+              // Actualizar la lista de notas si es necesario
+            }
+          } else {
+            // Puedes agregar aquí una acción diferente para otras pantallas
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Acción no disponible en esta pantalla')),
+            );
+          }
           },
           child: Icon(Icons.add, size: 30.0),
       ),
     );
   }
-  
-  AllPasswordsScreen() {}
 }

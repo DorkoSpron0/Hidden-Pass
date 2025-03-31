@@ -1,9 +1,25 @@
+import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
+import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
+import 'package:hidden_pass/UI/SCREENS/user_login_screen.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/register_password_screen.dart';
+import 'package:provider/provider.dart';
 
 class RegisterAvatar extends StatefulWidget {
-  const RegisterAvatar({super.key});
+  final String email;
+  final String password;
+  final String username;
+
+  const RegisterAvatar({
+    super.key,
+    required this.email,
+    required this.password,
+    required this.username,
+  });
 
   @override
   _RegisterAvatarState createState() => _RegisterAvatarState();
@@ -25,7 +41,6 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
     setState(() {
       _selectedAvatar = avatarPath;
     });
-    Navigator.pop(context);
   }
 
   void _showAvatarSelection() {
@@ -58,6 +73,55 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
         );
       },
     );
+  }
+
+  void sendData() async {
+    var url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/users/register'); // Asegúrate de que la URL esté bien
+
+  // http://10.0.2.2:8081/api/v1/hidden_pass/users/register
+    // Crear el cuerpo de la solicitud
+    var body = json.encode({
+      'username': widget.username,
+      'email': widget.email,
+      'master_password': widget.password,
+      'url_image': _selectedAvatar, // Añadir la imagen seleccionada al cuerpo de la solicitud
+    });
+
+    // Realizar la solicitud POST
+    var response = await http.post(
+      url,
+      body: body,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    print(body);
+
+    if (response.statusCode == 201) {
+
+      // context.read<TokenAuthProvider>().setToken(token: response.body);
+      
+      // void decodificarToken(String token) {
+      //   try {
+      //     final jwt = JWT.decode(token);
+      //     print("Payload del JWT: ${jwt.payload}");
+      //     final sub = jwt.payload['sub'];
+      //     print('ID de usuario almacenado: $sub');
+      //     context.read<IdUserProvider>().setidUser(idUser: sub);
+      //   } catch (e) {
+      //     print("Error al decodificar el JWT: $e");
+      //   }
+      // }
+
+      // decodificarToken(response.body);
+      // var data = json.decode(response.body); // Decodifica la respuesta del servidor
+      // print('Datos enviados y recibidos: $data');
+      print('codigo: ${response.statusCode}');
+      print('Cuerpo de la respuesta: ${response.body}');
+
+    } else {
+      print('Error en la solicitud: ${response.statusCode}');
+      print('Cuerpo de la respuesta: ${response.body}'); // Imprimir el cuerpo de la respuesta para depuración
+    }
   }
 
   @override
@@ -115,7 +179,16 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
                   iconSize: iconSize,
                   icon: Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterPassword()));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RegisterPassword(
+                          email: widget.email,
+                          password: widget.password,
+                          username: widget.username,
+                        ),
+                      ),
+                    );
                   },
                 ),
               ),
@@ -133,18 +206,19 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
                   child: IconButton(
                     iconSize: iconSize,
                     icon: Icon(Icons.arrow_forward, color: Colors.white),
-                    onPressed: () {
-                      if (_selectedAvatar != null) {
-                        Navigator.push(
+                    onPressed: (){
+                      if (_selectedAvatar == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Debes selccionar un avatar para poder avanzar")));
+                      } else{
+                      Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const PricipalPageScreen()),
+                          MaterialPageRoute(
+                            builder: (context) => UserLogin(),
+                          ),
                         );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Por favor, elige un avatar antes de continuar")),
-                        );
-                      }
-                    },
+                      sendData();
+                    }
+                    }
                   ),
                 ),
               ),
