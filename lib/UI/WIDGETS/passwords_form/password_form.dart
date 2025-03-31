@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
+
+
 
 class PasswordForm extends StatefulWidget {
   const PasswordForm({Key? key}) : super(key: key);
@@ -6,6 +9,7 @@ class PasswordForm extends StatefulWidget {
   @override
   State<PasswordForm> createState() => _PasswordFormState();
 }
+
 
 class _PasswordFormState extends State<PasswordForm> {
 
@@ -20,13 +24,18 @@ class _PasswordFormState extends State<PasswordForm> {
 
   @override
   Widget build(BuildContext context) {
+  
+    final focusNode = FocusNode();
+
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(18.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start, 
         children: <Widget>[
           const Text('Nombre', style: TextStyle(color: Colors.white)), 
         TextFormField(
+          onTapOutside: (event) {focusNode.unfocus();},
+          focusNode:focusNode,
           style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
             border: OutlineInputBorder(
@@ -37,19 +46,21 @@ class _PasswordFormState extends State<PasswordForm> {
             hintStyle: const TextStyle(color: Colors.grey),
             filled: true,
             fillColor: const Color(0xFF575757),
+            
 
           ),
         ),
 
           const Text('Sitio web', style: TextStyle(color: Colors.white)),
           TextFormField(
+            onTapOutside: (event) {focusNode.unfocus();},
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
                 borderSide: const BorderSide(color: Colors.white),
               ),
-              hintText: 'Netflix/Disney.com',
+              hintText: 'Ingresa el URL de la pagina',
               hintStyle: const TextStyle(color: Colors.grey), 
               filled: true,
               fillColor: const Color(0xFF575757),
@@ -58,6 +69,7 @@ class _PasswordFormState extends State<PasswordForm> {
           const SizedBox(height: 16.0),
           const Text('Email', style: TextStyle(color: Colors.white)),
           TextFormField(
+            onTapOutside: (event) {focusNode.unfocus();},
             style: const TextStyle(color: Colors.white),
             
             decoration: InputDecoration(
@@ -79,6 +91,7 @@ class _PasswordFormState extends State<PasswordForm> {
             children: [
               Expanded(
                 child: TextFormField(
+                  onTapOutside: (event) {focusNode.unfocus();},
                   style: const TextStyle(color: Colors.white),
                   obscureText: !_showPassword,
                   decoration: InputDecoration(
@@ -105,8 +118,8 @@ class _PasswordFormState extends State<PasswordForm> {
             ],
           ),
 
-          const SizedBox(height: 16),
-          const Text('Tamaño', style: TextStyle(color: Colors.white)),
+          const SizedBox(height: 18),
+          const Text('Caracteres', style: TextStyle(color: Colors.white)),
           Slider(
             value: _sliderValue,
             min: 8,
@@ -176,11 +189,20 @@ class _PasswordFormState extends State<PasswordForm> {
               ]),
             ],
           ),
-          
-          const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () {
               // Acción al guardar
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue, 
+              minimumSize: const Size.fromHeight(50), 
+            ),
+            child: const Text('Generar contraseña', style: TextStyle(color: Colors.white)),
+          ),
+          const SizedBox(height: 32),
+          ElevatedButton(
+            onPressed: () {
+              // Acción al generar contraseña
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue, 

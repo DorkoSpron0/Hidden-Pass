@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/UI/PROVIDERS/navigation_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/notes_list_screen.dart';
-import 'package:hidden_pass/UI/SCREENS/all_passwords_list_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/settings_screen.dart';
 import 'package:hidden_pass/UI/WIDGETS/appbar_widget.dart';
 import 'package:hidden_pass/UI/WIDGETS/bottom_navigation_bar.dart';
