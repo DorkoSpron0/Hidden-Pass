@@ -1,5 +1,6 @@
-# hidden_pass
+# HIDDEN PASS
 
+## ¿Que es Hidden Pass?
 Esta idea nace tras ver el mal manejo que tienen las personas con sus contraseñas, 
 usando la misma en varias paginas web, careciendo de cambios periodicos con el 
 paso del tiempo, con caracteres sencillos (como 1234a etc) sin tener en cuenta la 
@@ -14,6 +15,7 @@ con aplicativos nativos para PC y dispositivos móviles que se pueden sincroniza
 contando también con gestión de notas seguras y posibilidad de rellenado automático 
 al iniciar sesión.
 
+## Nuestros planes
 A largo plazo buscamos aportar más funcionalidades que crean aún mas valor a 
 nuestra aplicación, funcionalidades como monitor de filtraciones, funcionalidad con la 
 que podrás ver si alguna de tus cuentas ha tenido alguna filtración y te sugerirá

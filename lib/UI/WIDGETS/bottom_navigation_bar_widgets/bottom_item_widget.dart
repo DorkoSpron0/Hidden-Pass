@@ -16,6 +16,7 @@ class BottomItemWidget extends StatelessWidget {
       child: IconButton(
         onPressed: () {
           context.read<NavigationProvider>().setNavigationIndex(index: index);
+          
         },
         icon: Icon(
           icon,

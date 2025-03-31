@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/navigation_provider.dart';
+import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
+import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'dart:async';
 
-import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
+import 'package:hidden_pass/UI/SCREENS/register_screen.dart';
+import 'package:hidden_pass/UI/SCREENS/user_login_screen.dart';
 import 'package:hidden_pass/UI/UTILS/theme_data.dart';
 import 'package:provider/provider.dart'; // Para usar Timer
 
@@ -18,7 +22,15 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider<NavigationProvider>(
-              create: (_) => NavigationProvider())
+              create: (_) => NavigationProvider()),
+
+          ChangeNotifierProvider<TokenAuthProvider>(
+            create: (_) => TokenAuthProvider()),
+
+          ChangeNotifierProvider<IdUserProvider>(
+            create: (_) => IdUserProvider(),
+          ),
+ 
         ],
         builder: (context, _) {
           return MaterialApp(
@@ -83,18 +95,12 @@ class HomeScreen extends StatelessWidget {
             width: 346,
             height: 361,
           ),
-          // Text(
-          //   'HIDDEN PASS',
-          //   style: TextStyle(fontSize: 50,
-          //   fontWeight: FontWeight.bold,
-          //   color: Colors.white),
-          // ),
-          // espacio entre el boton y el texto
+          
           SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()));
+                  MaterialPageRoute(builder: (context) => RegisterScreen()));
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xff5d5d5d),
@@ -115,37 +121,31 @@ class HomeScreen extends StatelessWidget {
               side: BorderSide(color: Color(0xff5d5d5d), width: 2),
             ),
             onPressed: () {
-              //Luego pongo la accion
+              // Navegar a la pantalla de login
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => UserLogin()));
             },
             child: Text(
               'Ya tengo una cuenta',
               style: TextStyle(color: Colors.white),
             ),
           ),
+          SizedBox(height: 20),
+          InkWell(
+            child: Text(
+            'Ingresar sin iniciar sesion',
+            style: TextStyle(color: Colors.grey),
+          ),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const PricipalPageScreen()),
+          ),
+          )
+          
         ],
       )),
     );
   }
 }
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.forward),
-        onPressed: () => Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => PricipalPageScreen()),
-          (Route<dynamic> route) => false, // Elimina todas las pantallas anteriores (No puede retroceder)
-        ),
-      ),
-      body: Center(
-        child: Text(
-          'Esta será la pantalla donde irá el login',
-        ),
-      ),
-    );
-  }
-}
+
