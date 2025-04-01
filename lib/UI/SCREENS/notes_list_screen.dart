@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/DOMAIN/HIVE/NoteHiveObject.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/WIDGETS/notes_widgets/note_item_widget.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
@@ -21,7 +23,20 @@ class _NotesListScreenState extends State<NotesListScreen> {
 
     if (token == null || token.isEmpty) {
       // Si no hay token, no hacemos nada, o esperamos para Hive de nicky
+      final box = Hive.box<NoteHiveObject>('notes');
+      final notas = box.values.toList();
+
       setState(() {
+
+        notesList = notas.map((noteData) {
+          return {
+            'priorityName': noteData.priorityName ?? '',
+            'title': noteData.title.toString() ?? '',
+            'description': noteData.description.toString() ?? '',
+          };
+        }).toList();
+
+
         isLoading = false;
       });
       return;

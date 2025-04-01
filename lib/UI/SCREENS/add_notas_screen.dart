@@ -39,23 +39,42 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
     final token = context.read<TokenAuthProvider>().token;
     final url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/notes/$userId');
 
+
     if (token == null || token.isEmpty) {
 
+      Future<bool> tituloExiste(String title) async {
+        return box.values.any((note) => note.title == title);
+      }
+
       try{
-        final newNote = NoteHiveObject(
-            note.priorityName,
-            note.title,
-            note.description
-        );
 
-        box.add(newNote);
+        Future<void> agregarObjetoUnico() async {
+          if (!await tituloExiste(note.title)) {
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PricipalPageScreen(),
-          ),
-        );
+            final newNote = NoteHiveObject(
+                note.priorityName,
+                note.title,
+                note.description
+            );
+
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PricipalPageScreen(),
+              ),
+            );
+
+            box.put(newNote.title, newNote);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('El titulo debe ser único')),
+            );
+          }
+        }
+
+        agregarObjetoUnico();
+
+
       }catch(e){
         print(e.toString());
       }
