@@ -33,13 +33,9 @@ class NoteItemWidget extends StatelessWidget {
       Future<bool> tituloExiste(String title) async {
         return box.values.any((note) => note.title == title);
       }
-
-      print(await tituloExiste(title));
       
       if(await tituloExiste(title) == true){
-        print("SERÁ ELIMINADA");
         box.delete(title);
-        // hive de nicky
       }
       
     } else {

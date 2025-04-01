@@ -3,9 +3,12 @@ import 'package:hidden_pass/DOMAIN/MODELS/notes_model.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
+
+import '../../DOMAIN/HIVE/NoteHiveObject.dart';
 
 class EditNotesScreen extends StatefulWidget {
   final String title;
@@ -29,7 +32,7 @@ class EditNotesScreen extends StatefulWidget {
 class _EditNotesScreenState extends State<EditNotesScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _bodyController = TextEditingController();
-  String? _selectedPriority; 
+  String? _selectedPriority;
 
   @override
   void initState() {
@@ -45,45 +48,69 @@ class _EditNotesScreenState extends State<EditNotesScreen> {
     }
   }
 
-  void EditNote(BuildContext context) async {
+  void EditNote(BuildContext context, NoteModel note) async {
     final token = context.read<TokenAuthProvider>().token;
+    final box = Hive.box<NoteHiveObject>('notes');
 
     if (token == null || token.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Token no disponible')));
-      return;
-    }
 
-    final url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/notes/${widget.idNote}');
-    try {
-      var body = json.encode({
-        'priorityName': _selectedPriority,
-        'title': _titleController.text,
-        'description': _bodyController.text
-      });
+      Future<bool> tituloExiste(String title) async {
+        return box.values.any((note) => note.title == title);
+      }
 
-      final response = await http.put(
-        url,
-        body: body,
-        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
-      );
+      if(await tituloExiste(widget.title)){
+        box.delete(widget.title);
 
-      if (response.statusCode == 200) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PricipalPageScreen(),
-          ),
+        NoteHiveObject newNote = new NoteHiveObject(
+            note.priorityName,
+            note.title,
+            note.description
         );
-      } else {
+
+        box.put(note.title, newNote);
+      }
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PricipalPageScreen(),
+        ),
+      );
+    }else{
+      final url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/notes/${widget.idNote}');
+      try {
+        var body = json.encode({
+          'priorityName': _selectedPriority,
+          'title': _titleController.text,
+          'description': _bodyController.text
+        });
+
+        final response = await http.put(
+          url,
+          body: body,
+          headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
+        );
+
+        if (response.statusCode == 200) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PricipalPageScreen(),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error al modificar la nota: ${response.statusCode}')),
+          );
+        }
+      } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al modificar la nota: ${response.statusCode}')),
+          SnackBar(content: Text('Error: $e')),
         );
       }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
     }
+
+
   }
 
   @override
@@ -227,7 +254,13 @@ class _EditNotesScreenState extends State<EditNotesScreen> {
                 child: FloatingActionButton(
                   onPressed: () {
                     if (_selectedPriority != null) {
-                      EditNote(context);
+                      NoteModel note = new NoteModel(
+                          _selectedPriority!,
+                          _titleController.text,
+                          _bodyController.text
+                      );
+
+                      EditNote(context, note);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Por favor, selecciona una prioridad')),
