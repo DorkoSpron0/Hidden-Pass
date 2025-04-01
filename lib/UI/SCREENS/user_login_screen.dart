@@ -15,10 +15,10 @@ class UserLogin extends StatefulWidget {
   const UserLogin({super.key});
 
   @override
-  _RegisterMailState createState() => _RegisterMailState();
+  _UserLoginState createState() => _UserLoginState();
 }
 
-class _RegisterMailState extends State<UserLogin> {
+class _UserLoginState extends State<UserLogin> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscureText = true;
@@ -27,11 +27,9 @@ class _RegisterMailState extends State<UserLogin> {
   void sendData(String email, String password) async {
     var url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/users/login'); 
 
-    // http://10.0.2.2:8081/api/v1/hidden_pass/users/register
-    // Crear el cuerpo de la solicitud
     var body = json.encode({
-      'email': email,
-      'master_password': password
+      'email': email.trim(),
+      'master_password': password.trim(),
     });
 
     // Realizar la solicitud POST
@@ -40,16 +38,16 @@ class _RegisterMailState extends State<UserLogin> {
       body: body,
       headers: {'Content-Type': 'application/json'},
     );
+    
     if (response.statusCode == 200) {
-      
+      // Asignar el token a través del provider
       context.read<TokenAuthProvider>().setToken(token: response.body);
-      
+
+      // Decodificar el token y obtener el ID del usuario
       void decodificarToken(String token) {
         try {
           final jwt = JWT.decode(token);
-          print("Payload del JWT: ${jwt.payload}");
-          final sub = jwt.payload['sub'];
-          print('ID de usuario almacenado: $sub');
+          final sub = jwt.payload['sub'];  // ID del usuario desde el payload
           context.read<IdUserProvider>().setidUser(idUser: sub);
         } catch (e) {
           print("Error al decodificar el JWT: $e");
@@ -58,16 +56,15 @@ class _RegisterMailState extends State<UserLogin> {
 
       decodificarToken(response.body);
 
-      
+      // Redirigir a la pantalla principal
       Navigator.push(
         context,
-        MaterialPageRoute(
-            builder: (context) => const PricipalPageScreen())
+        MaterialPageRoute(builder: (context) => const PricipalPageScreen())
       );
 
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("credenciales incorrectas")));
+          const SnackBar(content: Text("Credenciales incorrectas")));
     }
   }
 

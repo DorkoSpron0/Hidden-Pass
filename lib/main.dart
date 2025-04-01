@@ -1,35 +1,29 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:hidden_pass/DOMAIN/HIVE/ADAPTERS/NoteHiveAdapter.dart';
-import 'package:hidden_pass/DOMAIN/HIVE/NoteHiveObject.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/navigation_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'dart:async';
-
 import 'package:hidden_pass/UI/SCREENS/register_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/user_login_screen.dart';
 import 'package:hidden_pass/UI/UTILS/theme_data.dart';
-import 'package:hive/hive.dart';
 import 'package:provider/provider.dart'; // Para usar Timer
-import 'package:path_provider/path_provider.dart';
+
 
 
 void main() async {
 
-  WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsFlutterBinding.ensureInitialized();
 
-  if (!Platform.isWindows && !Platform.isLinux && !Platform.isMacOS) {
-    final dir = await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-  } else {
-    Hive.init(Directory.current.path);
-  }
+  // if (!Platform.isWindows && !Platform.isLinux && !Platform.isMacOS) {
+  //   final dir = await getApplicationDocumentsDirectory();
+  //   Hive.init(dir.path);
+  // } else {
+  //   Hive.init(Directory.current.path);
+  // }
 
-  Hive.registerAdapter(NoteHiveAdapter());
-  await Hive.openBox<NoteHiveObject>('notes');
+  // Hive.registerAdapter(NoteHiveAdapter());
+  // await Hive.openBox<NoteHiveObject>('notes');
 
   runApp(const MyApp());
 }
@@ -73,8 +67,13 @@ class SplashScreen extends StatefulWidget {
 class SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<TokenAuthProvider>().setToken(token: "");
+      });
+
     super.initState();
-    // Hacemos que la pantalla de inicio cambie después de 3 segundos
+    // Hacemos que la pantalla de inicio cambie después de 2 segundos
     Timer(const Duration(seconds: 2), () {
       // Navegar a la pantalla siguiente
       Navigator.pushReplacement(

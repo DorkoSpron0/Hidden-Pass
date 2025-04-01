@@ -1,103 +1,89 @@
 import 'package:flutter/material.dart';
-import 'package:hidden_pass/DOMAIN/HIVE/NoteHiveObject.dart';
 import 'package:hidden_pass/DOMAIN/MODELS/notes_model.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
-import 'package:hidden_pass/UI/SCREENS/notes_list_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
-import 'package:hidden_pass/main.dart';
-import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
 
-class AddNoteScreen extends StatefulWidget {
+class EditNotesScreen extends StatefulWidget {
+  final String title;
+  final String description;
+  final String priorityName;
+  final String idNote;
+  final bool isEditable;
+
+  EditNotesScreen({
+    required this.title,
+    required this.description,
+    required this.idNote,
+    required this.isEditable,
+    required this.priorityName,
+  });
+
   @override
-  _AddNoteScreenState createState() => _AddNoteScreenState();
+  _EditNotesScreenState createState() => _EditNotesScreenState();
 }
 
-class _AddNoteScreenState extends State<AddNoteScreen> {
+class _EditNotesScreenState extends State<EditNotesScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _bodyController = TextEditingController();
-  String _selectedPriority = 'BAJA';
-
-  late Box<NoteHiveObject> box;
+  String? _selectedPriority; 
 
   @override
   void initState() {
     super.initState();
-    _openBox(); // Abre la caja al inicializar el widget
+    _titleController.text = widget.title;
+    _bodyController.text = widget.description;
+
+    if (<String>['BAJA', 'MEDIA', 'ALTA', 'CRITICA'].contains(widget.priorityName)) {
+      _selectedPriority = widget.priorityName;
+    } else {
+      _selectedPriority = null; 
+      
+    }
   }
 
-  Future<void> _openBox() async {
-    box = await Hive.openBox<NoteHiveObject>('notes');
-  }
-
-
-  void addNote(NoteModel note) async {
-    final userId = context.read<IdUserProvider>().idUser;
+  void EditNote(BuildContext context) async {
     final token = context.read<TokenAuthProvider>().token;
-    final url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/notes/$userId');
 
     if (token == null || token.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Token no disponible')));
+      return;
+    }
 
-      try{
-        final newNote = NoteHiveObject(
-            note.priorityName,
-            note.title,
-            note.description
-        );
+    final url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/notes/${widget.idNote}');
+    try {
+      var body = json.encode({
+        'priorityName': _selectedPriority,
+        'title': _titleController.text,
+        'description': _bodyController.text
+      });
 
-        box.add(newNote);
+      final response = await http.put(
+        url,
+        body: body,
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
+      );
 
+      if (response.statusCode == 200) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => PricipalPageScreen(),
           ),
         );
-      }catch(e){
-        print(e.toString());
-      }
-    }else{
-      try {
-
-        final response = await http.post(
-          url,
-          headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
-          body: jsonEncode({
-            'priorityName': note.priorityName,
-            'title': note.title,
-            'description': note.description,
-          }),
-        );
-
-        print("Response status: ${response.statusCode}");
-        print("Response body: ${response.body}");
-        print(response.statusCode);
-
-        if (response.statusCode == 200) {
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PricipalPageScreen(),
-            ),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error al crear la nota: ${response.statusCode}')),
-          );
-        }
-      } catch (e) {
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Ingresar solo la cantidad de carecteres permitidas: $e')),
+          SnackBar(content: Text('Error al modificar la nota: ${response.statusCode}')),
         );
-        print('Error: $e');
-        print('token: $token');
       }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
     }
-
   }
 
   @override
@@ -120,7 +106,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                       SizedBox(
                         width: containerWidth,
                         child: Text(
-                          "Agregar nota",
+                          "Editar nota",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: isSmallScreen ? 20 : 28,
@@ -136,12 +122,12 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                           style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             labelText: 'Título',
-                            labelStyle: TextStyle(color: Colors.white), 
+                            labelStyle: TextStyle(color: Colors.white),
                             border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white), 
+                              borderSide: BorderSide(color: Colors.white),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white), 
+                              borderSide: BorderSide(color: Colors.white),
                             ),
                           ),
                           textAlign: TextAlign.center,
@@ -153,39 +139,28 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                         height: MediaQuery.of(context).size.height * 0.2,
                         child: TextField(
                           controller: _bodyController,
-                          style: TextStyle(color: Colors.white), 
+                          style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             labelText: 'Cuerpo',
-                            labelStyle: TextStyle(color: Colors.white), 
+                            labelStyle: TextStyle(color: Colors.white),
                             border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white), 
+                              borderSide: BorderSide(color: Colors.white),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white), 
+                              borderSide: BorderSide(color: Colors.white),
                             ),
-
-                            counterText: "", // agrego un contador de texto para saber cuantos caracteres tiene y puede ingresar
-
+                            counterText: "",
                           ),
-
                           maxLines: null,
                           expands: true,
                           maxLength: 255,
-
-                          onChanged: (text){
-                            setState(() {}); // esto refresca el widget y asi actualiza el contador
-                          },
-
                           textAlign: TextAlign.start,
                         ),
                       ),
                       SizedBox(height: 20),
                       Text(
-                        '${_bodyController.text.length} / 255 caracteres', // Muestra la cantidad de caracteres
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
+                        '${_bodyController.text.length} / 255 caracteres',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                       SizedBox(
                         width: constraints.maxWidth * 0.8,
@@ -193,37 +168,37 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                           value: _selectedPriority,
                           onChanged: (String? newValue) {
                             setState(() {
-                              _selectedPriority = newValue!;
+                              _selectedPriority = newValue;
                             });
                           },
-                          items: ['BAJA', 'MEDIA', 'ALTA', 'CRITICA']
+                          items: const <String>['BAJA', 'MEDIA', 'ALTA', 'CRITICA']
                               .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(
-                                value,  
-                                style: TextStyle(
+                                value,
+                                style: const TextStyle(
                                   fontSize: 18,
-                                  color: Colors.white, 
+                                  color: Colors.white,
                                 ),
                               ),
                             );
                           }).toList(),
-                          decoration: InputDecoration(
-                            labelText: 'Prioridad',  
+                          decoration: const InputDecoration(
+                            labelText: 'Prioridad',
                             labelStyle: TextStyle(
-                              fontSize: 20, 
-                              fontWeight: FontWeight.bold, 
-                              color: Colors.white, 
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                             border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white), 
+                              borderSide: BorderSide(color: Colors.white),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white), 
+                              borderSide: BorderSide(color: Colors.white),
                             ),
                           ),
-                          dropdownColor: const Color.fromARGB(255, 53, 53, 53), 
+                          dropdownColor: const Color.fromARGB(255, 53, 53, 53),
                         ),
                       ),
                     ],
@@ -235,14 +210,14 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                 left: 20,
                 child: IconButton(
                   iconSize: 36,
-                  icon: Icon(Icons.arrow_back),
+                  icon: const Icon(Icons.arrow_back),
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => PricipalPageScreen(),
                       ),
-                    ); 
+                    );
                   },
                 ),
               ),
@@ -251,19 +226,15 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                 right: 20,
                 child: FloatingActionButton(
                   onPressed: () {
-                    String priorityName = _selectedPriority;
-                    String title = _titleController.text;
-                    String description = _bodyController.text;
-
-                    final note = NoteModel(
-                      priorityName,
-                      title,
-                      description,
-                    );
-
-                    addNote(note);
+                    if (_selectedPriority != null) {
+                      EditNote(context);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Por favor, selecciona una prioridad')),
+                      );
+                    }
                   },
-                  child: Icon(Icons.arrow_forward),
+                  child: const Icon(Icons.arrow_forward),
                 ),
               ),
             ],
