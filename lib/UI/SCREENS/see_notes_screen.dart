@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:hidden_pass/DOMAIN/MODELS/notes_model.dart';
 
 class NoteDetailsScreen extends StatelessWidget {
-  final NoteModel note;
+  final String title;
+  final String description;
+  final String idNote;
+  final bool isEditable;
 
-  NoteDetailsScreen({required this.note});
+  NoteDetailsScreen({required this.title, required this.description, required this.idNote, required this.isEditable});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +42,7 @@ class NoteDetailsScreen extends StatelessWidget {
                         width: constraints.maxWidth * 0.8,
                         child: TextField(
                           readOnly: true,
-                          controller: TextEditingController(text: note.title),
+                          controller: TextEditingController(text: title),
                           decoration: InputDecoration(
                             labelText: 'Título',
                             labelStyle: TextStyle(color: Colors.white),
@@ -60,7 +63,7 @@ class NoteDetailsScreen extends StatelessWidget {
                         height: MediaQuery.of(context).size.height * 0.2,
                         child: TextField(
                           readOnly: true,
-                          controller: TextEditingController(text: note.description),
+                          controller: TextEditingController(text: description),
                           decoration: InputDecoration(
                             labelText: 'Cuerpo',
                             labelStyle: TextStyle(color: Colors.white),
