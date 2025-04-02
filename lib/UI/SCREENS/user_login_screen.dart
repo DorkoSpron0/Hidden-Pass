@@ -3,7 +3,6 @@ import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/recover_password_screen.dart';
-import 'package:hidden_pass/UI/SCREENS/register_screen.dart';
 import 'package:hidden_pass/main.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -25,7 +24,7 @@ class _RegisterMailState extends State<UserLogin> {
   bool _isLoadingForgotPassword = false; // Nuevo estado para el loader
 
   void sendData(String email, String password) async {
-    var url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/users/login'); 
+    var url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/users/login'); 
 
     // http://10.0.2.2:8081/api/v1/hidden_pass/users/register
     // Crear el cuerpo de la solicitud

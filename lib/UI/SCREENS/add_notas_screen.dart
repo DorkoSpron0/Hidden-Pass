@@ -28,7 +28,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
     final token = context.read<TokenAuthProvider>().token;
     final url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/notes/$userId');
 
-    if (token == null || token.isEmpty) {
+    if (token.isEmpty) {
 
       try{
         final newNote = NoteHiveObject(

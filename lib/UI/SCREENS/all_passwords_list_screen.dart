@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hidden_pass/UI/WIDGETS/passwords_form/password_form.dart';
-import 'package:hidden_pass/UI/UTILS/theme_data.dart'; 
+import 'package:hidden_pass/UI/UTILS/theme_data.dart';
+
+import '../WIDGETS/password_list_widgets/all_passwords_list.dart';
+
 
 void main() => runApp(const AllPasswordsListScreen());
 
@@ -22,24 +24,12 @@ class AllPasswordsListScreen extends StatelessWidget {
               Navigator.pop(context); // Regresa a la pantalla (Supongo menu?)anterior
             },
           ),
-          title: const Text('Nueva contraseña'),
+          title: const Text('Tus Contraseñas'),
           titleTextStyle: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                
-                print("Guardar presionado");
-              },
-              style: ElevatedButton.styleFrom(
-                shape: const CircleBorder(),
-                padding: const EdgeInsets.all(8),
-              ),
-              child: const Text("Guardar"),
-            ),
-          ],
+          actions: <Widget>[],
         ),
-        body: const Center( 
-          child: PasswordForm(),
+        body: Center( 
+          child: PasswordListWidget(),
         ),
       ),
     );

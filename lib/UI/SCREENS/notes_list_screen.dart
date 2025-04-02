@@ -22,7 +22,7 @@ class _NotesListScreenState extends State<NotesListScreen> {
     final userId = context.read<IdUserProvider>().idUser;
     final token = context.read<TokenAuthProvider>().token;
 
-    if (token == null || token.isEmpty) {
+    if (token.isEmpty) {
 
       final box = Hive.box<NoteHiveObject>('notes');
       final notes = box.values.toList();
@@ -81,7 +81,7 @@ class _NotesListScreenState extends State<NotesListScreen> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final horizontalPadding = 16.0;
+    const horizontalPadding = 16.0;
     return Scaffold(
       body: isLoading
           ? Center(child: CircularProgressIndicator())

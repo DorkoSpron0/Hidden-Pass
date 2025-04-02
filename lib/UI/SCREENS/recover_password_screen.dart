@@ -1,10 +1,7 @@
 import 'dart:convert';
-import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
+import 'package:hidden_pass/UI/SCREENS/new_password_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:hidden_pass/UI/SCREENS/new_password_screen.dart';
-import 'package:hidden_pass/UI/SCREENS/register_mail_screen.dart';
-import 'package:hidden_pass/UI/SCREENS/register_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/user_login_screen.dart';
 
 class CodigoVerificacion extends StatefulWidget {
