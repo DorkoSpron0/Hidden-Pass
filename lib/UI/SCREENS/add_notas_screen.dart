@@ -21,30 +21,60 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
   final TextEditingController _bodyController = TextEditingController();
   String _selectedPriority = 'BAJA';
 
-  final box = Hive.box<NoteHiveObject>('notes');
+  late Box<NoteHiveObject> box;
+
+  @override
+  void initState() {
+    super.initState();
+    _openBox(); // Abre la caja al inicializar el widget
+  }
+
+  Future<void> _openBox() async {
+    box = await Hive.openBox<NoteHiveObject>('notes');
+  }
+
 
   void addNote(NoteModel note) async {
     final userId = context.read<IdUserProvider>().idUser;
     final token = context.read<TokenAuthProvider>().token;
     final url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/notes/$userId');
 
+
     if (token == null || token.isEmpty) {
 
+      Future<bool> tituloExiste(String title) async {
+        return box.values.any((note) => note.title == title);
+      }
+
       try{
-        final newNote = NoteHiveObject(
-            note.priorityName,
-            note.title,
-            note.description
-        );
 
-        box.add(newNote);
+        Future<void> agregarObjetoUnico() async {
+          if (!await tituloExiste(note.title)) {
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PricipalPageScreen(),
-          ),
-        );
+            final newNote = NoteHiveObject(
+                note.priorityName,
+                note.title,
+                note.description
+            );
+
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PricipalPageScreen(),
+              ),
+            );
+
+            box.put(newNote.title, newNote);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('El titulo debe ser único')),
+            );
+          }
+        }
+
+        agregarObjetoUnico();
+
+
       }catch(e){
         print(e.toString());
       }
@@ -80,7 +110,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('en el proceso: $e')),
+          SnackBar(content: Text('Ingresar solo la cantidad de carecteres permitidas: $e')),
         );
         print('Error: $e');
         print('token: $token');
@@ -152,13 +182,30 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.white), 
                             ),
+
+                            counterText: "", // agrego un contador de texto para saber cuantos caracteres tiene y puede ingresar
+
                           ),
+
                           maxLines: null,
                           expands: true,
+                          maxLength: 255,
+
+                          onChanged: (text){
+                            setState(() {}); // esto refresca el widget y asi actualiza el contador
+                          },
+
                           textAlign: TextAlign.start,
                         ),
                       ),
                       SizedBox(height: 20),
+                      Text(
+                        '${_bodyController.text.length} / 255 caracteres', // Muestra la cantidad de caracteres
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
                       SizedBox(
                         width: constraints.maxWidth * 0.8,
                         child: DropdownButtonFormField<String>(
