@@ -37,7 +37,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
   void addNote(NoteModel note) async {
     final userId = context.read<IdUserProvider>().idUser;
     final token = context.read<TokenAuthProvider>().token;
-    final url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/notes/$userId');
+    final url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/notes/$userId');
 
 
     if (token == null || token.isEmpty) {

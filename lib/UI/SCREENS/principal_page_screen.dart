@@ -16,7 +16,7 @@ class PricipalPageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     NavigationProvider watch =
-        context.watch<NavigationProvider>(); // get Navigation GlobalIndex
+        context.watch<NavigationProvider>();
     TokenAuthProvider watchAuth = context.watch<TokenAuthProvider>();
 
     final List<Widget> pages = [
@@ -42,7 +42,7 @@ class PricipalPageScreen extends StatelessWidget {
               );
             },
             child: IndexedStack(
-              // Indexed stack para que no recargue cada vez que se navega
+             
               key: ValueKey(watch.index),
               index: watch.index,
               children: pages,
@@ -53,7 +53,7 @@ class PricipalPageScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBarWidget(),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0XFF131313),
-        //shape: CircleBorder(), Boton circular
+        shape: CircleBorder(),
         onPressed: () async {
           if (watch.index == 1) {
             // 1 es el índice de la pantalla de notas

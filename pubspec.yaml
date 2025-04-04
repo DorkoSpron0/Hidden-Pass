@@ -14,6 +14,7 @@ dependencies:
   dart_jsonwebtoken: ^2.9.0
   english_words: ^4.0.0
   provider: ^6.1.2
+  url_launcher: ^6.0.20
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   path_provider: ^2.1.2

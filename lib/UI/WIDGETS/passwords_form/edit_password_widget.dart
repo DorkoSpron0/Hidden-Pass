@@ -1,21 +1,38 @@
 import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/DOMAIN/MODELS/password_options.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
-import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
-import 'dart:math';
-import 'package:http/http.dart' as http;
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
+import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
+import 'package:hidden_pass/UI/WIDGETS/passwords_form/password_form.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
-class PasswordForm extends StatefulWidget {
-  const PasswordForm({Key? key}) : super(key: key);
+class EditPasswordWidget extends StatefulWidget {
+  final String id;
+  final String nombre;
+  final String description;
+  final String email_user;
+  final String password;
+  final String url;
+
+  const EditPasswordWidget(
+      {Key? key,
+      required this.nombre,
+      required this.description,
+      required this.email_user,
+      required this.password,
+      required this.url,
+      required this.id})
+      : super(key: key);
 
   @override
-  State<PasswordForm> createState() => _PasswordFormState();
+  _PasswordFormState createState() => _PasswordFormState();
 }
 
-class _PasswordFormState extends State<PasswordForm> {
+class _PasswordFormState extends State<EditPasswordWidget> {
   PasswordOptions options = PasswordOptions();
   bool _showPassword = false;
   String _generatedPassword = '';
@@ -25,22 +42,28 @@ class _PasswordFormState extends State<PasswordForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  final FocusNode _accountNameFocus = FocusNode();
-  final FocusNode _descriptionFocus = FocusNode();
-  final FocusNode _urlFocus = FocusNode();
-  final FocusNode _emailFocus = FocusNode();
+  @override
+  void initState() {
+    super.initState();
+    _accountNameController.text = widget.nombre;
+    _descriptionController.text = widget.description;
+    _urlController.text = widget.url;
+    _emailController.text = widget.email_user;
+    _generatedPassword = widget.password;
+  }
 
   void savePassword(String name, String url, String email_user, String password,
       String description, BuildContext context) async {
     final Token = context.read<TokenAuthProvider>().token;
-    final IdUser = context.read<IdUserProvider>().idUser;
+    final id = widget.id;
 
     if (Token.isEmpty) {
       print("Guardar contraseña localmente");
       return;
     } else {
       final Url = Uri.parse(
-          'http://10.0.2.2:8081/api/v1/hidden_pass/passwords/$IdUser');
+          'http://10.0.2.2:8081/api/v1/hidden_pass/passwords/password/$id');
+// http://10.0.2.2:8081/api/v1/hidden_pass/users/register
       var Body = json.encode({
         "name": name,
         "url": url,
@@ -49,7 +72,7 @@ class _PasswordFormState extends State<PasswordForm> {
         "description": description,
       });
 
-      var response = await http.post(Url, body: Body, headers: {
+      var response = await http.put(Url, body: Body, headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $Token'
       });
@@ -65,6 +88,8 @@ class _PasswordFormState extends State<PasswordForm> {
 
   @override
   Widget build(BuildContext context) {
+    final focusNode = FocusNode();
+
     return Padding(
       padding: const EdgeInsets.all(18.0),
       child: Column(
@@ -73,7 +98,7 @@ class _PasswordFormState extends State<PasswordForm> {
           const Text('Nombre', style: TextStyle(color: Colors.white)),
           TextField(
             controller: _accountNameController,
-            focusNode: _accountNameFocus,
+            focusNode: focusNode,
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               border: OutlineInputBorder(
@@ -89,7 +114,10 @@ class _PasswordFormState extends State<PasswordForm> {
           const Text('Descripcion', style: TextStyle(color: Colors.white)),
           TextField(
             controller: _descriptionController,
-            focusNode: _descriptionFocus,
+            onTapOutside: (event) {
+              focusNode.unfocus();
+            },
+            focusNode: focusNode,
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               border: OutlineInputBorder(
@@ -105,7 +133,9 @@ class _PasswordFormState extends State<PasswordForm> {
           const Text('Sitio web', style: TextStyle(color: Colors.white)),
           TextField(
             controller: _urlController,
-            focusNode: _urlFocus,
+            onTapOutside: (event) {
+              focusNode.unfocus();
+            },
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               border: OutlineInputBorder(
@@ -122,7 +152,9 @@ class _PasswordFormState extends State<PasswordForm> {
           const Text('Email', style: TextStyle(color: Colors.white)),
           TextField(
             controller: _emailController,
-            focusNode: _emailFocus,
+            onTapOutside: (event) {
+              focusNode.unfocus();
+            },
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               border: OutlineInputBorder(
@@ -266,7 +298,10 @@ class _PasswordFormState extends State<PasswordForm> {
 
               savePassword(
                   name, url, email_user, password, description, context);
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PricipalPageScreen()));
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PricipalPageScreen()));
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,

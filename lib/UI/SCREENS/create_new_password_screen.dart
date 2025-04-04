@@ -18,7 +18,7 @@ class CreateNewPasswordScreen extends StatelessWidget {
       theme: customThemeData(),
       home: Scaffold(
         appBar: AppBar(
-          leading: IconButton( // Agrega el IconButton aquí
+          leading: IconButton( 
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context); // Regresa a la pantalla (Supongo menu?)anterior

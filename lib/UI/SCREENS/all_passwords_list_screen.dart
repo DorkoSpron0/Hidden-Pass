@@ -4,10 +4,10 @@ import 'package:hidden_pass/UI/UTILS/theme_data.dart';
 import '../WIDGETS/password_list_widgets/all_passwords_list.dart';
 
 
-void main() => runApp(const AllPasswordsListScreen());
+void main() => runApp(const PasswordListScreen());
 
-class AllPasswordsListScreen extends StatelessWidget {
-  const AllPasswordsListScreen({super.key});
+class PasswordListScreen extends StatelessWidget {
+  const PasswordListScreen({super.key});
 
 
   @override

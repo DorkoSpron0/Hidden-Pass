@@ -1,123 +1,170 @@
 import 'package:flutter/material.dart';
-import 'package:hidden_pass/DOMAIN/MODELS/password_model.dart';
-import 'package:hidden_pass/UI/SCREENS/folders_list_screen.dart';
-import 'package:hidden_pass/UI/SCREENS/password_list_screen.dart';
-import 'package:hidden_pass/UI/WIDGETS/password_list_widgets/list_favorite_passwords.dart';
-import 'package:hidden_pass/UI/WIDGETS/password_list_widgets/password_item.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:hidden_pass/DOMAIN/MODELS/all_password_model.dart';
+import 'package:hidden_pass/UI/SCREENS/edit_password_screen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
+import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 
-class PasswordListBodyWidget extends StatelessWidget {
-  const PasswordListBodyWidget({super.key});
+class PasswordListBodyWidget extends StatefulWidget {
+  @override
+  _PasswordListBodyWidgetState createState() => _PasswordListBodyWidgetState();
+}
+
+class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
+  List<AllPasswordModel> passwordList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPasswords();
+  }
+
+  Future<void> fetchPasswords() async {
+    final token = context.read<TokenAuthProvider>().token;
+    final idUser = context.read<IdUserProvider>().idUser;
+
+    if (token == null || token.isEmpty) {
+      print("No token available");
+    } else {
+      final url = Uri.parse(
+          'http://10.0.2.2:8081/api/v1/hidden_pass/passwords/$idUser');
+      final response = await http.get(url, headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      });
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          passwordList =
+              data.map((json) => AllPasswordModel.fromJson(json)).toList();
+        });
+      } else {
+        print("Failed to load passwords: ${response.statusCode}");
+      }
+    }
+  }
+  //me quiero cortar una gueva xd
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
-    final List<PasswordModel> passwordList = [
-      PasswordModel(
-          urlImage: "assets/images/be.png",
-          title: "Behance",
-          email: "nickyflorez09@test.com"),
-      PasswordModel(
-          urlImage: "assets/images/adobe.png",
-          title: "Adobe",
-          email: "manu26@test.com"),
-      PasswordModel(
-          urlImage: "assets/images/photo.png",
-          title: "PhotoShop",
-          email: "test@test.com"),
-      PasswordModel(
-          urlImage: "assets/images/dinsey.png",
-          title: "Disney+",
-          email: "email.test@tesst.com"),
-      PasswordModel(
-          urlImage: "assets/images/netflix.png",
-          title: "Netflix",
-          email: "mene@test.com"),
-      PasswordModel(
-          urlImage: "assets/images/steam.png",
-          title: "Steam",
-          email: "deivi@test.com"),
-      PasswordModel(
-          urlImage: "assets/images/spotify.png",
-          title: "Spotify",
-          email: "yo@test.com"),
-    ];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 30,
-        ),
-        Container(
-            margin: EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  "Tus Carpetas",
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                InkWell(
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FoldersListScreen())),
-                  child: Text(
-                    "Ver todas",
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                )
-              ],
-            )),
-        ListFavoritePasswords(
-          size: size,
-          image: Image.asset('assets/images/adobe.png'),
-          titleCard: "Title",
-          descriptionCard: "Description",
-        ),
-        SizedBox(
-          height: 50,
-        ),
-        Container(
-            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    "Todas tus contraseñas",
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  InkWell(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PasswordListScreen())),
-                    child: Text(
-                      "Ver todas",
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  )
-                ])),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            height: size.height * .3,
-            child: ListView.builder(
-              itemCount: passwordList.length, // tamaño del array
-              scrollDirection: Axis.vertical,
-              itemBuilder: (context, index) => Column(
-                children: [
-                  PasswordItem(
-                    title: passwordList[index].title,
-                    imageURL: passwordList[index].urlImage,
-                    email: passwordList[index].email,
-                  ),
-                  Divider(
-                    color: Color.fromARGB(255, 82, 82, 82),
-                    height: 20.0,
-                  )
-                ],
-              ),
-              shrinkWrap: true,
+    return ListView.builder(
+      itemCount: passwordList.length,
+      itemBuilder: (context, index) {
+        final item = passwordList[index];
+        return Slidable(
+          key: Key(item.id_password),
+          endActionPane: ActionPane(motion: const DrawerMotion(), children: [
+            SlidableAction(
+              onPressed: (context) {
+                deletePassword(context, item.id_password);
+              },
+              icon: Icons.delete,
+              backgroundColor: Colors.red,
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            SlidableAction(
+              onPressed: (context) {
+                editPassword(context, item.id_password,item.name, item.description, item.url,
+                    item.email_user, item.password);
+              },
+              icon: Icons.edit,
+              backgroundColor: Colors.blue,
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+          ]),
+          child: ListTile(
+            leading: CircleAvatar(
+              child: Text(item.name[0], style: TextStyle(color: Colors.white)),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+            ),
+            title:
+                Text(item.name, style: Theme.of(context).textTheme.titleMedium),
+            subtitle: Text(item.email_user,
+                style: Theme.of(context).textTheme.bodySmall),
+            trailing: IconButton(
+              icon: Icon(Icons.copy, color: Colors.grey),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Contraseña copiada al portapapeles')),
+                );
+              },
             ),
           ),
+        );
+      },
+    );
+  }
+
+  Widget slideRightBackground(BuildContext context) {
+    return Container(
+      color: Theme.of(context).colorScheme.secondary,
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(width: 20),
+            Icon(Icons.edit, color: Colors.white),
+            Text(
+              " Editar",
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+              textAlign: TextAlign.left,
+            ),
+          ],
         ),
-      ],
+      ),
+    );
+  }
+
+  Widget slideLeftBackground(BuildContext context) {
+    return Container(
+      color: Theme.of(context).colorScheme.error,
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            Icon(Icons.delete, color: Colors.white),
+            Text(
+              " Eliminar",
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+              textAlign: TextAlign.right,
+            ),
+            SizedBox(width: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void editPassword(BuildContext context, String id,String name, String descripcion,
+      String url, String emailUser, String password) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => EditPasswordScreen(
+                  id_password: id,
+                  nombre: name,
+                  description: descripcion,
+                  email_user: emailUser,
+                  password: password,
+                  url: url,
+                )));
+
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   SnackBar(content: Text('Editar contraseña con id: $id')),
+    // );
+  }
+
+  void deletePassword(BuildContext context, String id) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Contraseña con id: $id eliminada correctamente')),
     );
   }
 }
