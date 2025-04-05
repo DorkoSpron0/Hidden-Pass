@@ -77,7 +77,7 @@ class _EditNotesScreenState extends State<EditNotesScreen> {
         ),
       );
     }else{
-      final url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/notes/${widget.idNote}');
+      final url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/notes/${widget.idNote}');
       try {
         var body = json.encode({
           'priorityName': _selectedPriority,

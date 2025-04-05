@@ -14,12 +14,15 @@ class NoteItemWidget extends StatelessWidget {
   final String description;
   final String idNote;
   final String priorityName;
+  final VoidCallback onDelete;
+
   NoteItemWidget({
     super.key,
     required this.title,
     required this.description,
     required this.idNote, 
-    required this.priorityName, 
+    required this.priorityName,
+    required this.onDelete
   });
 
   // Función para eliminar la nota
@@ -27,19 +30,19 @@ class NoteItemWidget extends StatelessWidget {
     final token = context.read<TokenAuthProvider>().token;
 
     if (token == null || token.isEmpty) {
-      
+
       final box = Hive.box<NoteHiveObject>('notes');
 
       Future<bool> tituloExiste(String title) async {
         return box.values.any((note) => note.title == title);
       }
-      
+
       if(await tituloExiste(title) == true){
         box.delete(title);
       }
-      
+
     } else {
-      final url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/notes/$idNote');
+      final url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/notes/$idNote');
 
       try {
         final response = await http.delete(
@@ -67,10 +70,14 @@ class NoteItemWidget extends StatelessWidget {
       endActionPane: ActionPane(
         motion: const DrawerMotion(),
         children: [
-         
+
           SlidableAction(
             onPressed: (context) {
               deleteNote(context);
+              onDelete();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Nota eliminada correctamente')),
+              );
             },
             icon: Icons.delete,
             backgroundColor: Colors.red,
@@ -102,7 +109,7 @@ class NoteItemWidget extends StatelessWidget {
           Navigator.push(context,
            MaterialPageRoute(builder: (context)=> NoteDetailsScreen(title: title, description: description, idNote: idNote, isEditable: false, ))
            );
-          
+
         },
         child: Container(
           width: double.infinity,

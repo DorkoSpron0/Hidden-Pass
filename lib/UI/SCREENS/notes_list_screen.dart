@@ -99,6 +99,11 @@ class _NotesListScreenState extends State<NotesListScreen> {
                       description: note['description'] as String,
                       idNote: note['id_note'].toString(),
                       priorityName: note['priorityName'] as String,
+                      onDelete: () {
+                        setState(() {
+                          notesList.removeAt(index);
+                        });
+                      },
                     );
                   },
                 ),
