@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/DOMAIN/HIVE/PasswordHiveObject.dart';
 import 'package:hidden_pass/DOMAIN/MODELS/password_options.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:hidden_pass/UI/WIDGETS/passwords_form/password_form.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -57,7 +59,29 @@ class _PasswordFormState extends State<EditPasswordWidget> {
     final Token = context.read<TokenAuthProvider>().token;
     final id = widget.id;
 
+    final box = Hive.box<PasswordHiveObject>('passwords');
+
     if (Token.isEmpty) {
+
+      Future<bool> tituloExiste(String name) async {
+        return box.values.any((password) => password.name == name);
+      }
+
+      if(await tituloExiste(widget.nombre)){
+        box.delete(widget.nombre);
+
+        PasswordHiveObject newPassword = new PasswordHiveObject(
+            name: name,
+          url: url,
+          password: password,
+          email_user: email_user,
+          description: description
+        );
+
+        box.put(name, newPassword);
+      }
+
+
       print("Guardar contraseña localmente");
       return;
     } else {

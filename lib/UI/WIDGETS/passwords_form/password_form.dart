@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/DOMAIN/HIVE/PasswordHiveObject.dart';
 import 'package:hidden_pass/DOMAIN/MODELS/password_options.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
+import 'package:hive/hive.dart';
 import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
@@ -30,14 +32,64 @@ class _PasswordFormState extends State<PasswordForm> {
   final FocusNode _urlFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
 
+  late Box<PasswordHiveObject> box;
+
+  @override
+  void initState() {
+    super.initState();
+    _openBox(); // Abre la caja al inicializar el widget
+  }
+
+  Future<void> _openBox() async {
+    box = await Hive.openBox<PasswordHiveObject>('passwords');
+  }
+
   void savePassword(String name, String url, String email_user, String password,
       String description, BuildContext context) async {
     final Token = context.read<TokenAuthProvider>().token;
     final IdUser = context.read<IdUserProvider>().idUser;
 
+
     if (Token.isEmpty) {
-      print("Guardar contraseña localmente");
-      return;
+
+      Future<bool> tituloExiste(String name) async {
+        return box.values.any((password) => password.name == name);
+      }
+
+      try{
+
+        Future<void> agregarObjetoUnico() async {
+          if (!await tituloExiste(name)) {
+
+            final newPassword = PasswordHiveObject(
+                name: name,
+              description: description,
+              email_user: email_user,
+              password: password,
+              url: url
+            );
+
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PricipalPageScreen(),
+              ),
+            );
+
+            box.put(newPassword.name, newPassword);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('El titulo debe ser único')),
+            );
+          }
+        }
+
+        agregarObjetoUnico();
+
+
+      }catch(e){
+        print(e.toString());
+      }
     } else {
       final Url = Uri.parse(
           'http://10.0.2.2:8081/api/v1/hidden_pass/passwords/$IdUser');
