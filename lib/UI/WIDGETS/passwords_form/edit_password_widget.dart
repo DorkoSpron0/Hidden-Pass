@@ -22,12 +22,12 @@ class EditPasswordWidget extends StatefulWidget {
 
   const EditPasswordWidget(
       {Key? key,
-      required this.nombre,
-      required this.description,
-      required this.email_user,
-      required this.password,
-      required this.url,
-      required this.id})
+        required this.nombre,
+        required this.description,
+        required this.email_user,
+        required this.password,
+        required this.url,
+        required this.id})
       : super(key: key);
 
   @override
@@ -44,6 +44,10 @@ class _PasswordFormState extends State<EditPasswordWidget> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  // Crea un FocusNode para cada campo de texto
+  final FocusNode _accountNameFocusNode = FocusNode();
+  final FocusNode _descriptionFocusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -54,6 +58,14 @@ class _PasswordFormState extends State<EditPasswordWidget> {
     _generatedPassword = widget.password;
   }
 
+  @override
+  void dispose() {
+    // Asegúrate de liberar los FocusNodes cuando el widget se elimine
+    _accountNameFocusNode.dispose();
+    _descriptionFocusNode.dispose();
+    super.dispose();
+  }
+
   void savePassword(String name, String url, String email_user, String password,
       String description, BuildContext context) async {
     final Token = context.read<TokenAuthProvider>().token;
@@ -62,32 +74,28 @@ class _PasswordFormState extends State<EditPasswordWidget> {
     final box = Hive.box<PasswordHiveObject>('passwords');
 
     if (Token.isEmpty) {
-
       Future<bool> tituloExiste(String name) async {
         return box.values.any((password) => password.name == name);
       }
 
-      if(await tituloExiste(widget.nombre)){
+      if (await tituloExiste(widget.nombre)) {
         box.delete(widget.nombre);
 
-        PasswordHiveObject newPassword = new PasswordHiveObject(
+        PasswordHiveObject newPassword = PasswordHiveObject(
             name: name,
-          url: url,
-          password: password,
-          email_user: email_user,
-          description: description
-        );
+            url: url,
+            password: password,
+            email_user: email_user,
+            description: description);
 
         box.put(name, newPassword);
       }
-
 
       print("Guardar contraseña localmente");
       return;
     } else {
       final Url = Uri.parse(
           'http://10.0.2.2:8081/api/v1/hidden_pass/passwords/password/$id');
-// http://10.0.2.2:8081/api/v1/hidden_pass/users/register
       var Body = json.encode({
         "name": name,
         "url": url,
@@ -112,8 +120,6 @@ class _PasswordFormState extends State<EditPasswordWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final focusNode = FocusNode();
-
     return Padding(
       padding: const EdgeInsets.all(18.0),
       child: Column(
@@ -122,7 +128,7 @@ class _PasswordFormState extends State<EditPasswordWidget> {
           const Text('Nombre', style: TextStyle(color: Colors.white)),
           TextField(
             controller: _accountNameController,
-            focusNode: focusNode,
+            focusNode: _accountNameFocusNode, // Asigna el FocusNode correspondiente
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               border: OutlineInputBorder(
@@ -138,10 +144,7 @@ class _PasswordFormState extends State<EditPasswordWidget> {
           const Text('Descripcion', style: TextStyle(color: Colors.white)),
           TextField(
             controller: _descriptionController,
-            onTapOutside: (event) {
-              focusNode.unfocus();
-            },
-            focusNode: focusNode,
+            focusNode: _descriptionFocusNode, // Asigna el FocusNode correspondiente
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               border: OutlineInputBorder(
@@ -157,9 +160,6 @@ class _PasswordFormState extends State<EditPasswordWidget> {
           const Text('Sitio web', style: TextStyle(color: Colors.white)),
           TextField(
             controller: _urlController,
-            onTapOutside: (event) {
-              focusNode.unfocus();
-            },
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               border: OutlineInputBorder(
@@ -176,9 +176,6 @@ class _PasswordFormState extends State<EditPasswordWidget> {
           const Text('Email', style: TextStyle(color: Colors.white)),
           TextField(
             controller: _emailController,
-            onTapOutside: (event) {
-              focusNode.unfocus();
-            },
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               border: OutlineInputBorder(
