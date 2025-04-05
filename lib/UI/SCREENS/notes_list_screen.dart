@@ -39,9 +39,8 @@ class _NotesListScreenState extends State<NotesListScreen> {
 
         isLoading = false;
       });
-      return;
-    } else {
-      final url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/notes/$userId');
+    }else{
+      final url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/notes/$userId');
 
       try {
         final response = await http.get(url, headers: {

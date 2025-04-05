@@ -12,11 +12,11 @@ class RegisterPassword extends StatefulWidget {
 
 class _RegisterPasswordState extends State<RegisterPassword> {
   final TextEditingController _passwordController = TextEditingController();
-  bool _isPasswordVisible = false; // Variable para controlar la visibilidad de la contraseña
+  bool _isPasswordVisible = false;
 
   bool _isValidPassword(String password) {
     final RegExp passwordRegExp = RegExp(
-        r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$");
+        r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[-_@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$");
     return passwordRegExp.hasMatch(password);
   }
 
