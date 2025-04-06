@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/UI/SCREENS/settings_user_change_password.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -17,28 +18,59 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController? usernameController;
   TextEditingController? emailController;
-  TextEditingController? masterPasswordController;
-  TextEditingController? currentPasswordController; // Nuevo controlador para la contraseña actual
+  String? _selectedAvatar;
+
+  final List<String> _avatarImages = [
+    'assets/images/LogoSimple.png',
+    'assets/images/perro.png',
+    'assets/images/zorro.png',
+  ];
 
   @override
   void initState() {
     super.initState();
     usernameController = TextEditingController(text: widget.userData['username']);
     emailController = TextEditingController(text: widget.userData['email']);
-    masterPasswordController = TextEditingController(text: ''); // No mostrar la contraseña
-    currentPasswordController = TextEditingController(); // Inicializar el controlador
-
-    // Imprimir los datos recibidos
-    print('Datos recibidos: ${widget.userData}');
+    _selectedAvatar = widget.userData['url_image'];
   }
 
   @override
   void dispose() {
     usernameController?.dispose();
     emailController?.dispose();
-    masterPasswordController?.dispose();
-    currentPasswordController?.dispose(); // Liberar el controlador
     super.dispose();
+  }
+
+  void _selectAvatar(String avatarPath) {
+    setState(() {
+      _selectedAvatar = avatarPath;
+    });
+  }
+
+  void _showAvatarSelection() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          padding: EdgeInsets.all(20),
+          height: 350,
+          child: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemCount: _avatarImages.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () => _selectAvatar(_avatarImages[index]),
+                child: Image.asset(_avatarImages[index]),
+              );
+            },
+          ),
+        );
+      },
+    );
   }
 
   void _updateUserData() async {
@@ -50,20 +82,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return;
     }
 
-    // Verificar que la contraseña actual no esté vacía
-    if (currentPasswordController?.text.isEmpty ?? true) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Por favor, ingresa tu contraseña actual')),
-      );
-      return;
-    }
-
     final updatedData = {
       'username': usernameController?.text ?? '',
       'email': emailController?.text ?? '',
-      'master_password': masterPasswordController?.text ?? '',
-      'current_password': currentPasswordController?.text ?? '', // Añadir la contraseña actual
+      'url_image': _selectedAvatar,
     };
+
+    // Imprimir los datos que se van a enviar
+    print("Datos a enviar: $updatedData");
 
     try {
       final response = await http.put(
@@ -74,6 +100,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         },
         body: json.encode(updatedData),
       );
+
+      print("Response status: ${response.statusCode}");
+      print("Response body: ${response.body}");
 
       if (response.statusCode == 200) {
         print("Datos actualizados correctamente");
@@ -94,6 +123,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  void _navigateToAnotherScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ChangeMasterPwdUserPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,9 +145,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: CircleAvatar(
-                radius: 80,
-                backgroundImage: AssetImage(widget.userData['url_image']),
+              child: GestureDetector(
+                onTap: _showAvatarSelection,
+                child: CircleAvatar(
+                  radius: 80,
+                  backgroundImage: AssetImage(_selectedAvatar ?? 'assets/images/default.png'),
+                ),
               ),
             ),
             SizedBox(height: 30),
@@ -150,37 +189,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 contentPadding: EdgeInsets.symmetric(vertical: 25, horizontal: 15),
               ),
             ),
-            SizedBox(height: 30),
-            TextField(
-              controller: currentPasswordController,
-              obscureText: true, // Ocultar el texto de la contraseña
-              style: TextStyle(fontSize: 18),
-              decoration: InputDecoration(
-                labelText: 'Contraseña Actual',
-                labelStyle: TextStyle(color: Colors.grey),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.grey),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.blue),
-                ),
-                contentPadding: EdgeInsets.symmetric(vertical: 25, horizontal: 15),
-              ),
-            ),
             SizedBox(height: 50),
             Center(
               child: ElevatedButton(
                 onPressed: _updateUserData,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Color.fromRGBO(33, 33, 33, 1), // Dark gray color
                   padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: Text('Actualizar Datos', style: TextStyle(fontSize: 18)),
+                child: Text(
+                  'Actualizar Datos',
+                  style: TextStyle(fontSize: 18, color: Colors.white), // White text color
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Center(
+              child: ElevatedButton(
+                onPressed: _navigateToAnotherScreen,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromRGBO(33, 33, 33, 1), // Dark gray color
+                  padding: EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text(
+                  'Actualizar contraseña',
+                  style: TextStyle(fontSize: 15, color: Colors.red), // White text color
+                ),
               ),
             ),
             SizedBox(height: 20),

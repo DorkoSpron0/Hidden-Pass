@@ -10,9 +10,14 @@ import 'package:hidden_pass/UI/WIDGETS/bottom_navigation_bar.dart';
 import 'package:hidden_pass/UI/WIDGETS/password_list_widgets/password_list_body_widget.dart';
 import 'package:provider/provider.dart';
 
-class PricipalPageScreen extends StatelessWidget {
+class PricipalPageScreen extends StatefulWidget {
   const PricipalPageScreen({super.key});
 
+  @override
+  State<PricipalPageScreen> createState() => _PricipalPageScreenState();
+}
+
+class _PricipalPageScreenState extends State<PricipalPageScreen> {
   @override
   Widget build(BuildContext context) {
     NavigationProvider watch =
@@ -42,7 +47,7 @@ class PricipalPageScreen extends StatelessWidget {
               );
             },
             child: IndexedStack(
-             
+
               key: ValueKey(watch.index),
               index: watch.index,
               children: pages,

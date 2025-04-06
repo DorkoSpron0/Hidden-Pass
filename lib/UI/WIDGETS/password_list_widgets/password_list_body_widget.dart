@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hidden_pass/DOMAIN/HIVE/PasswordHiveObject.dart';
 import 'package:hidden_pass/DOMAIN/MODELS/all_password_model.dart';
@@ -29,7 +30,6 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
     final idUser = context.read<IdUserProvider>().idUser;
 
     if (token.isEmpty) {
-      // Si no hay token, no hacemos nada, o esperamos para Hive de nicky
       final box = Hive.box<PasswordHiveObject>('passwords');
       final passwords = box.values.toList();
 
@@ -65,7 +65,6 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // Obtén el token del proveedor
     final token = context.read<TokenAuthProvider>().token;
 
     return passwordList.isEmpty
@@ -81,8 +80,7 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
               onPressed: (context) {
                 deletePassword(context, item.id_password, item.name, token);
 
-                setState(() {
-                });
+                setState(() {});
               },
               icon: Icons.delete,
               backgroundColor: Colors.red,
@@ -106,11 +104,10 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
             title: Text(item.name, style: Theme.of(context).textTheme.titleMedium),
             subtitle: Text(item.email_user, style: Theme.of(context).textTheme.bodySmall),
             trailing: IconButton(
-                selectedIcon: IconButton(onPressed: () {}, icon: Icon(Icons.content_copy)),
               icon: Icon(Icons.copy, color: Colors.grey),
               onPressed: () {
+                Clipboard.setData(ClipboardData(text: item.password));
                 ScaffoldMessenger.of(context).showSnackBar(
-
                   SnackBar(content: Text('Contraseña copiada al portapapeles')),
                 );
               },
@@ -146,7 +143,6 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
         });
 
         if (response.statusCode == 200) {
-          // Elimina la contraseña de la lista local
           setState(() {
             passwordList.removeWhere((item) => item.id_password == id);
           });
