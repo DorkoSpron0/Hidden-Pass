@@ -18,13 +18,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController? usernameController;
   TextEditingController? emailController;
   TextEditingController? masterPasswordController;
+  TextEditingController? currentPasswordController; // Nuevo controlador para la contraseña actual
 
   @override
   void initState() {
     super.initState();
     usernameController = TextEditingController(text: widget.userData['username']);
     emailController = TextEditingController(text: widget.userData['email']);
-    masterPasswordController = TextEditingController(text: 'Password123'); // Valor "quemado"
+    masterPasswordController = TextEditingController(text: ''); // No mostrar la contraseña
+    currentPasswordController = TextEditingController(); // Inicializar el controlador
 
     // Imprimir los datos recibidos
     print('Datos recibidos: ${widget.userData}');
@@ -35,6 +37,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     usernameController?.dispose();
     emailController?.dispose();
     masterPasswordController?.dispose();
+    currentPasswordController?.dispose(); // Liberar el controlador
     super.dispose();
   }
 
@@ -47,10 +50,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return;
     }
 
+    // Verificar que la contraseña actual no esté vacía
+    if (currentPasswordController?.text.isEmpty ?? true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Por favor, ingresa tu contraseña actual')),
+      );
+      return;
+    }
+
     final updatedData = {
       'username': usernameController?.text ?? '',
       'email': emailController?.text ?? '',
       'master_password': masterPasswordController?.text ?? '',
+      'current_password': currentPasswordController?.text ?? '', // Añadir la contraseña actual
     };
 
     try {
@@ -98,14 +110,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             Center(
               child: CircleAvatar(
-                radius: 80, // Aumenta el tamaño del avatar
+                radius: 80,
                 backgroundImage: AssetImage(widget.userData['url_image']),
               ),
             ),
             SizedBox(height: 30),
             TextField(
               controller: usernameController,
-              style: TextStyle(fontSize: 18), // Aumenta el tamaño del texto
+              style: TextStyle(fontSize: 18),
               decoration: InputDecoration(
                 labelText: 'Usuario',
                 labelStyle: TextStyle(color: Colors.grey),
@@ -123,7 +135,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             SizedBox(height: 30),
             TextField(
               controller: emailController,
-              style: TextStyle(fontSize: 18), // Aumenta el tamaño del texto
+              style: TextStyle(fontSize: 18),
               decoration: InputDecoration(
                 labelText: 'Email',
                 labelStyle: TextStyle(color: Colors.grey),
@@ -138,7 +150,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 contentPadding: EdgeInsets.symmetric(vertical: 25, horizontal: 15),
               ),
             ),
-            SizedBox(height: 50), // Aumenta el espacio antes del botón
+            SizedBox(height: 30),
+            TextField(
+              controller: currentPasswordController,
+              obscureText: true, // Ocultar el texto de la contraseña
+              style: TextStyle(fontSize: 18),
+              decoration: InputDecoration(
+                labelText: 'Contraseña Actual',
+                labelStyle: TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: Colors.grey),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: Colors.blue),
+                ),
+                contentPadding: EdgeInsets.symmetric(vertical: 25, horizontal: 15),
+              ),
+            ),
+            SizedBox(height: 50),
             Center(
               child: ElevatedButton(
                 onPressed: _updateUserData,
@@ -146,13 +177,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   backgroundColor: Colors.blue,
                   padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // Menos circular
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: Text('Actualizar Datos', style: TextStyle(fontSize: 18)), // Aumenta el tamaño del texto del botón
+                child: Text('Actualizar Datos', style: TextStyle(fontSize: 18)),
               ),
             ),
-            SizedBox(height: 20), // Espacio antes del texto
+            SizedBox(height: 20),
             Center(
               child: Text(
                 'Asegúrate que los datos ingresados sean correctos',

@@ -21,14 +21,14 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
   @override
   void initState() {
     super.initState();
-    fetchPasswords();
+    final token = context.read<TokenAuthProvider>().token;
+    fetchPasswords(token);
   }
 
-  Future<void> fetchPasswords() async {
-    final token = context.read<TokenAuthProvider>().token;
+  Future<void> fetchPasswords(String token) async {
     final idUser = context.read<IdUserProvider>().idUser;
 
-    if (token == null || token.isEmpty) {
+    if (token.isEmpty) {
       // Si no hay token, no hacemos nada, o esperamos para Hive de nicky
       final box = Hive.box<PasswordHiveObject>('passwords');
       final passwords = box.values.toList();
@@ -62,143 +62,112 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
       }
     }
   }
-  //me quiero cortar una gueva xd
 
   @override
   Widget build(BuildContext context) {
-    return passwordList.isEmpty ? Center(child: Text("No tienes contraseñas guardadas")) :
+    // Obtén el token del proveedor
+    final token = context.read<TokenAuthProvider>().token;
 
-        ListView.builder(
-        itemCount: passwordList.length,
-        itemBuilder: (context, index) {
-      final item = passwordList[index];
-      return Slidable(
-        key: Key(item.id_password),
-        endActionPane: ActionPane(motion: const DrawerMotion(), children: [
-          SlidableAction(
-            onPressed: (context) {
-              deletePassword(context, item.id_password, item.name);
+    return passwordList.isEmpty
+        ? Center(child: Text("No tienes contraseñas guardadas"))
+        : ListView.builder(
+      itemCount: passwordList.length,
+      itemBuilder: (context, index) {
+        final item = passwordList[index];
+        return Slidable(
+          key: Key(item.id_password),
+          endActionPane: ActionPane(motion: const DrawerMotion(), children: [
+            SlidableAction(
+              onPressed: (context) {
+                deletePassword(context, item.id_password, item.name, token);
 
-              setState(() {
-                passwordList.removeAt(index);
-              });
-
-            },
-            icon: Icons.delete,
-            backgroundColor: Colors.red,
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          SlidableAction(
-            onPressed: (context) {
-              editPassword(context, item.id_password,item.name, item.description, item.url,
-                  item.email_user, item.password);
-            },
-            icon: Icons.edit,
-            backgroundColor: Colors.blue,
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-        ]),
-        child: ListTile(
-          leading: CircleAvatar(
-            child: Text(item.name[0], style: TextStyle(color: Colors.white)),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-          ),
-          title:
-          Text(item.name, style: Theme.of(context).textTheme.titleMedium),
-          subtitle: Text(item.email_user,
-              style: Theme.of(context).textTheme.bodySmall),
-          trailing: IconButton(
-            icon: Icon(Icons.copy, color: Colors.grey),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Contraseña copiada al portapapeles')),
-              );
-            },
-          ),
-        ),
-      );
-    },
-    );
-  }
-
-  Widget slideRightBackground(BuildContext context) {
-    return Container(
-      color: Theme.of(context).colorScheme.secondary,
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(width: 20),
-            Icon(Icons.edit, color: Colors.white),
-            Text(
-              " Editar",
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-              textAlign: TextAlign.left,
+                setState(() {
+                });
+              },
+              icon: Icons.delete,
+              backgroundColor: Colors.red,
+              borderRadius: BorderRadius.circular(10.0),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget slideLeftBackground(BuildContext context) {
-    return Container(
-      color: Theme.of(context).colorScheme.error,
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Icon(Icons.delete, color: Colors.white),
-            Text(
-              " Eliminar",
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-              textAlign: TextAlign.right,
+            SlidableAction(
+              onPressed: (context) {
+                editPassword(context, item.id_password, item.name, item.description, item.url,
+                    item.email_user, item.password);
+              },
+              icon: Icons.edit,
+              backgroundColor: Colors.blue,
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            SizedBox(width: 20),
-          ],
-        ),
-      ),
+          ]),
+          child: ListTile(
+            leading: CircleAvatar(
+              child: Text(item.name[0], style: TextStyle(color: Colors.white)),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+            ),
+            title: Text(item.name, style: Theme.of(context).textTheme.titleMedium),
+            subtitle: Text(item.email_user, style: Theme.of(context).textTheme.bodySmall),
+            trailing: IconButton(
+                selectedIcon: IconButton(onPressed: () {}, icon: Icon(Icons.content_copy)),
+              icon: Icon(Icons.copy, color: Colors.grey),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+
+                  SnackBar(content: Text('Contraseña copiada al portapapeles')),
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 
-  void editPassword(BuildContext context, String id,String name, String descripcion,
+  void editPassword(BuildContext context, String id, String name, String descripcion,
       String url, String emailUser, String password) {
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => EditPasswordScreen(
-                  id_password: id,
-                  nombre: name,
-                  description: descripcion,
-                  email_user: emailUser,
-                  password: password,
-                  url: url,
-                )));
-
-    // ScaffoldMessenger.of(context).showSnackBar(
-    //   SnackBar(content: Text('Editar contraseña con id: $id')),
-    // );
+              id_password: id,
+              nombre: name,
+              description: descripcion,
+              email_user: emailUser,
+              password: password,
+              url: url,
+            )));
   }
 
-  void deletePassword(BuildContext context, String id, String name) async {
+  void deletePassword(BuildContext context, String id, String name, String token) async {
+    if (token.isNotEmpty) {
+      try {
+        final url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/passwords/password/$id');
+        final response = await http.delete(url, headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+        });
 
-    final box = Hive.box<PasswordHiveObject>('passwords');
+        if (response.statusCode == 200) {
+          // Elimina la contraseña de la lista local
+          setState(() {
+            passwordList.removeWhere((item) => item.id_password == id);
+          });
 
-    Future<bool> tituloExiste(String name) async {
-      return box.values.any((password) => password.name == name);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Contraseña eliminada del servidor correctamente')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error al eliminar la contraseña del servidor: ${response.statusCode}')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al eliminar la contraseña: $e')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Token no válido')),
+      );
     }
-
-    if(await tituloExiste(name) == true){
-      box.delete(name);
-    }
-
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Contraseña con id: $id eliminada correctamente')),
-    );
   }
 }
