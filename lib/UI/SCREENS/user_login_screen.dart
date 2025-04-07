@@ -25,13 +25,12 @@ class _UserLoginState extends State<UserLogin> {
 
   void sendData(String email, String password) async {
     var url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/users/login'); 
-
+    // 10.0.2.2:8081
     var body = json.encode({
       'email': email.trim(),
       'master_password': password.trim(),
     });
 
-    // Realizar la solicitud POST
     var response = await http.post(
       url,
       body: body,
@@ -46,7 +45,7 @@ class _UserLoginState extends State<UserLogin> {
       void decodificarToken(String token) {
         try {
           final jwt = JWT.decode(token);
-          final sub = jwt.payload['sub'];  // ID del usuario desde el payload
+          final sub = jwt.payload['sub'];  
           context.read<IdUserProvider>().setidUser(idUser: sub);
         } catch (e) {
           print("Error al decodificar el JWT: $e");
@@ -55,7 +54,6 @@ class _UserLoginState extends State<UserLogin> {
 
       decodificarToken(response.body);
 
-      // Redirigir a la pantalla principal
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const PricipalPageScreen())
@@ -72,7 +70,7 @@ class _UserLoginState extends State<UserLogin> {
       _isLoadingForgotPassword = true; // Mostrar el loader
     });
 
-    var url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/codes/send');
+    var url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/codes/send');
 
     var body = json.encode({
       'email': email,

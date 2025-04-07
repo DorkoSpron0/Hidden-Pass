@@ -20,9 +20,9 @@ class NoteItemWidget extends StatelessWidget {
     super.key,
     required this.title,
     required this.description,
-    required this.idNote, 
+    required this.idNote,
     required this.priorityName,
-    required this.onDelete
+    required this.onDelete,
   });
 
   // Función para eliminar la nota
@@ -30,19 +30,18 @@ class NoteItemWidget extends StatelessWidget {
     final token = context.read<TokenAuthProvider>().token;
 
     if (token == null || token.isEmpty) {
-
       final box = Hive.box<NoteHiveObject>('notes');
 
       Future<bool> tituloExiste(String title) async {
         return box.values.any((note) => note.title == title);
       }
 
-      if(await tituloExiste(title) == true){
+      if (await tituloExiste(title) == true) {
         box.delete(title);
       }
-
     } else {
-      final url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/notes/$idNote');
+      final url =
+          Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/notes/$idNote');
 
       try {
         final response = await http.delete(
@@ -70,7 +69,6 @@ class NoteItemWidget extends StatelessWidget {
       endActionPane: ActionPane(
         motion: const DrawerMotion(),
         children: [
-
           SlidableAction(
             onPressed: (context) {
               deleteNote(context);
@@ -106,10 +104,17 @@ class NoteItemWidget extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () {
-          Navigator.push(context,
-           MaterialPageRoute(builder: (context)=> NoteDetailsScreen(title: title, description: description, idNote: idNote, isEditable: false, ))
-           );
-
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => NoteDetailsScreen(
+                title: title,
+                description: description,
+                idNote: idNote,
+                isEditable: false,
+              ),
+            ),
+          );
         },
         child: Container(
           width: double.infinity,
@@ -118,27 +123,32 @@ class NoteItemWidget extends StatelessWidget {
             color: Colors.black.withAlpha(80),
             borderRadius: BorderRadius.circular(10.0),
           ),
-          padding: const EdgeInsets.symmetric(
-              horizontal: 20.0, vertical: 5.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    description,
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-                ],
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      description,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  ],
+                ),
               ),
-              const Icon(Icons.arrow_forward_ios)
+              const Icon(Icons.arrow_forward_ios),
             ],
           ),
         ),
