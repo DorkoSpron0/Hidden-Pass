@@ -15,10 +15,12 @@ class _RegisterPasswordState extends State<RegisterPassword> {
   bool _isPasswordVisible = false;
 
   bool _isValidPassword(String password) {
-    final RegExp passwordRegExp = RegExp(
-        r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[-_@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$");
-    return passwordRegExp.hasMatch(password);
-  }
+  final RegExp passwordRegExp = RegExp(
+    r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[-_@$!%*?&])[A-Za-z\d\-@\$!%*?&_]{8,}$"
+  );
+  return passwordRegExp.hasMatch(password);
+}
+
 
   @override
   Widget build(BuildContext context) {

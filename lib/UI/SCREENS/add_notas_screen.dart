@@ -26,35 +26,30 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
   @override
   void initState() {
     super.initState();
-    _openBox(); // Abre la caja al inicializar el widget
+    _openBox();
   }
 
   Future<void> _openBox() async {
     box = await Hive.openBox<NoteHiveObject>('notes');
   }
 
-
   void addNote(NoteModel note) async {
     final userId = context.read<IdUserProvider>().idUser;
     final token = context.read<TokenAuthProvider>().token;
     final url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/notes/$userId');
 
-
     if (token == null || token.isEmpty) {
-
       Future<bool> tituloExiste(String title) async {
         return box.values.any((note) => note.title == title);
       }
 
-      try{
-
+      try {
         Future<void> agregarObjetoUnico() async {
           if (!await tituloExiste(note.title)) {
-
             final newNote = NoteHiveObject(
-                note.priorityName,
-                note.title,
-                note.description
+              note.priorityName,
+              note.title,
+              note.description,
             );
 
             Navigator.pushReplacement(
@@ -67,23 +62,23 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
             box.put(newNote.title, newNote);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('El titulo debe ser único')),
+              SnackBar(content: Text('El título debe ser único')),
             );
           }
         }
 
         agregarObjetoUnico();
-
-
-      }catch(e){
+      } catch (e) {
         print(e.toString());
       }
-    }else{
+    } else {
       try {
-
         final response = await http.post(
           url,
-          headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
           body: jsonEncode({
             'priorityName': note.priorityName,
             'title': note.title,
@@ -91,12 +86,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
           }),
         );
 
-        print("Response status: ${response.statusCode}");
-        print("Response body: ${response.body}");
-        print(response.statusCode);
-
         if (response.statusCode == 200) {
-
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -110,13 +100,12 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Ingresar solo la cantidad de carecteres permitidas: $e')),
+          SnackBar(content: Text('Error: $e')),
         );
         print('Error: $e');
         print('token: $token');
       }
     }
-
   }
 
   @override
@@ -125,7 +114,6 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           bool isSmallScreen = constraints.maxWidth < 600;
-          double containerWidth = isSmallScreen ? constraints.maxWidth * 0.85 : constraints.maxWidth * 0.5;
 
           return Stack(
             children: [
@@ -136,18 +124,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        width: containerWidth,
-                        child: Text(
-                          "Agregar nota",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: isSmallScreen ? 20 : 28,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 30),
+                      SizedBox(height: 80), 
                       SizedBox(
                         width: constraints.maxWidth * 0.8,
                         child: TextField(
@@ -155,12 +132,14 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                           style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             labelText: 'Título',
-                            labelStyle: TextStyle(color: Colors.white), 
+                            filled: true,
+                            fillColor: Colors.white.withOpacity(0.1),
+                            labelStyle: TextStyle(color: Colors.white),
                             border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white), 
+                              borderSide: BorderSide(color: Colors.white),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white), 
+                              borderSide: BorderSide(color: Colors.white),
                             ),
                           ),
                           textAlign: TextAlign.center,
@@ -172,35 +151,32 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                         height: MediaQuery.of(context).size.height * 0.2,
                         child: TextField(
                           controller: _bodyController,
-                          style: TextStyle(color: Colors.white), 
+                          style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
-                            labelText: 'Cuerpo',
-                            labelStyle: TextStyle(color: Colors.white), 
+                            labelText: 'Descripcion',
+                            filled: true,
+                            fillColor: Colors.white.withOpacity(0.1),
+                            labelStyle: TextStyle(color: Colors.white),
                             border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white), 
+                              borderSide: BorderSide(color: Colors.white),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white), 
+                              borderSide: BorderSide(color: Colors.white),
                             ),
-
-                            counterText: "", // agrego un contador de texto para saber cuantos caracteres tiene y puede ingresar
-
+                            counterText: "",
                           ),
-
                           maxLines: null,
                           expands: true,
                           maxLength: 255,
-
-                          onChanged: (text){
-                            setState(() {}); // esto refresca el widget y asi actualiza el contador
+                          onChanged: (text) {
+                            setState(() {});
                           },
-
                           textAlign: TextAlign.start,
                         ),
                       ),
                       SizedBox(height: 20),
                       Text(
-                        '${_bodyController.text.length} / 255 caracteres', // Muestra la cantidad de caracteres
+                        '${_bodyController.text.length} / 255 caracteres',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -220,29 +196,31 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(
-                                value,  
+                                value,
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: Colors.white, 
+                                  color: Colors.white,
                                 ),
                               ),
                             );
                           }).toList(),
                           decoration: InputDecoration(
-                            labelText: 'Prioridad',  
+                            labelText: 'Prioridad',
+                            filled: true,
+                            fillColor: Colors.white.withOpacity(0.1),
                             labelStyle: TextStyle(
-                              fontSize: 20, 
-                              fontWeight: FontWeight.bold, 
-                              color: Colors.white, 
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                             border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white), 
+                              borderSide: BorderSide(color: Colors.white),
                             ),
                             focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.white), 
+                              borderSide: BorderSide(color: Colors.white),
                             ),
                           ),
-                          dropdownColor: const Color.fromARGB(255, 53, 53, 53), 
+                          dropdownColor: const Color.fromARGB(255, 53, 53, 53),
                         ),
                       ),
                     ],
@@ -251,20 +229,40 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
               ),
               Positioned(
                 top: 40,
-                left: 20,
-                child: IconButton(
-                  iconSize: 36,
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PricipalPageScreen(),
+                left: 0,
+                right: 0,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(width: 10),
+                    IconButton(
+                      iconSize: 30,
+                      icon: Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PricipalPageScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    Expanded(
+                      child: Text(
+                        "Agregar nota",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: isSmallScreen ? 22 : 26,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
-                    ); 
-                  },
+                    ),
+                    SizedBox(width: 50),
+                  ],
                 ),
               ),
+              
               Positioned(
                 bottom: 40,
                 right: 20,
@@ -274,13 +272,20 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                     String title = _titleController.text;
                     String description = _bodyController.text;
 
-                    final note = NoteModel(
+                    if (description != null && description != ""){
+                      final note = NoteModel(
                       priorityName,
                       title,
                       description,
                     );
 
                     addNote(note);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Debes de agregar una descripcion')),
+                      );
+                    }
+                    
                   },
                   child: Icon(Icons.arrow_forward),
                 ),
