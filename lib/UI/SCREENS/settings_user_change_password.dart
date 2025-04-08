@@ -49,8 +49,8 @@ class _ChangeMasterPwdUserPageState extends State<ChangeMasterPwdUserPage> {
     final newPassword = newPasswordController.text;
 
     final passwordData = {
-      'masterPassword': masterPassword,
-      'newPassword': newPassword,
+      'current_password': masterPassword,
+      'new_password': newPassword,
     };
 
     try {
@@ -75,7 +75,7 @@ class _ChangeMasterPwdUserPageState extends State<ChangeMasterPwdUserPage> {
         print("Error al actualizar la contraseña: ${response.statusCode}");
         print("Respuesta del servidor: ${response.body}");
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al actualizar la contraseña: ${response.statusCode}')),
+          SnackBar(content: Text('La contraseña maestra no es válida')),
         );
       }
     } catch (e) {
