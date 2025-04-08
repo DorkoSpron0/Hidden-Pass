@@ -79,8 +79,9 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
             SlidableAction(
               onPressed: (context) {
                 deletePassword(context, item.id_password, item.name, token);
-
-                setState(() {});
+                setState(() {
+                  passwordList.removeAt(index);
+                });
               },
               icon: Icons.delete,
               backgroundColor: Colors.red,
@@ -161,8 +162,18 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
         );
       }
     } else {
+      final box = Hive.box<PasswordHiveObject>('passwords');
+
+      Future<bool> tituloExiste(String name) async {
+        return box.values.any((password) => password.name == name);
+      }
+
+      if (await tituloExiste(name) == true) {
+        box.delete(name);
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Token no válido')),
+        SnackBar(content: Text('Contraseña eliminada del servidor correctamente')),
       );
     }
   }
