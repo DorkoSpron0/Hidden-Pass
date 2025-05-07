@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/DOMAIN/HIVE/ADAPTERS/PasswordHiveAdapter.dart';
 import 'package:hidden_pass/DOMAIN/HIVE/PasswordHiveObject.dart';
@@ -22,14 +21,14 @@ import 'DOMAIN/HIVE/NoteHiveObject.dart'; // Para usar Timer
 
 void main() async {
 
-  WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsFlutterBinding.ensureInitialized();
 
-  if (!Platform.isWindows && !Platform.isLinux && !Platform.isMacOS) {
-    final dir = await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-  } else {
-    Hive.init(Directory.current.path);
-  }
+  // if (!Platform.isWindows && !Platform.isLinux && !Platform.isMacOS) {
+  //   final dir = await getApplicationDocumentsDirectory();
+  //   Hive.init(dir.path);
+  // } else {
+  //   Hive.init(Directory.current.path);
+  // }
 
   Hive.registerAdapter(NoteHiveAdapter());
   Hive.registerAdapter(PasswordHiveAdapter());
@@ -80,7 +79,7 @@ class SplashScreenState extends State<SplashScreen> {
   void initState() {
 
   WidgetsBinding.instance.addPostFrameCallback((_) {
-        context.read<TokenAuthProvider>().setToken(token: "");
+        context.read<TokenAuthProvider>().setToken(token: "", username: '', avatarUrl: '');
       });
 
     super.initState();

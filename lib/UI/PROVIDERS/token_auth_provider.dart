@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
-import 'package:hidden_pass/main.dart';
-import 'package:provider/provider.dart';
 
-class TokenAuthProvider with ChangeNotifier{
+class TokenAuthProvider with ChangeNotifier {
   String _token = "";
+  String? _username = "";
+  String? _avatarUrl;
 
   String get token => _token;
+  String? get username => _username;
+  String? get avatar => _avatarUrl;
 
-  Future<void> setToken({required String token})async {
+  // Método para configurar el token, username y avatar
+  Future<void> setToken({required String token, required String username, required String avatarUrl}) async {
     _token = token;
+    _username = username;
+    _avatarUrl = avatarUrl;
     notifyListeners();
-  } 
-
+  }
 }
