@@ -14,14 +14,13 @@ class PricipalPageScreen extends StatefulWidget {
   const PricipalPageScreen({super.key});
 
   @override
-  State<PricipalPageScreen> createState() => _PricipalPageScreenState();
+  State<PricipalPageScreen> createState() => _PrincipalPageScreenState();
 }
 
-class _PricipalPageScreenState extends State<PricipalPageScreen> {
+class _PrincipalPageScreenState extends State<PricipalPageScreen> {
   @override
   Widget build(BuildContext context) {
-    NavigationProvider watch =
-        context.watch<NavigationProvider>();
+    NavigationProvider watch = context.watch<NavigationProvider>();
     TokenAuthProvider watchAuth = context.watch<TokenAuthProvider>();
 
     final List<Widget> pages = [
@@ -31,8 +30,6 @@ class _PricipalPageScreenState extends State<PricipalPageScreen> {
     ];
 
     final List<String> titles = ["Contraseñas", "Notas", "Configuración"];
-
-    print(watchAuth.token);
 
     return Scaffold(
       appBar: appBarWidget(context, titles[watch.index]),
@@ -47,7 +44,6 @@ class _PricipalPageScreenState extends State<PricipalPageScreen> {
               );
             },
             child: IndexedStack(
-
               key: ValueKey(watch.index),
               index: watch.index,
               children: pages,
@@ -61,7 +57,6 @@ class _PricipalPageScreenState extends State<PricipalPageScreen> {
         shape: CircleBorder(),
         onPressed: () async {
           if (watch.index == 1) {
-            // 1 es el índice de la pantalla de notas
             final result = await Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => AddNoteScreen()),
@@ -70,8 +65,10 @@ class _PricipalPageScreenState extends State<PricipalPageScreen> {
               // Actualizar la lista de notas si es necesario
             }
           } else if (watch.index == 0) {
-            final result = await Navigator.push(context,
-                MaterialPageRoute(builder: (context) => CreateNewPasswordScreen()));
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CreateNewPasswordScreen()),
+            );
           }
         },
         child: Icon(Icons.add, size: 30.0),

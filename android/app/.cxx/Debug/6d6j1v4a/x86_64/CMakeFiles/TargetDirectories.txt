@@ -1,0 +1,2 @@
+C:/Users/JUAN/Downloads/Hidden-Pass/android/app/.cxx/Debug/6d6j1v4a/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/JUAN/Downloads/Hidden-Pass/android/app/.cxx/Debug/6d6j1v4a/x86_64/CMakeFiles/rebuild_cache.dir
