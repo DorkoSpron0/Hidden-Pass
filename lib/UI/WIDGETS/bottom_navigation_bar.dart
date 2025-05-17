@@ -33,6 +33,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
           iconSize: 30.0,
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: "INICIO",),
+            BottomNavigationBarItem(icon: Icon(Icons.folder), label: "CARPETAS"),
             BottomNavigationBarItem(icon: Icon(Icons.message), label: "NOTAS"),
             BottomNavigationBarItem(icon: Icon(Icons.settings), label: "CONFIG"),
           ]
