@@ -38,25 +38,22 @@ class _UserLoginState extends State<UserLogin> {
 
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
+      final userId = responseData['userId'];
       final token = responseData['token'];
-      final username = responseData['username'] ?? '';  // Valor por defecto
-      final avatarUrl = responseData['urlImage'] ?? ''; // Valor por defecto
+      final username = responseData['username'] ?? '';
+      final avatarUrl = responseData['urlImage'] ?? '';
 
-      // Guardar token, nombre de usuario y avatar en Provider
+      print(responseData);
+
       await Provider.of<TokenAuthProvider>(context, listen: false).setToken(
-        token: token,
+        token: token, 
         username: username,
         avatarUrl: avatarUrl,
       );
 
-      // Decodificar token para obtener el ID del usuario
-      try {
-        final jwt = JWT.decode(token);
-        final sub = jwt.payload['sub'];
-        context.read<IdUserProvider>().setidUser(idUser: sub);
-      } catch (e) {
-        print("Error al decodificar el JWT: $e");
-      }
+      await Provider.of<IdUserProvider>(context, listen: false).setidUser(
+        idUser: userId,
+      );
 
       Navigator.pushReplacement(
         context,

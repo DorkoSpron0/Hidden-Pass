@@ -23,12 +23,11 @@ class _FoldersListScreenState extends State<FoldersListScreen> {
       theme: customThemeData(),
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Tus Carpetas'),
           titleTextStyle: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
           actions: <Widget>[],
         ),
         body: Center( 
-          child: FolderWidget(),
+          child: FolderListWidget(),
         ),
       ),
     );

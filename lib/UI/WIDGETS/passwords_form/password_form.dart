@@ -91,8 +91,7 @@ class _PasswordFormState extends State<PasswordForm> {
         print(e.toString());
       }
     } else {
-      final Url = Uri.parse(
-          'http://10.0.2.2:8081/api/v1/hidden_pass/passwords/$IdUser');
+      final Url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/passwords/$IdUser');
       var Body = json.encode({
         "name": name,
         "url": url,
