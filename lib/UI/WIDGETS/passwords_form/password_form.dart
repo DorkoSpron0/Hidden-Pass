@@ -37,7 +37,7 @@ class _PasswordFormState extends State<PasswordForm> {
   @override
   void initState() {
     super.initState();
-    _openBox(); // Abre la caja al inicializar el widget
+    _openBox();
   }
 
   Future<void> _openBox() async {
@@ -91,8 +91,7 @@ class _PasswordFormState extends State<PasswordForm> {
         print(e.toString());
       }
     } else {
-      final Url = Uri.parse(
-          'http://10.0.2.2:8081/api/v1/hidden_pass/passwords/$IdUser');
+      final Url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/passwords/$IdUser');
       var Body = json.encode({
         "name": name,
         "url": url,
@@ -301,13 +300,13 @@ class _PasswordFormState extends State<PasswordForm> {
               });
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
-              minimumSize: const Size.fromHeight(50),
+              backgroundColor: Colors.white12,
+              minimumSize: const Size.fromHeight(45),
             ),
             child: const Text('Generar contraseña',
                 style: TextStyle(color: Colors.white)),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 38),
           ElevatedButton(
             onPressed: () {
               String name = _accountNameController.text;
@@ -316,9 +315,11 @@ class _PasswordFormState extends State<PasswordForm> {
               String password = _generatedPassword;
               String description = _descriptionController.text;
 
-              savePassword(
-                  name, url, email_user, password, description, context);
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PricipalPageScreen()));
+              savePassword(name, url, email_user, password, description, context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const PricipalPageScreen()),
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,

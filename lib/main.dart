@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/DOMAIN/HIVE/ADAPTERS/PasswordHiveAdapter.dart';
 import 'package:hidden_pass/DOMAIN/HIVE/PasswordHiveObject.dart';
@@ -80,7 +79,7 @@ class SplashScreenState extends State<SplashScreen> {
   void initState() {
 
   WidgetsBinding.instance.addPostFrameCallback((_) {
-        context.read<TokenAuthProvider>().setToken(token: "");
+        context.read<TokenAuthProvider>().setToken(token: "", username: '', avatarUrl: '');
       });
 
     super.initState();

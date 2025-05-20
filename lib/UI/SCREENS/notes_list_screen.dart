@@ -17,29 +17,46 @@ class _NotesListScreenState extends State<NotesListScreen> {
   List<Map<String, dynamic>> notesList = [];
   bool isLoading = true;
 
+  // se asigna un valor a cada prioridad para asi poderle dar un orden a la lista
+  int prioridadValor(String prioridad) {
+    switch (prioridad.toUpperCase()) {
+      case 'CRITICA':
+        return 4;
+      case 'ALTA':
+        return 3;
+      case 'MEDIA':
+        return 2;
+      case 'BAJA':
+        return 1;
+      default:
+        return 0;
+    }
+  }
+
   void Notes() async {
     final userId = context.read<IdUserProvider>().idUser;
     final token = context.read<TokenAuthProvider>().token;
 
     if (token == null || token.isEmpty) {
-      // Si no hay token, no hacemos nada, o esperamos para Hive de nicky
       final box = Hive.box<NoteHiveObject>('notes');
       final notas = box.values.toList();
 
       setState(() {
-
         notesList = notas.map((noteData) {
           return {
             'priorityName': noteData.priorityName ?? '',
-            'title': noteData.title.toString() ?? '',
-            'description': noteData.description.toString() ?? '',
+            'title': noteData.title.toString(),
+            'description': noteData.description.toString(),
           };
         }).toList();
 
+        // Ordenar por prioridad
+        notesList.sort((a, b) => prioridadValor(b['priorityName']!)
+            .compareTo(prioridadValor(a['priorityName']!)));
 
         isLoading = false;
       });
-    }else{
+    } else {
       final url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/notes/$userId');
 
       try {
@@ -59,6 +76,11 @@ class _NotesListScreenState extends State<NotesListScreen> {
                 'description': noteData['description']?.toString() ?? '',
               };
             }).toList();
+
+            // Ordenar por prioridad
+            notesList.sort((a, b) => prioridadValor(b['priorityName']!)
+                .compareTo(prioridadValor(a['priorityName']!)));
+
             isLoading = false;
           });
         } else {
@@ -72,7 +94,6 @@ class _NotesListScreenState extends State<NotesListScreen> {
         setState(() {
           isLoading = false;
         });
-        
       }
     }
   }
@@ -97,7 +118,7 @@ class _NotesListScreenState extends State<NotesListScreen> {
                     return NoteItemWidget(
                       title: note['title'] as String,
                       description: note['description'] as String,
-                      idNote: note['id_note'].toString(),
+                      idNote: note['id_note']?.toString() ?? '',
                       priorityName: note['priorityName'] as String,
                       onDelete: () {
                         setState(() {

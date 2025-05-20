@@ -27,9 +27,6 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
     'assets/images/LogoSimple.png',
     'assets/images/perro.png',
     'assets/images/zorro.png',
-    // 'assets/images/avatar4.png',
-    // 'assets/images/avatar5.png',
-    // 'assets/images/avatar6.png',
   ];
 
   void _selectAvatar(String avatarPath) {
@@ -71,7 +68,7 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
   }
 
   void sendData() async {
-    var url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/users/register'); // Asegúrate de que la URL esté bien
+    var url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/users/register'); 
 
   // http://10.0.2.2:8081/api/v1/hidden_pass/users/register
     // Crear el cuerpo de la solicitud
@@ -94,7 +91,7 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
     if (response.statusCode == 201) {
 
       // context.read<TokenAuthProvider>().setToken(token: response.body);
-      
+
       // void decodificarToken(String token) {
       //   try {
       //     final jwt = JWT.decode(token);

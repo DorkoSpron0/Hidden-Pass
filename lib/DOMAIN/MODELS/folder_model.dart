@@ -1,10 +1,10 @@
 import 'package:hidden_pass/DOMAIN/MODELS/password_model.dart';
 
 class FolderModel {
-  final String title;
+  final String name;
+  final String icon;
   final String description;
-  final String url;
-  List<PasswordModel> passwordList;
+  final String passwords;
 
-  FolderModel({required this.title, required this.description, required this.url, this.passwordList = const []});
+  FolderModel({required this.name, required this.icon, required this.description, required this.passwords});
 }

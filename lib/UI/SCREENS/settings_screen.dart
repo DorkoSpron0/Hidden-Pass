@@ -15,22 +15,28 @@ class SettingsScreen extends StatelessWidget {
     final Token = context.read<TokenAuthProvider>().token;
     final IdUser = context.read<IdUserProvider>().idUser;
 
-    final response = await http.get(
+    if(Token.isNotEmpty){
+      final response = await http.get(
 
-      Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/users/$IdUser'),
-      headers: {
-        'Authorization': 'Bearer $Token',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final userData = json.decode(response.body);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ProfileScreen(userData: userData)),
+        Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/users/$IdUser'),
+        headers: {
+          'Authorization': 'Bearer $Token',
+        },
       );
-    } else {
-      print('Error al obtener el perfil del usuario: ${response.statusCode}');
+
+        if (response.statusCode == 200) {
+          final userData = json.decode(response.body);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ProfileScreen(userData: userData)),
+          );
+        } else {
+          print('Error al obtener el perfil del usuario: ${response.statusCode}');
+        }
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Debes iniciar sesión')),
+      );
     }
   }
 
