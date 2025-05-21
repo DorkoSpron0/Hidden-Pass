@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hidden_pass/UI/SCREENS/user_login_screen.dart';
+import 'package:hidden_pass/LOGICA/api_config.dart';
+import 'package:hidden_pass/UI/SCREENS/users/register_password_screen.dart';
+import 'package:hidden_pass/UI/SCREENS/users/user_login_screen.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:hidden_pass/UI/SCREENS/register_password_screen.dart';
 
 class RegisterAvatar extends StatefulWidget {
   final String email;
@@ -68,7 +69,8 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
   }
 
   void sendData() async {
-    var url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/users/register'); 
+    //var url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/users/register');
+    var url = Uri.parse(ApiConfig.endpoint("/users/register"));
 
   // http://10.0.2.2:8081/api/v1/hidden_pass/users/register
     // Crear el cuerpo de la solicitud

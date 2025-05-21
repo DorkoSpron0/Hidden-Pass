@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -55,7 +56,8 @@ class _ChangeMasterPwdUserPageState extends State<ChangeMasterPwdUserPage> {
 
     try {
       final response = await http.put(
-        Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/users/update/password/$userId'),
+        Uri.parse(ApiConfig.endpoint("/users/update/password/$userId")),
+
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',

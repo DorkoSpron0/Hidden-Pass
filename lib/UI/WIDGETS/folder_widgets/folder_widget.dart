@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:http/http.dart' as http;
@@ -29,7 +30,7 @@ class _FolderListWidgetState extends State<FolderListWidget> {
     setState(() => isLoading = true);
     try {
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/folders/$idUser'), 
+        Uri.parse(ApiConfig.endpoint("/folders/$idUser")),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',

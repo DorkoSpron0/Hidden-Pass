@@ -1,45 +1,22 @@
-import 'dart:convert';
-import 'package:hidden_pass/UI/SCREENS/new_password_screen.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:hidden_pass/UI/SCREENS/user_login_screen.dart';
+  import 'package:hidden_pass/UI/SCREENS/users/register_password_screen.dart';
 
-class CodigoVerificacion extends StatefulWidget {
-  final String email;
-
-  const CodigoVerificacion({super.key, required this.email});
+class RegisterMail extends StatefulWidget {
+  final String username;
+  const RegisterMail({super.key, required this.username});
 
   @override
-  _CodigoVerificacionState createState() => _CodigoVerificacionState();
+  _RegisterMailState createState() => _RegisterMailState();
 }
 
-class _CodigoVerificacionState extends State<CodigoVerificacion> {
-  final TextEditingController _codeController = TextEditingController();
+class _RegisterMailState extends State<RegisterMail> {
+  final TextEditingController _emailController = TextEditingController();
 
-  void sendCode(String email, String code) async {
-    var url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/codes/validate');
-
-    var body = json.encode({
-      'email': email,
-      'securityCode': code,
-    });
-
-    var response = await http.post(
-      url,
-      body: body,
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    if (response.statusCode == 200) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Newpassword(email: email),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Credenciales incorrectas")));
-    }
+  // Expresión regular para validar un email
+  bool _isValidEmail(String email) {
+    final RegExp emailRegExp = RegExp(
+        r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+    return emailRegExp.hasMatch(email);
   }
 
   @override
@@ -67,7 +44,7 @@ class _CodigoVerificacionState extends State<CodigoVerificacion> {
                       SizedBox(
                         width: containerWidth,
                         child: Text(
-                          "Ingresa el código de confirmación",
+                          "Ingresa tu correo electrónico",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: isSmallScreen ? 20 : 28,
@@ -91,12 +68,13 @@ class _CodigoVerificacionState extends State<CodigoVerificacion> {
                           ],
                         ),
                         child: TextField(
-                          controller: _codeController,
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
-                            hintText: "Código de confirmación",
+                            hintText: "Correo electrónico",
                             hintStyle: TextStyle(color: Colors.grey),
                             border: InputBorder.none,
-                            prefixIcon: Icon(Icons.check, color: Colors.grey),
+                            prefixIcon: Icon(Icons.email, color: Colors.grey),
                           ),
                         ),
                       ),
@@ -112,12 +90,7 @@ class _CodigoVerificacionState extends State<CodigoVerificacion> {
                   iconSize: 36,
                   icon: Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const UserLogin(),
-                      ),
-                    );
+                    Navigator.pop(context);
                   },
                 ),
               ),
@@ -142,13 +115,25 @@ class _CodigoVerificacionState extends State<CodigoVerificacion> {
                     iconSize: 36,
                     icon: Icon(Icons.arrow_forward, color: Colors.white),
                     onPressed: () {
-                      String code = _codeController.text.trim();
-                      if (code.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Por favor ingrese un código de validación válido")));
+                      String email = _emailController.text.trim();
+                      if (email.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Por favor ingresa un correo electrónico")));
+                      } else if (!_isValidEmail(email)) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Por favor ingresa un correo válido")));
                       } else {
-                        sendCode(widget.email, code);
+                        // Aquí no pasamos el parámetro `password` ya que se ingresará en la siguiente pantalla
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RegisterPassword(
+                              username: widget.username,
+                              email: email,
+                              password: '', // Se pasa una cadena vacía, ya que el password se pedirá en la siguiente pantalla
+                            ),
+                          ),
+                        );
                       }
-                    },
+                    }
                   ),
                 ),
               ),

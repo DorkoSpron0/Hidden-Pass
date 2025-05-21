@@ -1,58 +1,26 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:hidden_pass/UI/SCREENS/user_login_screen.dart';
+import 'package:hidden_pass/UI/SCREENS/users/register_avatar_screen.dart';
 
-class Newpassword extends StatefulWidget {
+class RegisterPassword extends StatefulWidget {
+  final String username;
   final String email;
-  const Newpassword({super.key, required this.email});
+  const RegisterPassword({super.key, required this.username, required this.email, required String password});
 
   @override
-  _NewpasswordState createState() => _NewpasswordState();
+  _RegisterPasswordState createState() => _RegisterPasswordState();
 }
 
-class _NewpasswordState extends State<Newpassword> {
-
+class _RegisterPasswordState extends State<RegisterPassword> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
 
-  void sendNewPassword(String email, String newPassword) async {
-    
-  var url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/users/update/password');
-
-  // http://10.0.2.2:8081/api/v1/hidden_pass/users/register
-  
-  var body = json.encode({
-    'email': email,
-    'new_password': newPassword,
-  });
-  
-  // Realizar la solicitud POST
-  var response = await http.put(
-    url,
-    body: body,
-    headers: {'Content-Type': 'application/json'}
+  bool _isValidPassword(String password) {
+  final RegExp passwordRegExp = RegExp(
+    r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[-_@$!%*?&])[A-Za-z\d\-@\$!%*?&_]{8,}$"
   );
-  
-    if (response.statusCode == 200) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const UserLogin(),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Credenciales incorrectas")));
-      print('Error en la solicitud: ${response.statusCode}, ${response.body}');
-    }
-    
-  }
+  return passwordRegExp.hasMatch(password);
+}
 
-  bool _isValidPassword(String newPassword) {
-    final RegExp passwordRegExp = RegExp(
-        r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$");
-    return passwordRegExp.hasMatch(newPassword);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +47,7 @@ class _NewpasswordState extends State<Newpassword> {
                       SizedBox(
                         width: containerWidth,
                         child: Text(
-                          "Ingresa tu nueva contraseña",
+                          "Ingresa tu contraseña",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: isSmallScreen ? 20 : 28,
@@ -104,7 +72,7 @@ class _NewpasswordState extends State<Newpassword> {
                         ),
                         child: TextField(
                           controller: _passwordController,
-                          obscureText: !_isPasswordVisible,
+                          obscureText: !_isPasswordVisible, // Cambiar visibilidad de la contraseña
                           decoration: InputDecoration(
                             hintText: "Contraseña",
                             hintStyle: TextStyle(color: Colors.grey),
@@ -112,12 +80,12 @@ class _NewpasswordState extends State<Newpassword> {
                             prefixIcon: Icon(Icons.lock, color: Colors.grey),
                             suffixIcon: IconButton(
                               icon: Icon(
-                                _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                _isPasswordVisible ? Icons.visibility : Icons.visibility_off, // Cambiar icono según el estado
                                 color: Colors.grey,
                               ),
                               onPressed: () {
                                 setState(() {
-                                  _isPasswordVisible = !_isPasswordVisible;
+                                  _isPasswordVisible = !_isPasswordVisible; // Cambiar el estado al presionar el icono
                                 });
                               },
                             ),
@@ -128,6 +96,7 @@ class _NewpasswordState extends State<Newpassword> {
                   ),
                 ),
               ),
+              // Flecha superior izquierda
               Positioned(
                 top: 40,
                 left: 20,
@@ -139,6 +108,7 @@ class _NewpasswordState extends State<Newpassword> {
                   },
                 ),
               ),
+              // Flecha inferior derecha
               Positioned(
                 bottom: 40,
                 right: 20,
@@ -159,13 +129,18 @@ class _NewpasswordState extends State<Newpassword> {
                     iconSize: 36,
                     icon: Icon(Icons.arrow_forward, color: Colors.white),
                     onPressed: () {
-                      String newPassword =_passwordController.text.trim();
-                      if (newPassword.isEmpty) {
+                      String password = _passwordController.text.trim();
+                      if (password.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Por favor ingresa una contraseña")));
-                      } else if (!_isValidPassword(newPassword)) {
+                      } else if (!_isValidPassword(password)) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("La contraseña debe contener al menos 8 caracteres, una letra mayúscula, una minúscula, un número y un carácter especial")));
                       } else {
-                        sendNewPassword(widget.email, newPassword); 
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RegisterAvatar(username: widget.username, email: widget.email, password: password),
+                          ),
+                        );
                       }
                     },
                   ),

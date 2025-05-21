@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/DOMAIN/HIVE/NoteHiveObject.dart';
 import 'package:hidden_pass/DOMAIN/MODELS/notes_model.dart';
+import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
@@ -7,8 +9,6 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
-
-import '../../DOMAIN/HIVE/NoteHiveObject.dart';
 
 class EditNotesScreen extends StatefulWidget {
   final String title;
@@ -77,7 +77,8 @@ class _EditNotesScreenState extends State<EditNotesScreen> {
         ),
       );
     }else{
-      final url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/notes/${widget.idNote}');
+      var url = Uri.parse(ApiConfig.endpoint("/notes/${widget.idNote}"));
+
       try {
         var body = json.encode({
           'priorityName': _selectedPriority,

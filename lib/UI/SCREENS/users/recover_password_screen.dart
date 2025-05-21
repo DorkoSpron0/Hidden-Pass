@@ -1,26 +1,48 @@
+import 'dart:convert';
+import 'package:hidden_pass/LOGICA/api_config.dart';
+import 'package:hidden_pass/UI/SCREENS/passwords/new_password_screen.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:hidden_pass/UI/SCREENS/register_avatar_screen.dart';
+import 'package:hidden_pass/UI/SCREENS/users/user_login_screen.dart';
 
-class RegisterPassword extends StatefulWidget {
-  final String username;
+class CodigoVerificacion extends StatefulWidget {
   final String email;
-  const RegisterPassword({super.key, required this.username, required this.email, required String password});
+
+  const CodigoVerificacion({super.key, required this.email});
 
   @override
-  _RegisterPasswordState createState() => _RegisterPasswordState();
+  _CodigoVerificacionState createState() => _CodigoVerificacionState();
 }
 
-class _RegisterPasswordState extends State<RegisterPassword> {
-  final TextEditingController _passwordController = TextEditingController();
-  bool _isPasswordVisible = false;
+class _CodigoVerificacionState extends State<CodigoVerificacion> {
+  final TextEditingController _codeController = TextEditingController();
 
-  bool _isValidPassword(String password) {
-  final RegExp passwordRegExp = RegExp(
-    r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[-_@$!%*?&])[A-Za-z\d\-@\$!%*?&_]{8,}$"
-  );
-  return passwordRegExp.hasMatch(password);
-}
+  void sendCode(String email, String code) async {
+    var url = Uri.parse(ApiConfig.endpoint("/codes/validate"));
 
+
+    var body = json.encode({
+      'email': email,
+      'securityCode': code,
+    });
+
+    var response = await http.post(
+      url,
+      body: body,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Newpassword(email: email),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Credenciales incorrectas")));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +69,7 @@ class _RegisterPasswordState extends State<RegisterPassword> {
                       SizedBox(
                         width: containerWidth,
                         child: Text(
-                          "Ingresa tu contraseña",
+                          "Ingresa el código de confirmación",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: isSmallScreen ? 20 : 28,
@@ -71,24 +93,12 @@ class _RegisterPasswordState extends State<RegisterPassword> {
                           ],
                         ),
                         child: TextField(
-                          controller: _passwordController,
-                          obscureText: !_isPasswordVisible, // Cambiar visibilidad de la contraseña
+                          controller: _codeController,
                           decoration: InputDecoration(
-                            hintText: "Contraseña",
+                            hintText: "Código de confirmación",
                             hintStyle: TextStyle(color: Colors.grey),
                             border: InputBorder.none,
-                            prefixIcon: Icon(Icons.lock, color: Colors.grey),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _isPasswordVisible ? Icons.visibility : Icons.visibility_off, // Cambiar icono según el estado
-                                color: Colors.grey,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _isPasswordVisible = !_isPasswordVisible; // Cambiar el estado al presionar el icono
-                                });
-                              },
-                            ),
+                            prefixIcon: Icon(Icons.check, color: Colors.grey),
                           ),
                         ),
                       ),
@@ -104,7 +114,12 @@ class _RegisterPasswordState extends State<RegisterPassword> {
                   iconSize: 36,
                   icon: Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const UserLogin(),
+                      ),
+                    );
                   },
                 ),
               ),
@@ -129,18 +144,11 @@ class _RegisterPasswordState extends State<RegisterPassword> {
                     iconSize: 36,
                     icon: Icon(Icons.arrow_forward, color: Colors.white),
                     onPressed: () {
-                      String password = _passwordController.text.trim();
-                      if (password.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Por favor ingresa una contraseña")));
-                      } else if (!_isValidPassword(password)) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("La contraseña debe contener al menos 8 caracteres, una letra mayúscula, una minúscula, un número y un carácter especial")));
+                      String code = _codeController.text.trim();
+                      if (code.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Por favor ingrese un código de validación válido")));
                       } else {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RegisterAvatar(username: widget.username, email: widget.email, password: password),
-                          ),
-                        );
+                        sendCode(widget.email, code);
                       }
                     },
                   ),

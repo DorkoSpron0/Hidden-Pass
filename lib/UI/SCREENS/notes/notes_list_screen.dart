@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/DOMAIN/HIVE/NoteHiveObject.dart';
+import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/WIDGETS/notes_widgets/note_item_widget.dart';
@@ -57,7 +58,7 @@ class _NotesListScreenState extends State<NotesListScreen> {
         isLoading = false;
       });
     } else {
-      final url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/notes/$userId');
+      var url = Uri.parse(ApiConfig.endpoint("/notes/$userId"));
 
       try {
         final response = await http.get(url, headers: {

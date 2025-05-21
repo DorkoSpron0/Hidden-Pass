@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
-import 'package:hidden_pass/UI/SCREENS/edit_notes_screen.dart';
-import 'package:hidden_pass/UI/SCREENS/see_notes_screen.dart';
+import 'package:hidden_pass/UI/SCREENS/notes/edit_notes_screen.dart';
+import 'package:hidden_pass/UI/SCREENS/notes/see_notes_screen.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:hidden_pass/DOMAIN/HIVE/NoteHiveObject.dart';
@@ -40,8 +41,8 @@ class NoteItemWidget extends StatelessWidget {
         box.delete(title);
       }
     } else {
-      final url =
-          Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/notes/$idNote');
+      var url = Uri.parse(ApiConfig.endpoint("/notes/$idNote"));
+
 
       try {
         final response = await http.delete(

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/DOMAIN/HIVE/NoteHiveObject.dart';
 import 'package:hidden_pass/DOMAIN/MODELS/notes_model.dart';
+import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
-import 'package:hidden_pass/UI/SCREENS/notes_list_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:hidden_pass/main.dart';
 import 'package:hive/hive.dart';
@@ -36,7 +36,8 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
   void addNote(NoteModel note) async {
     final userId = context.read<IdUserProvider>().idUser;
     final token = context.read<TokenAuthProvider>().token;
-    final url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/notes/$userId');
+    var url = Uri.parse(ApiConfig.endpoint("/notes/$userId"));
+
 
     if (token == null || token.isEmpty) {
       Future<bool> tituloExiste(String title) async {

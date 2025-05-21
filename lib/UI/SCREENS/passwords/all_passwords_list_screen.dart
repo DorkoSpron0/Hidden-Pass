@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/UI/UTILS/theme_data.dart';
 
-import '../WIDGETS/password_list_widgets/all_passwords_list.dart';
+import '../../WIDGETS/password_list_widgets/all_passwords_list.dart';
 
 
 void main() => runApp(const PasswordListScreen());

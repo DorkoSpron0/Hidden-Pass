@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hidden_pass/DOMAIN/HIVE/PasswordHiveObject.dart';
 import 'package:hidden_pass/DOMAIN/MODELS/all_password_model.dart';
-import 'package:hidden_pass/UI/SCREENS/edit_password_screen.dart';
+import 'package:hidden_pass/LOGICA/api_config.dart';
+import 'package:hidden_pass/UI/SCREENS/passwords/edit_password_screen.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -44,9 +45,9 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
         )).toList();
       });
     } else {
-      final url = Uri.parse(
-          'http://10.0.2.2:8081/api/v1/hidden_pass/passwords/$idUser');
-      final response = await http.get(url, headers: {
+      final url = Uri.parse(ApiConfig.endpoint("/passwords/$idUser"));
+
+    final response = await http.get(url, headers: {
         'Authorization': 'Bearer $token',
         'Accept': 'application/json',
       });
@@ -137,7 +138,8 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
   void deletePassword(BuildContext context, String id, String name, String token) async {
     if (token.isNotEmpty) {
       try {
-        final url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/passwords/password/$id');
+        final url = Uri.parse(ApiConfig.endpoint("/passwords/password/$id"));
+
         final response = await http.delete(url, headers: {
           'Authorization': 'Bearer $token',
           'Accept': 'application/json',
