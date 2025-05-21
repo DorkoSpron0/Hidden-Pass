@@ -112,8 +112,9 @@ class _NotesListScreenState extends State<NotesListScreen> {
           : notesList.isEmpty
               ? Center(child: Text('No tienes notas guardadas'))
               : ListView.builder(
-                  itemCount: notesList.length,
-                  itemBuilder: (context, index) {
+                    padding: const EdgeInsets.only(top: 12.0, bottom: 16.0), // 👈 separación visual arriba
+                    itemCount: notesList.length,
+                    itemBuilder: (context, index) {
                     final note = notesList[index];
                     return NoteItemWidget(
                       title: note['title'] as String,
@@ -128,7 +129,6 @@ class _NotesListScreenState extends State<NotesListScreen> {
                     );
                   },
                 ),
-      backgroundColor: Colors.grey.shade900,
     );
   }
 }

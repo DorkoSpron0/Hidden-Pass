@@ -11,15 +11,19 @@ AppBar appBarWidget(BuildContext context, String title) {
 
   return AppBar(
     elevation: 0,
-    backgroundColor: const Color(0XFF242424),
+    backgroundColor: const Color(0XFF242424), //Color(0XFF242424),
     automaticallyImplyLeading: false,
-    toolbarHeight: 120,
+    toolbarHeight: 80,
     flexibleSpace: LayoutBuilder(
       builder: (context, constraints) {
         final isSmallScreen = constraints.maxWidth < 600;
 
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).padding.top,
+            left: 16.0,
+            right: 16.0,
+          ),
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -44,8 +48,8 @@ AppBar appBarWidget(BuildContext context, String title) {
                                     size: 40.0)
                                 : null,
                           ),
-                          const SizedBox(height: 8),
-                          Text(
+                          /*
+                          * Text(
                             authProvider.username ?? 'Usuario',
                             style: Theme.of(context)
                                 .textTheme
@@ -68,6 +72,8 @@ AppBar appBarWidget(BuildContext context, String title) {
                                 ),
                             overflow: TextOverflow.ellipsis,
                           ),
+                          */
+
                         ],
                       )
                     : Row(
@@ -90,6 +96,7 @@ AppBar appBarWidget(BuildContext context, String title) {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              /*
                               Text(
                                 authProvider.username ?? 'Usuario',
                                 style: Theme.of(context)
@@ -113,12 +120,13 @@ AppBar appBarWidget(BuildContext context, String title) {
                                     ),
                                 overflow: TextOverflow.ellipsis,
                               ),
+                              */
                             ],
                           ),
                         ],
                       ),
               ),
-              
+
               Center(
                 child: Text(
                   title,
@@ -129,7 +137,7 @@ AppBar appBarWidget(BuildContext context, String title) {
                       ),
                 ),
               ),
-              
+
               Align(
                 alignment: Alignment.centerRight,
                 child: IconButton(

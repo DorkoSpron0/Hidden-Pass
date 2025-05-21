@@ -252,6 +252,8 @@ class _EditNotesScreenState extends State<EditNotesScreen> {
                 bottom: 40,
                 right: 20,
                 child: FloatingActionButton(
+                  backgroundColor: Color(0XFF131313),
+                  shape: CircleBorder(),
                   onPressed: () {
                     if (_selectedPriority != null) {
                       NoteModel note = new NoteModel(
