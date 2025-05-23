@@ -11,11 +11,7 @@ class CreateNewPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Crear contraseñas',
-      theme: customThemeData(),
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
@@ -24,19 +20,10 @@ class CreateNewPasswordScreen extends StatelessWidget {
             },
           ),
           title: const Text('Nueva contraseña'),
-          titleTextStyle: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                print("Guardar presionado");
-              },
-              style: ElevatedButton.styleFrom(
-                shape: const CircleBorder(),
-                padding: const EdgeInsets.all(8),
-              ),
-              child: const Text("Guardar"),
-            ),
-          ],
+          titleTextStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
         ),
         body: SingleChildScrollView( // Cambiado aquí
           child: Padding(
@@ -48,7 +35,6 @@ class CreateNewPasswordScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
     );
   }
 }

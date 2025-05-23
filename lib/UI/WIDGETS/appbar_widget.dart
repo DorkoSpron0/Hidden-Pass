@@ -5,21 +5,25 @@ import 'package:provider/provider.dart';
 AppBar appBarWidget(BuildContext context, String title) {
   final authProvider = context.watch<TokenAuthProvider>();
   final horaActual = DateTime.now().hour;
-  String saludo = _obtenerSaludo(horaActual);
+  final themeDate = Theme.of(context).colorScheme;
 
   print("Avatar: ${authProvider.avatar}, Username: ${authProvider.username}");
 
   return AppBar(
     elevation: 0,
-    backgroundColor: const Color(0XFF242424),
+    //backgroundColor: const Color(0XFF242424), //Color(0XFF242424),
     automaticallyImplyLeading: false,
-    toolbarHeight: 120,
+    toolbarHeight: 80,
     flexibleSpace: LayoutBuilder(
       builder: (context, constraints) {
         final isSmallScreen = constraints.maxWidth < 600;
 
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).padding.top,
+            left: 16.0,
+            right: 16.0,
+          ),
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -32,6 +36,7 @@ AppBar appBarWidget(BuildContext context, String title) {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           CircleAvatar(
+                            backgroundColor: themeDate.secondary,
                             radius: 25,
                             backgroundImage: authProvider.avatar != null
                                 ? (authProvider.avatar!.startsWith('http')
@@ -41,11 +46,11 @@ AppBar appBarWidget(BuildContext context, String title) {
                                 : null,
                             child: authProvider.avatar == null
                                 ? const Icon(Icons.account_circle_rounded,
-                                    size: 40.0)
+                                    size: 40.0,)
                                 : null,
                           ),
-                          const SizedBox(height: 8),
-                          Text(
+                          /*
+                          * Text(
                             authProvider.username ?? 'Usuario',
                             style: Theme.of(context)
                                 .textTheme
@@ -68,6 +73,8 @@ AppBar appBarWidget(BuildContext context, String title) {
                                 ),
                             overflow: TextOverflow.ellipsis,
                           ),
+                          */
+
                         ],
                       )
                     : Row(
@@ -82,7 +89,7 @@ AppBar appBarWidget(BuildContext context, String title) {
                                 : null,
                             child: authProvider.avatar == null
                                 ? const Icon(Icons.account_circle_rounded,
-                                    size: 40.0)
+                                    size: 40.0,)
                                 : null,
                           ),
                           const SizedBox(width: 8),
@@ -90,6 +97,7 @@ AppBar appBarWidget(BuildContext context, String title) {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              /*
                               Text(
                                 authProvider.username ?? 'Usuario',
                                 style: Theme.of(context)
@@ -113,23 +121,23 @@ AppBar appBarWidget(BuildContext context, String title) {
                                     ),
                                 overflow: TextOverflow.ellipsis,
                               ),
+                              */
                             ],
                           ),
                         ],
                       ),
               ),
-              
+
               Center(
                 child: Text(
                   title,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                       ),
                 ),
               ),
-              
+
               Align(
                 alignment: Alignment.centerRight,
                 child: IconButton(

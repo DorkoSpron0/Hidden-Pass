@@ -15,8 +15,10 @@ class NoteDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: Colors.black,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -36,13 +38,13 @@ class NoteDetailsScreen extends StatelessWidget {
                   child: Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.arrow_back, color: Colors.white),
+                        icon: Icon(Icons.arrow_back, color: colorScheme.secondary),
                         onPressed: () => Navigator.pop(context),
                       ),
                       Text(
                         'Notas',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: colorScheme.tertiary,
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
                         ),
@@ -75,7 +77,7 @@ class NoteDetailsScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: colorScheme.tertiary,
                               ),
                             ),
 
@@ -90,7 +92,7 @@ class NoteDetailsScreen extends StatelessWidget {
                               ),
                               style: TextStyle(
                                 fontSize: 16,
-                                color: Colors.grey,
+                                color: colorScheme.tertiary,
                                 height: 1.5,
                               ),
                               maxLines: null,

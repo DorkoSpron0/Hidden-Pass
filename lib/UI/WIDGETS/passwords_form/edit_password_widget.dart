@@ -119,98 +119,152 @@ class _PasswordFormState extends State<EditPasswordWidget> {
 
   @override
   Widget build(BuildContext context) {
+
+    final colorScheme = Theme.of(context).colorScheme;
+
     return SingleChildScrollView( // Envolver en SingleChildScrollView
       child: Padding(
         padding: const EdgeInsets.all(18.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const Text('Nombre', style: TextStyle(color: Colors.white)),
+            Text('Nombre', style: TextStyle(color: colorScheme.secondary)),
             TextField(
               controller: _accountNameController,
               focusNode: _accountNameFocusNode,
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: colorScheme.onSurface), // texto del input
               decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.white),
-                ),
                 hintText: 'Nombre de la cuenta',
-                hintStyle: const TextStyle(color: Colors.grey),
+                hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
                 filled: true,
-                fillColor: const Color.fromARGB(255, 49, 49, 49),
-              ),
-            ),
-            const Text('Descripcion', style: TextStyle(color: Colors.white)),
-            TextField(
-              controller: _descriptionController,
-              focusNode: _descriptionFocusNode,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
+                fillColor: colorScheme.surface, // fondo del input
+
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.white),
+                  borderSide: BorderSide(color: colorScheme.outline), // contorno
                 ),
-                hintText: 'Ingresa una breve descripcion',
-                hintStyle: const TextStyle(color: Colors.grey),
-                filled: true,
-                fillColor: const Color.fromARGB(255, 49, 49, 49),
-              ),
-            ),
-            const Text('Sitio web', style: TextStyle(color: Colors.white)),
-            TextField(
-              controller: _urlController,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
+                enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.white),
+                  borderSide: BorderSide(color: colorScheme.outline),
                 ),
-                hintText: 'Ingresa el URL de la pagina',
-                hintStyle: const TextStyle(color: Colors.grey),
-                filled: true,
-                fillColor: const Color.fromARGB(255, 49, 49, 49),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: colorScheme.secondary, width: 2),
+                ),
               ),
             ),
             const SizedBox(height: 16.0),
-            const Text('Email', style: TextStyle(color: Colors.white)),
+            Text('Descripcion', style: TextStyle(color: colorScheme.secondary)),
             TextField(
-              controller: _emailController,
-              style: const TextStyle(color: Colors.white),
+              controller: _descriptionController,
+              focusNode: _descriptionFocusNode,
+              style: TextStyle(color: colorScheme.onSurface), // texto del input
               decoration: InputDecoration(
+
+                hintText: 'Ingresa una breve descripcion',
+                hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
+                filled: true,
+                fillColor: colorScheme.surface, // fondo del input
+
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.white),
+                  borderSide: BorderSide(color: colorScheme.outline), // contorno
                 ),
-                hintText: 'tucorreo@gmail.com',
-                hintStyle: const TextStyle(color: Colors.grey),
-                filled: true,
-                fillColor: const Color.fromARGB(255, 49, 49, 49),
-              ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: colorScheme.outline),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: colorScheme.secondary, width: 2),
+                ),
+              )
+            ),
+            const SizedBox(height: 16.0),
+            Text('Sitio web', style: TextStyle(color: colorScheme.secondary)),
+            TextField(
+              controller: _urlController,
+                style: TextStyle(color: colorScheme.onSurface), // texto del input
+                decoration: InputDecoration(
+
+                  hintText: 'Ingresa el URL de la pagina',
+                  hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
+                  filled: true,
+                  fillColor: colorScheme.surface, // fondo del input
+
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: colorScheme.outline), // contorno
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: colorScheme.outline),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: colorScheme.secondary, width: 2),
+                  ),
+                )
+            ),
+            const SizedBox(height: 16.0),
+            Text('Email', style: TextStyle(color: colorScheme.secondary)),
+            TextField(
+              controller: _emailController,
+                style: TextStyle(color: colorScheme.onSurface), // texto del input
+                decoration: InputDecoration(
+
+                  hintText: 'tucorreo@gmail.com',
+                  hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
+                  filled: true,
+                  fillColor: colorScheme.surface, // fondo del input
+
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: colorScheme.outline), // contorno
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: colorScheme.outline),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: colorScheme.secondary, width: 2),
+                  ),
+                )
             ),
             const SizedBox(height: 24.0),
-            const Text('Contraseña',
+            Text('Contraseña',
                 style: TextStyle(
-                    color: Colors.white,
+                    color: colorScheme.secondary,
                     fontSize: 16,
                     fontWeight: FontWeight.bold)),
             Row(
               children: [
                 Expanded(
                   child: TextField(
-                    style: const TextStyle(color: Colors.white),
-                    obscureText: !_showPassword,
-                    controller: _passwordController, // <-- Usar el controlador aquí
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.white),
-                      ),
-                      hintText: 'GhYjmJUynNJ.Mhn',
-                      hintStyle: const TextStyle(color: Colors.grey),
-                      filled: true,
-                      fillColor: const Color.fromARGB(255, 49, 49, 49),
-                    ),
+                      obscureText: !_showPassword,
+                      controller: _passwordController, // <-- Usar el controlador aquí
+                      style: TextStyle(color: colorScheme.onSurface), // texto del input
+                      decoration: InputDecoration(
+
+                        hintText: 'GhYjmJUynNJ.Mhn',
+                        hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
+                        filled: true,
+                        fillColor: colorScheme.surface, // fondo del input
+
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: colorScheme.outline), // contorno
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: colorScheme.outline),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: colorScheme.secondary, width: 2),
+                        ),
+                      )
                   ),
                 ),
                 IconButton(
@@ -226,7 +280,7 @@ class _PasswordFormState extends State<EditPasswordWidget> {
               ],
             ),
             const SizedBox(height: 18),
-            const Text('Caracteres', style: TextStyle(color: Colors.white)),
+            Text('Caracteres', style: TextStyle(color: colorScheme.secondary)),
             Slider(
               value: options.length.toDouble(),
               min: 8,
@@ -253,7 +307,7 @@ class _PasswordFormState extends State<EditPasswordWidget> {
                       });
                     },
                   ),
-                  const Text('Numeros', style: TextStyle(color: Colors.white)),
+                  Text('Numeros', style: TextStyle(color: colorScheme.secondary)),
                 ]),
                 Row(children: [
                   Checkbox(
@@ -264,7 +318,7 @@ class _PasswordFormState extends State<EditPasswordWidget> {
                       });
                     },
                   ),
-                  const Text('Simbolos  ', style: TextStyle(color: Colors.white)),
+                  Text('Simbolos  ', style: TextStyle(color: colorScheme.secondary)),
                 ]),
               ],
             ),
@@ -280,7 +334,7 @@ class _PasswordFormState extends State<EditPasswordWidget> {
                       });
                     },
                   ),
-                  const Text('Minúsculas', style: TextStyle(color: Colors.white)),
+                  Text('Minúsculas', style: TextStyle(color: colorScheme.secondary)),
                 ]),
                 Row(children: [
                   Checkbox(
@@ -291,7 +345,7 @@ class _PasswordFormState extends State<EditPasswordWidget> {
                       });
                     },
                   ),
-                  const Text('Mayúscula', style: TextStyle(color: Colors.white)),
+                  Text('Mayúscula', style: TextStyle(color: colorScheme.secondary)),
                 ]),
               ],
             ),
@@ -303,11 +357,11 @@ class _PasswordFormState extends State<EditPasswordWidget> {
                 });
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white12,
+                backgroundColor: colorScheme.secondary,
                 minimumSize: const Size.fromHeight(45),
               ),
-              child: const Text('Generar contraseña',
-                  style: TextStyle(color: Colors.white)),
+              child: Text('Generar contraseña',
+                  style: TextStyle(color: colorScheme.primary)),
             ),
             const SizedBox(height: 38),
             ElevatedButton(

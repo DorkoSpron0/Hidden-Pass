@@ -66,6 +66,9 @@ class NoteItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final themeData = Theme.of(context).colorScheme;
+
     return Slidable(
       endActionPane: ActionPane(
         motion: const DrawerMotion(),
@@ -119,38 +122,19 @@ class NoteItemWidget extends StatelessWidget {
         },
         child: Container(
           width: double.infinity,
-          margin: const EdgeInsets.symmetric(horizontal: 20.0),
+          margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
           decoration: BoxDecoration(
-            color: Colors.black.withAlpha(80),
+            color: Colors.black.withAlpha(30),
             borderRadius: BorderRadius.circular(10.0),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      description,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ),
-              const Icon(Icons.arrow_forward_ios),
-            ],
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: themeData.secondary,
+              child: Text(title[0], style: TextStyle(color: Colors.white)),
+            ),
+            title: Text(title, style: Theme.of(context).textTheme.titleMedium),
+            subtitle: Text(description, style: Theme.of(context).textTheme.bodySmall),
+            trailing: const Icon(Icons.arrow_forward_ios),
           ),
         ),
       ),

@@ -15,7 +15,7 @@ class PasswordListScreen extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Crear contraseñas',
-      theme: customThemeData(),
+      theme: customThemeData(isDarkMode: true),
       home: Scaffold(
         appBar: AppBar(
           leading: IconButton( // Agrega el IconButton aquí

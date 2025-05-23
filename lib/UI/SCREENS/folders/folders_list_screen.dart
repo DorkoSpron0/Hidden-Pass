@@ -20,7 +20,7 @@ class _FoldersListScreenState extends State<FoldersListScreen> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Crear contraseñas',
-      theme: customThemeData(),
+      theme: customThemeData(isDarkMode: true),
       home: Scaffold(
         appBar: AppBar(
           titleTextStyle: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),

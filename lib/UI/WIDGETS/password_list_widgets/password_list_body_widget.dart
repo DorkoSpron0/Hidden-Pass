@@ -71,6 +71,7 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
     return passwordList.isEmpty
         ? Center(child: Text("No tienes contraseñas guardadas"))
         : ListView.builder(
+      padding: const EdgeInsets.only(top: 20.0, bottom: 16.0), // 👈 separación visual arriba
       itemCount: passwordList.length,
       itemBuilder: (context, index) {
         final item = passwordList[index];
@@ -99,21 +100,29 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
               borderRadius: BorderRadius.circular(10.0),
             ),
           ]),
-          child: ListTile(
-            leading: CircleAvatar(
-              child: Text(item.name[0], style: TextStyle(color: Colors.white)),
-              backgroundColor: Theme.of(context).colorScheme.primary,
+          child: Container(
+            width: double.infinity,
+            margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
+            decoration: BoxDecoration(
+              color: Colors.black.withAlpha(20),
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            title: Text(item.name, style: Theme.of(context).textTheme.titleMedium),
-            subtitle: Text(item.email_user, style: Theme.of(context).textTheme.bodySmall),
-            trailing: IconButton(
-              icon: Icon(Icons.copy, color: Colors.grey),
-              onPressed: () {
-                Clipboard.setData(ClipboardData(text: item.password));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Contraseña copiada al portapapeles')),
-                );
-              },
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+                child: Text(item.name[0], style: TextStyle(color: Colors.white)),
+              ),
+              title: Text(item.name, style: Theme.of(context).textTheme.titleMedium),
+              subtitle: Text(item.email_user, style: Theme.of(context).textTheme.bodySmall),
+              trailing: IconButton(
+                icon: Icon(Icons.copy, color: Colors.grey),
+                onPressed: () {
+                  Clipboard.setData(ClipboardData(text: item.password));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Contraseña copiada al portapapeles')),
+                  );
+                },
+              ),
             ),
           ),
         );

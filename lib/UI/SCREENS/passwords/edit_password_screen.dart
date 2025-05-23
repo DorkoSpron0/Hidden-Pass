@@ -22,42 +22,33 @@ class EditPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Crear contraseñas',
-      theme: customThemeData(),
-      home: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(
-                  context); // Regresa a la pantalla (Supongo menu?)anterior
-            },
-          ),
-          title: const Text('Editar contraseña'),
-          titleTextStyle: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                print("Guardar presionado");
-              },
-              style: ElevatedButton.styleFrom(
-                shape: const CircleBorder(),
-                padding: const EdgeInsets.all(8),
-              ),
-              child: const Text("Guardar"),
-            ),
-          ],
+
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
-        body: Center(
-          child: EditPasswordWidget(
-              nombre: nombre,
-              description: description,
-              email_user: email_user,
-              password: password,
-              url: url,
-              id: id_password),
+        title: const Text('Editar contraseña'),
+        titleTextStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.bold,
+          fontSize: 18,
+        ),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        iconTheme: Theme.of(context).appBarTheme.iconTheme,
+      ),
+      body: Center(
+        child: EditPasswordWidget(
+          nombre: nombre,
+          description: description,
+          email_user: email_user,
+          password: password,
+          url: url,
+          id: id_password,
         ),
       ),
     );
