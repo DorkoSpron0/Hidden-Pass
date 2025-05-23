@@ -242,19 +242,29 @@ class _PasswordFormState extends State<EditPasswordWidget> {
               children: [
                 Expanded(
                   child: TextField(
-                    style: const TextStyle(color: Colors.white),
-                    obscureText: !_showPassword,
-                    controller: TextEditingController(text: _generatedPassword),
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.white),
-                      ),
-                      hintText: 'GhYjmJUynNJ.Mhn',
-                      hintStyle: const TextStyle(color: Colors.grey),
-                      filled: true,
-                      fillColor: const Color.fromARGB(255, 49, 49, 49),
-                    ),
+                      obscureText: !_showPassword,
+                      controller: _passwordController, // <-- Usar el controlador aquí
+                      style: TextStyle(color: colorScheme.onSurface), // texto del input
+                      decoration: InputDecoration(
+
+                        hintText: 'GhYjmJUynNJ.Mhn',
+                        hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
+                        filled: true,
+                        fillColor: colorScheme.surface, // fondo del input
+
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: colorScheme.outline), // contorno
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: colorScheme.outline),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: colorScheme.secondary, width: 2),
+                        ),
+                      )
                   ),
                 ),
                 IconButton(

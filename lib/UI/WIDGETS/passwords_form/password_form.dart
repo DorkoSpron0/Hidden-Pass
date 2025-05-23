@@ -254,17 +254,6 @@ class _PasswordFormState extends State<PasswordForm> {
                 child: TextField(
                   obscureText: !_showPassword,
                   controller: _passwordController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Colors.white),
-                    ),
-                    hintText: 'GhYjmJUynNJ.Mhn',
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    filled: true,
-                    fillColor: const Color.fromARGB(255, 49, 49, 49),
-                  ),
-                  controller: TextEditingController(text: _generatedPassword),
                     style: TextStyle(color: colorScheme.onSurface), // texto del input
                     decoration: InputDecoration(
 
