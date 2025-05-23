@@ -100,15 +100,15 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
           ]),
           child: Container(
             width: double.infinity,
-            margin: const EdgeInsets.symmetric(horizontal: 20.0),
+            margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
             decoration: BoxDecoration(
-              color: Colors.black.withAlpha(80),
+              color: Colors.black.withAlpha(20),
               borderRadius: BorderRadius.circular(10.0),
             ),
             child: ListTile(
               leading: CircleAvatar(
+                backgroundColor: Theme.of(context).colorScheme.secondary,
                 child: Text(item.name[0], style: TextStyle(color: Colors.white)),
-                backgroundColor: Theme.of(context).colorScheme.primary,
               ),
               title: Text(item.name, style: Theme.of(context).textTheme.titleMedium),
               subtitle: Text(item.email_user, style: Theme.of(context).textTheme.bodySmall),

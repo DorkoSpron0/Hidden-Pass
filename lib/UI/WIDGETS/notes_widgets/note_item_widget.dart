@@ -65,6 +65,9 @@ class NoteItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final themeData = Theme.of(context).colorScheme;
+
     return Slidable(
       endActionPane: ActionPane(
         motion: const DrawerMotion(),
@@ -118,14 +121,14 @@ class NoteItemWidget extends StatelessWidget {
         },
         child: Container(
           width: double.infinity,
-          margin: const EdgeInsets.symmetric(horizontal: 20.0),
+          margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
           decoration: BoxDecoration(
-            color: Colors.black.withAlpha(80),
+            color: Colors.black.withAlpha(30),
             borderRadius: BorderRadius.circular(10.0),
           ),
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: themeData.secondary,
               child: Text(title[0], style: TextStyle(color: Colors.white)),
             ),
             title: Text(title, style: Theme.of(context).textTheme.titleMedium),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
+import 'package:hidden_pass/UI/PROVIDERS/theme_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -42,8 +43,9 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(36, 36, 36, 1),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 40.0),
         child: Column(
@@ -63,6 +65,12 @@ class SettingsScreen extends StatelessWidget {
               child: buildListTile("Acerca de"),
             ),
             buildVersionTile("Versión", "0.0.1"),
+            SwitchListTile(
+              title: const Text("Modo Oscuro"),
+              value: themeProvider.isDarkMode,
+              onChanged: (value) => themeProvider.toggleTheme(value),
+            ),
+
           ],
         ),
       ),

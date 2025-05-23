@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 
 Widget buildListTile(String title) {
   return ListTile(
-    title: Text(title, style: TextStyle(color: Colors.white)),
-    trailing: Icon(Icons.chevron_right, color: Colors.white),
+    title: Text(title),
+    trailing: Icon(Icons.chevron_right),
   );
 }
 
 Widget buildVersionTile(String title, String version) {
   return ListTile(
-    title: Text(title, style: TextStyle(color: Colors.white)),
-    trailing: Text(version, style: TextStyle(color: Colors.white)),
+    title: Text(title),
+    trailing: Text(version),
   );
 }

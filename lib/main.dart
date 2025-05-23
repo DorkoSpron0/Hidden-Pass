@@ -15,12 +15,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'DOMAIN/HIVE/ADAPTERS/NoteHiveAdapter.dart';
-import 'DOMAIN/HIVE/NoteHiveObject.dart'; // Para usar Timer
+import 'DOMAIN/HIVE/NoteHiveObject.dart';
+import 'UI/PROVIDERS/theme_provider.dart'; // Para usar Timer
 
 
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
 
   if (!Platform.isWindows && !Platform.isLinux && !Platform.isMacOS) {
@@ -44,28 +44,32 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider<NavigationProvider>(
-              create: (_) => NavigationProvider()),
-
-          ChangeNotifierProvider<TokenAuthProvider>(
+      providers: [
+        ChangeNotifierProvider<NavigationProvider>(
+            create: (_) => NavigationProvider()),
+        ChangeNotifierProvider<TokenAuthProvider>(
             create: (_) => TokenAuthProvider()),
-
-          ChangeNotifierProvider<IdUserProvider>(
-            create: (_) => IdUserProvider(),
-          ),
- 
-        ],
-        builder: (context, _) {
-          return MaterialApp(
-            title: 'Hidden Pass',
-            theme: customThemeData(),
-            debugShowCheckedModeBanner: false,
-            home: const SplashScreen(), // Pantalla inicial
-          );
-        });
+        ChangeNotifierProvider<IdUserProvider>(
+            create: (_) => IdUserProvider()),
+        ChangeNotifierProvider<ThemeProvider>(
+            create: (_) => ThemeProvider()),
+      ],
+      // Usa el builder aquí para obtener el contexto correcto con todos los providers
+      builder: (context, _) {
+        final themeData = Provider.of<ThemeProvider>(context);
+        return MaterialApp(
+          title: 'Hidden Pass',
+          themeMode: themeData.themeMode,
+          theme: customThemeData(isDarkMode: false),
+          darkTheme: customThemeData(isDarkMode: true),
+          debugShowCheckedModeBanner: false,
+          home: const SplashScreen(),
+        );
+      },
+    );
   }
 }
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

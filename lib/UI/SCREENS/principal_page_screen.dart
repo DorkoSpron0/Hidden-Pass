@@ -17,30 +17,42 @@ class PricipalPageScreen extends StatefulWidget {
   const PricipalPageScreen({super.key});
 
   @override
-  State<PricipalPageScreen> createState() => _PrincipalPageScreenState();
+  State<PricipalPageScreen> createState() => _PricipalPageScreenState();
 }
 
-class _PrincipalPageScreenState extends State<PricipalPageScreen> {
+class _PricipalPageScreenState extends State<PricipalPageScreen> {
   @override
   Widget build(BuildContext context) {
-    NavigationProvider watch = context.watch<NavigationProvider>();
-    TokenAuthProvider watchAuth = context.watch<TokenAuthProvider>();
+    final watch = context.watch<NavigationProvider>();
+    final authProvider = context.watch<TokenAuthProvider>();
+    final bool showFolders = authProvider.username != null && authProvider.username!.trim().isNotEmpty;
 
-    final List<Widget> pages = [
-      PasswordListBodyWidget(),
-      FoldersListScreen(),
-      NotesListScreen(),
-      SettingsScreen()
-    ];
+    // Definición de pantallas
+    final passwordScreen = PasswordListBodyWidget();
+    final foldersScreen = FoldersListScreen();
+    final notesScreen = NotesListScreen();
+    final settingsScreen = SettingsScreen();
 
-    final List<String> titles = ["Contraseñas", "Carpetas", "Notas", "Configuración"];
+    final pages = showFolders
+        ? [passwordScreen, foldersScreen, notesScreen, settingsScreen]
+        : [passwordScreen, notesScreen, settingsScreen];
+
+    final titles = showFolders
+        ? ["Contraseñas", "Carpetas", "Notas", "Configuración"]
+        : ["Contraseñas", "Notas", "Configuración"];
+
+    // Ajuste del índice visual
+    int adjustedIndex = watch.index;
+    if (!showFolders && adjustedIndex >= 1) {
+      adjustedIndex -= 1;
+    }
 
     return Scaffold(
-      appBar: appBarWidget(context, titles[watch.index]),
+      appBar: appBarWidget(context, titles[adjustedIndex]),
       body: Stack(
         children: [
           AnimatedSwitcher(
-            duration: Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 300),
             transitionBuilder: (child, animation) {
               return FadeTransition(
                 opacity: animation,
@@ -48,45 +60,43 @@ class _PrincipalPageScreenState extends State<PricipalPageScreen> {
               );
             },
             child: IndexedStack(
-              key: ValueKey(watch.index),
-              index: watch.index,
+              key: ValueKey(adjustedIndex),
+              index: adjustedIndex,
               children: pages,
             ),
           ),
         ],
       ),
       bottomNavigationBar: MediaQuery.of(context).size.width > 600
-          ? BottomNavigationBarBigWidget()
-          : BottomNavigationBarWidget(),
+          ? const BottomNavigationBarBigWidget()
+          : const BottomNavigationBarWidget(),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0XFF131313),
-        shape: CircleBorder(),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        shape: const CircleBorder(),
         onPressed: () async {
-          if (watch.index == 1) {
+          Widget? screenToOpen;
+
+          if (adjustedIndex == 0) {
+            screenToOpen = CreateNewPasswordScreen();
+          } else if (adjustedIndex == 1) {
+            screenToOpen = showFolders ? CreateNewFolderScreen() : AddNoteScreen();
+          } else if (adjustedIndex == 2 && showFolders) {
+            screenToOpen = AddNoteScreen();
+          }
+
+          if (screenToOpen != null) {
             final result = await Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => CreateNewFolderScreen()),
+              MaterialPageRoute(builder: (context) => screenToOpen!), // el ! es clave aquí
             );
+
             if (result == true) {
-              // Actualizar la lista de notas si es necesario
-            }
-          }else if (watch.index == 2) {
-            final result = await Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AddNoteScreen()),
-            ); if (result == true) {
-              // Actualizar la lista de notas si es necesario
-            }
-          } else if (watch.index == 0) {
-            final result = await Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => CreateNewPasswordScreen()),
-            ); if (result == true) {
-              // Actualizar la lista de notas si es necesario
+              // Recargar listas si es necesario
             }
           }
         },
-        child: Icon(Icons.add, size: 30.0),
+
+        child: const Icon(Icons.add, size: 30.0),
       ),
     );
   }

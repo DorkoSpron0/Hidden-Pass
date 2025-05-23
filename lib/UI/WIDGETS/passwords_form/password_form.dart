@@ -116,6 +116,9 @@ class _PasswordFormState extends State<PasswordForm> {
 
   @override
   Widget build(BuildContext context) {
+
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.all(18.0),
       child: Column(
@@ -125,90 +128,139 @@ class _PasswordFormState extends State<PasswordForm> {
           TextField(
             controller: _accountNameController,
             focusNode: _accountNameFocus,
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(color: colorScheme.onSurface), // texto del input
             decoration: InputDecoration(
+              hintText: 'Nombre de la cuenta',
+              hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
+              filled: true,
+              fillColor: colorScheme.surface, // fondo del input
+
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: Colors.white),
+                borderSide: BorderSide(color: colorScheme.outline), // contorno
               ),
-              hintText: 'Nombre de la cuenta',
-              hintStyle: const TextStyle(color: Colors.grey),
-              filled: true,
-              fillColor: const Color.fromARGB(255, 49, 49, 49),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: colorScheme.outline),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: colorScheme.secondary, width: 2),
+              ),
             ),
           ),
           const Text('Descripcion', style: TextStyle(color: Colors.white)),
           TextField(
             controller: _descriptionController,
             focusNode: _descriptionFocus,
-            style: const TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: Colors.white),
-              ),
-              hintText: 'Ingresa una breve descripcion',
-              hintStyle: const TextStyle(color: Colors.grey),
-              filled: true,
-              fillColor: const Color.fromARGB(255, 49, 49, 49),
-            ),
+              style: TextStyle(color: colorScheme.onSurface), // texto del input
+              decoration: InputDecoration(
+
+                hintText: 'Ingresa una breve descripcion',
+                hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
+                filled: true,
+                fillColor: colorScheme.surface, // fondo del input
+
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: colorScheme.outline), // contorno
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: colorScheme.outline),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: colorScheme.secondary, width: 2),
+                ),
+              )
           ),
           const Text('Sitio web', style: TextStyle(color: Colors.white)),
           TextField(
             controller: _urlController,
             focusNode: _urlFocus,
-            style: const TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: Colors.white),
-              ),
-              hintText: 'Ingresa el URL de la pagina',
-              hintStyle: const TextStyle(color: Colors.grey),
-              filled: true,
-              fillColor: const Color.fromARGB(255, 49, 49, 49),
-            ),
+              style: TextStyle(color: colorScheme.onSurface), // texto del input
+              decoration: InputDecoration(
+
+                hintText: 'Ingresa el URL de la pagina',
+                hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
+                filled: true,
+                fillColor: colorScheme.surface, // fondo del input
+
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: colorScheme.outline), // contorno
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: colorScheme.outline),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: colorScheme.secondary, width: 2),
+                ),
+              )
           ),
           const SizedBox(height: 16.0),
           const Text('Email', style: TextStyle(color: Colors.white)),
           TextField(
             controller: _emailController,
             focusNode: _emailFocus,
-            style: const TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: Colors.white),
-              ),
-              hintText: 'tucorreo@gmail.com',
-              hintStyle: const TextStyle(color: Colors.grey),
-              filled: true,
-              fillColor: const Color.fromARGB(255, 49, 49, 49),
-            ),
+              style: TextStyle(color: colorScheme.onSurface), // texto del input
+              decoration: InputDecoration(
+
+                hintText: 'tucorreo@gmail.com',
+                hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
+                filled: true,
+                fillColor: colorScheme.surface, // fondo del input
+
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: colorScheme.outline), // contorno
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: colorScheme.outline),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(color: colorScheme.secondary, width: 2),
+                ),
+              )
           ),
           const SizedBox(height: 24.0),
-          const Text('Contraseña',
+          Text('Contraseña',
               style: TextStyle(
-                  color: Colors.white,
+                  color: colorScheme.secondary,
                   fontSize: 16,
                   fontWeight: FontWeight.bold)),
           Row(
             children: [
               Expanded(
                 child: TextField(
-                  style: const TextStyle(color: Colors.white),
                   obscureText: !_showPassword,
                   controller: TextEditingController(text: _generatedPassword),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Colors.white),
-                    ),
-                    hintText: 'GhYjmJUynNJ.Mhn',
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    filled: true,
-                    fillColor: const Color.fromARGB(255, 49, 49, 49),
-                  ),
+                    style: TextStyle(color: colorScheme.onSurface), // texto del input
+                    decoration: InputDecoration(
+
+                      hintText: 'GhYjmJUynNJ.Mhn',
+                      hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
+                      filled: true,
+                      fillColor: colorScheme.surface, // fondo del input
+
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: colorScheme.outline), // contorno
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: colorScheme.outline),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: colorScheme.secondary, width: 2),
+                      ),
+                    )
                 ),
               ),
               IconButton(
@@ -251,7 +303,7 @@ class _PasswordFormState extends State<PasswordForm> {
                     });
                   },
                 ),
-                const Text('Numeros', style: TextStyle(color: Colors.white)),
+                Text('Numeros', style: TextStyle(color: colorScheme.secondary)),
               ]),
               Row(children: [
                 Checkbox(
@@ -262,7 +314,7 @@ class _PasswordFormState extends State<PasswordForm> {
                     });
                   },
                 ),
-                const Text('Simbolos  ', style: TextStyle(color: Colors.white)),
+                Text('Simbolos  ', style: TextStyle(color: colorScheme.secondary)),
               ]),
             ],
           ),
@@ -278,7 +330,7 @@ class _PasswordFormState extends State<PasswordForm> {
                     });
                   },
                 ),
-                const Text('Minúsculas', style: TextStyle(color: Colors.white)),
+                Text('Minúsculas', style: TextStyle(color: colorScheme.secondary)),
               ]),
               Row(children: [
                 Checkbox(
@@ -289,7 +341,7 @@ class _PasswordFormState extends State<PasswordForm> {
                     });
                   },
                 ),
-                const Text('Mayúscula', style: TextStyle(color: Colors.white)),
+                Text('Mayúscula', style: TextStyle(color: colorScheme.secondary)),
               ]),
             ],
           ),
@@ -300,11 +352,11 @@ class _PasswordFormState extends State<PasswordForm> {
               });
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white12,
+              backgroundColor: colorScheme.secondary,
               minimumSize: const Size.fromHeight(45),
             ),
-            child: const Text('Generar contraseña',
-                style: TextStyle(color: Colors.white)),
+            child: Text('Generar contraseña',
+                style: TextStyle(color: colorScheme.primary)),
           ),
           const SizedBox(height: 38),
           ElevatedButton(
