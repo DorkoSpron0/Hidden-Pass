@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/DOMAIN/HIVE/PasswordHiveObject.dart';
 import 'package:hidden_pass/DOMAIN/MODELS/password_options.dart';
+import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
@@ -91,8 +92,8 @@ class _PasswordFormState extends State<EditPasswordWidget> {
       print("Guardar contraseña localmente");
       return;
     } else {
-      final Url = Uri.parse(
-          'http://10.0.2.2:8081/api/v1/hidden_pass/passwords/password/$id');
+      final Url = Uri.parse(ApiConfig.endpoint("/passwords/password/$id"));
+
       var Body = json.encode({
         "name": name,
         "url": url,

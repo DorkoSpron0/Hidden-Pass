@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hidden_pass/UI/SCREENS/register_mail_screen.dart';
-import 'package:hidden_pass/UI/SCREENS/register_screen.dart';
+import 'package:hidden_pass/UI/SCREENS/users/register_mail_screen.dart';
+import 'package:hidden_pass/UI/SCREENS/users/register_screen.dart';
 
 class RegisterUsername extends StatefulWidget {
   const RegisterUsername({super.key});

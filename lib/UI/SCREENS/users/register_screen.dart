@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hidden_pass/UI/SCREENS/register_username_screen.dart';
+import 'package:hidden_pass/UI/SCREENS/users/register_username_screen.dart';
 import 'package:hidden_pass/main.dart';
 
 class RegisterScreen extends StatelessWidget {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:http/http.dart' as http;
@@ -43,7 +44,8 @@ class _FolderFormState extends State<FolderForm> {
 
     try {
       var response = await http.post(
-        Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/folders/$idUser'),
+        Uri.parse(ApiConfig.endpoint("/folders/$idUser")),
+
         body: json.encode({
           "name": name.trim(),
           "icon": icon.trim(),
@@ -83,8 +85,9 @@ class _FolderFormState extends State<FolderForm> {
       print('Este es el id usuario: $idUser');
       print('Authorization Header: $authHeader');
 
-      final url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/passwords/$idUser');
-      final response = await http.get(
+      final url = Uri.parse(ApiConfig.endpoint("/passwords/$idUser"));
+
+    final response = await http.get(
         url,
         headers: {
           'Authorization': authHeader,

@@ -1,22 +1,59 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:hidden_pass/UI/SCREENS/register_password_screen.dart';
+import 'package:hidden_pass/LOGICA/api_config.dart';
+import 'package:http/http.dart' as http;
+import 'package:hidden_pass/UI/SCREENS/users/user_login_screen.dart';
 
-class RegisterMail extends StatefulWidget {
-  final String username;
-  const RegisterMail({super.key, required this.username});
+class Newpassword extends StatefulWidget {
+  final String email;
+  const Newpassword({super.key, required this.email});
 
   @override
-  _RegisterMailState createState() => _RegisterMailState();
+  _NewpasswordState createState() => _NewpasswordState();
 }
 
-class _RegisterMailState extends State<RegisterMail> {
-  final TextEditingController _emailController = TextEditingController();
+class _NewpasswordState extends State<Newpassword> {
 
-  // Expresión regular para validar un email
-  bool _isValidEmail(String email) {
-    final RegExp emailRegExp = RegExp(
-        r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
-    return emailRegExp.hasMatch(email);
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isPasswordVisible = false;
+
+  void sendNewPassword(String email, String newPassword) async {
+    
+  //var url = Uri.parse('http://localhost:8081/api/v1/hidden_pass/users/update/password');
+  var url = Uri.parse(ApiConfig.endpoint("/users/update/password"));
+
+  // http://10.0.2.2:8081/api/v1/hidden_pass/users/register
+  
+  var body = json.encode({
+    'email': email,
+    'new_password': newPassword,
+  });
+  
+  // Realizar la solicitud POST
+  var response = await http.put(
+    url,
+    body: body,
+    headers: {'Content-Type': 'application/json'}
+  );
+  
+    if (response.statusCode == 200) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const UserLogin(),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Credenciales incorrectas")));
+      print('Error en la solicitud: ${response.statusCode}, ${response.body}');
+    }
+    
+  }
+
+  bool _isValidPassword(String newPassword) {
+    final RegExp passwordRegExp = RegExp(
+        r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$");
+    return passwordRegExp.hasMatch(newPassword);
   }
 
   @override
@@ -44,7 +81,7 @@ class _RegisterMailState extends State<RegisterMail> {
                       SizedBox(
                         width: containerWidth,
                         child: Text(
-                          "Ingresa tu correo electrónico",
+                          "Ingresa tu nueva contraseña",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: isSmallScreen ? 20 : 28,
@@ -68,13 +105,24 @@ class _RegisterMailState extends State<RegisterMail> {
                           ],
                         ),
                         child: TextField(
-                          controller: _emailController,
-                          keyboardType: TextInputType.emailAddress,
+                          controller: _passwordController,
+                          obscureText: !_isPasswordVisible,
                           decoration: InputDecoration(
-                            hintText: "Correo electrónico",
+                            hintText: "Contraseña",
                             hintStyle: TextStyle(color: Colors.grey),
                             border: InputBorder.none,
-                            prefixIcon: Icon(Icons.email, color: Colors.grey),
+                            prefixIcon: Icon(Icons.lock, color: Colors.grey),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                color: Colors.grey,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                            ),
                           ),
                         ),
                       ),
@@ -82,7 +130,6 @@ class _RegisterMailState extends State<RegisterMail> {
                   ),
                 ),
               ),
-              // Flecha superior izquierda
               Positioned(
                 top: 40,
                 left: 20,
@@ -94,7 +141,6 @@ class _RegisterMailState extends State<RegisterMail> {
                   },
                 ),
               ),
-              // Flecha inferior derecha
               Positioned(
                 bottom: 40,
                 right: 20,
@@ -115,25 +161,15 @@ class _RegisterMailState extends State<RegisterMail> {
                     iconSize: 36,
                     icon: Icon(Icons.arrow_forward, color: Colors.white),
                     onPressed: () {
-                      String email = _emailController.text.trim();
-                      if (email.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Por favor ingresa un correo electrónico")));
-                      } else if (!_isValidEmail(email)) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Por favor ingresa un correo válido")));
+                      String newPassword =_passwordController.text.trim();
+                      if (newPassword.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Por favor ingresa una contraseña")));
+                      } else if (!_isValidPassword(newPassword)) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("La contraseña debe contener al menos 8 caracteres, una letra mayúscula, una minúscula, un número y un carácter especial")));
                       } else {
-                        // Aquí no pasamos el parámetro `password` ya que se ingresará en la siguiente pantalla
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RegisterPassword(
-                              username: widget.username,
-                              email: email,
-                              password: '', // Se pasa una cadena vacía, ya que el password se pedirá en la siguiente pantalla
-                            ),
-                          ),
-                        );
+                        sendNewPassword(widget.email, newPassword); 
                       }
-                    }
+                    },
                   ),
                 ),
               ),

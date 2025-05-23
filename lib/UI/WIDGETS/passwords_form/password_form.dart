@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/DOMAIN/HIVE/PasswordHiveObject.dart';
 import 'package:hidden_pass/DOMAIN/MODELS/password_options.dart';
+import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:hive/hive.dart';
@@ -91,7 +92,8 @@ class _PasswordFormState extends State<PasswordForm> {
         print(e.toString());
       }
     } else {
-      final Url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/passwords/$IdUser');
+      final Url = Uri.parse(ApiConfig.endpoint("/passwords/$IdUser"));
+
       var Body = json.encode({
         "name": name,
         "url": url,

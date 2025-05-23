@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/theme_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
-import 'package:hidden_pass/UI/SCREENS/settings_user__screen.dart';
+import 'package:hidden_pass/UI/SCREENS/users/settings_user__screen.dart';
 import 'package:hidden_pass/UI/WIDGETS/settings_screen_widgets/settings_widget.dart';
 import 'settings_about_us_screen.dart';
 
@@ -19,8 +20,9 @@ class SettingsScreen extends StatelessWidget {
     if(Token.isNotEmpty){
       final response = await http.get(
 
-        Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/users/$IdUser'),
-        headers: {
+        Uri.parse(ApiConfig.endpoint("/users/$IdUser")),
+
+    headers: {
           'Authorization': 'Bearer $Token',
         },
       );
