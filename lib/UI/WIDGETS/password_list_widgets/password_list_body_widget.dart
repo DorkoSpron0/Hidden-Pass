@@ -81,9 +81,10 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
             SlidableAction(
               onPressed: (context) {
                 deletePassword(context, item.id_password, item.name, token);
-                setState(() {
-                  passwordList.removeAt(index);
-                });
+                // Quita esta línea:
+                // setState(() {
+                //   passwordList.removeAt(index);
+                // });
               },
               icon: Icons.delete,
               backgroundColor: Colors.red,
@@ -155,22 +156,27 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
         });
 
         if (response.statusCode == 200) {
-          setState(() {
-            passwordList.removeWhere((item) => item.id_password == id);
-          });
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Contraseña eliminada del servidor correctamente')),
-          );
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Contraseña eliminada del servidor correctamente')),
+            );
+            setState(() {
+              passwordList.removeWhere((item) => item.id_password == id);
+            });
+          }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error al eliminar la contraseña del servidor: ${response.statusCode}')),
-          );
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Error al eliminar la contraseña del servidor: ${response.statusCode}')),
+            );
+          }
         }
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al eliminar la contraseña: $e')),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error al eliminar la contraseña: $e')),
+          );
+        }
       }
     } else {
       final box = Hive.box<PasswordHiveObject>('passwords');
@@ -183,9 +189,14 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
         box.delete(name);
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Contraseña eliminada del servidor correctamente')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Contraseña eliminada del servidor correctamente')),
+        );
+        setState(() {
+          passwordList.removeWhere((item) => item.name == name);
+        });
+      }
     }
   }
 }

@@ -9,11 +9,13 @@ import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 
 class ChangeMasterPwdUserPage extends StatefulWidget {
   @override
-  _ChangeMasterPwdUserPageState createState() => _ChangeMasterPwdUserPageState();
+  _ChangeMasterPwdUserPageState createState() =>
+      _ChangeMasterPwdUserPageState();
 }
 
 class _ChangeMasterPwdUserPageState extends State<ChangeMasterPwdUserPage> {
-  final TextEditingController masterPasswordController = TextEditingController();
+  final TextEditingController masterPasswordController =
+      TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
   bool _isMasterPasswordVisible = false;
   bool _isNewPasswordVisible = false;
@@ -57,7 +59,6 @@ class _ChangeMasterPwdUserPageState extends State<ChangeMasterPwdUserPage> {
     try {
       final response = await http.put(
         Uri.parse(ApiConfig.endpoint("/users/update/password/$userId")),
-
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -114,7 +115,9 @@ class _ChangeMasterPwdUserPageState extends State<ChangeMasterPwdUserPage> {
                   labelStyle: TextStyle(color: Colors.white),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _isMasterPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                      _isMasterPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                       color: Colors.white,
                     ),
                     onPressed: _toggleMasterPasswordVisibility,
@@ -138,7 +141,9 @@ class _ChangeMasterPwdUserPageState extends State<ChangeMasterPwdUserPage> {
                   labelStyle: TextStyle(color: Colors.white),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _isNewPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                      _isNewPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
                       color: Colors.white,
                     ),
                     onPressed: _toggleNewPasswordVisibility,
@@ -155,7 +160,15 @@ class _ChangeMasterPwdUserPageState extends State<ChangeMasterPwdUserPage> {
               SizedBox(height: 30),
               Center(
                 child: ElevatedButton(
-                  onPressed: _updatePassword,
+                  onPressed: () {
+                    _updatePassword();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PricipalPageScreen(),
+                      ),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color.fromRGBO(33, 33, 33, 1),
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),

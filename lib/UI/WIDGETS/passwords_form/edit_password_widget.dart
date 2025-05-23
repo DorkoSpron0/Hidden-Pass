@@ -55,6 +55,7 @@ class _PasswordFormState extends State<EditPasswordWidget> {
     _urlController.text = widget.url;
     _emailController.text = widget.email_user;
     _generatedPassword = widget.password;
+    _passwordController.text = widget.password; // <-- Añadido para inicializar el controlador
   }
 
   @override
@@ -241,30 +242,20 @@ class _PasswordFormState extends State<EditPasswordWidget> {
               children: [
                 Expanded(
                   child: TextField(
-                    controller: TextEditingController(text: _generatedPassword),
+                    style: const TextStyle(color: Colors.white),
                     obscureText: !_showPassword,
-                      style: TextStyle(color: colorScheme.onSurface), // texto del input
-                      decoration: InputDecoration(
-
-                        hintText: 'GhYjmJUynNJ.Mhn',
-                        hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
-                        filled: true,
-                        fillColor: colorScheme.surface, // fondo del input
-
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: colorScheme.outline), // contorno
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: colorScheme.outline),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: colorScheme.secondary, width: 2),
-                        ),
-                      )
-                  )
+                    controller: TextEditingController(text: _generatedPassword),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(color: Colors.white),
+                      ),
+                      hintText: 'GhYjmJUynNJ.Mhn',
+                      hintStyle: const TextStyle(color: Colors.grey),
+                      filled: true,
+                      fillColor: const Color.fromARGB(255, 49, 49, 49),
+                    ),
+                  ),
                 ),
                 IconButton(
                   onPressed: () {
@@ -352,6 +343,7 @@ class _PasswordFormState extends State<EditPasswordWidget> {
               onPressed: () {
                 setState(() {
                   _generatedPassword = generatePassword(options);
+                  _passwordController.text = _generatedPassword; // <-- Actualizar el controlador
                 });
               },
               style: ElevatedButton.styleFrom(
@@ -367,7 +359,7 @@ class _PasswordFormState extends State<EditPasswordWidget> {
                 String name = _accountNameController.text;
                 String url = _urlController.text;
                 String email_user = _emailController.text;
-                String password = _generatedPassword;
+                String password = _passwordController.text; // <-- Tomar el valor del controlador
                 String description = _descriptionController.text;
 
                 savePassword(
