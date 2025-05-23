@@ -55,6 +55,7 @@ class _PasswordFormState extends State<EditPasswordWidget> {
     _urlController.text = widget.url;
     _emailController.text = widget.email_user;
     _generatedPassword = widget.password;
+    _passwordController.text = widget.password; // <-- Añadido para inicializar el controlador
   }
 
   @override
@@ -199,7 +200,7 @@ class _PasswordFormState extends State<EditPasswordWidget> {
                   child: TextField(
                     style: const TextStyle(color: Colors.white),
                     obscureText: !_showPassword,
-                    controller: TextEditingController(text: _generatedPassword),
+                    controller: _passwordController, // <-- Usar el controlador aquí
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -298,6 +299,7 @@ class _PasswordFormState extends State<EditPasswordWidget> {
               onPressed: () {
                 setState(() {
                   _generatedPassword = generatePassword(options);
+                  _passwordController.text = _generatedPassword; // <-- Actualizar el controlador
                 });
               },
               style: ElevatedButton.styleFrom(
@@ -313,7 +315,7 @@ class _PasswordFormState extends State<EditPasswordWidget> {
                 String name = _accountNameController.text;
                 String url = _urlController.text;
                 String email_user = _emailController.text;
-                String password = _generatedPassword;
+                String password = _passwordController.text; // <-- Tomar el valor del controlador
                 String description = _descriptionController.text;
 
                 savePassword(

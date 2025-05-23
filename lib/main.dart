@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
             title: 'Hidden Pass',
             theme: customThemeData(),
             debugShowCheckedModeBanner: false,
-            home: const SplashScreen(), // Pantalla inicial
+            home: const SplashScreen(),
           );
         });
   }

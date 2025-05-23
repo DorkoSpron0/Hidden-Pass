@@ -50,25 +50,22 @@ class _PasswordFormState extends State<PasswordForm> {
     final Token = context.read<TokenAuthProvider>().token;
     final IdUser = context.read<IdUserProvider>().idUser;
 
-
     if (Token.isEmpty) {
-
       Future<bool> tituloExiste(String name) async {
         return box.values.any((password) => password.name == name);
       }
 
-      try{
-
+      try {
         Future<void> agregarObjetoUnico() async {
           if (!await tituloExiste(name)) {
-
             final newPassword = PasswordHiveObject(
                 name: name,
-              description: description,
-              email_user: email_user,
-              password: password,
-              url: url
-            );
+                description: description,
+                email_user: email_user,
+                password: password,
+                url: url);
+
+            await box.put(newPassword.name, newPassword);
 
             Navigator.pushReplacement(
               context,
@@ -76,8 +73,6 @@ class _PasswordFormState extends State<PasswordForm> {
                 builder: (context) => PricipalPageScreen(),
               ),
             );
-
-            box.put(newPassword.name, newPassword);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('El titulo debe ser único')),
@@ -85,10 +80,8 @@ class _PasswordFormState extends State<PasswordForm> {
           }
         }
 
-        agregarObjetoUnico();
-
-
-      }catch(e){
+        await agregarObjetoUnico();
+      } catch (e) {
         print(e.toString());
       }
     } else {
@@ -106,14 +99,33 @@ class _PasswordFormState extends State<PasswordForm> {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $Token'
       });
-
+      print("Body enviado: $Body");
       print(response.statusCode);
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         print("Contraseña guardada correctamente");
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PricipalPageScreen(),
+          ),
+        );
       } else {
         print("Error al guardar la contraseña: ${response.statusCode}");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al guardar la contraseña')),
+        );
       }
     }
+  }
+
+  void _onSavePressed() {
+    final name = _accountNameController.text.trim();
+    final url = _urlController.text.trim();
+    final email_user = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final description = _descriptionController.text.trim();
+
+    savePassword(name, url, email_user, password, description, context);
   }
 
   @override
@@ -200,7 +212,7 @@ class _PasswordFormState extends State<PasswordForm> {
                 child: TextField(
                   style: const TextStyle(color: Colors.white),
                   obscureText: !_showPassword,
-                  controller: TextEditingController(text: _generatedPassword),
+                  controller: _passwordController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -299,6 +311,7 @@ class _PasswordFormState extends State<PasswordForm> {
             onPressed: () {
               setState(() {
                 _generatedPassword = generatePassword(options);
+                _passwordController.text = _generatedPassword;
               });
             },
             style: ElevatedButton.styleFrom(
@@ -310,19 +323,7 @@ class _PasswordFormState extends State<PasswordForm> {
           ),
           const SizedBox(height: 38),
           ElevatedButton(
-            onPressed: () {
-              String name = _accountNameController.text;
-              String url = _urlController.text;
-              String email_user = _emailController.text;
-              String password = _generatedPassword;
-              String description = _descriptionController.text;
-
-              savePassword(name, url, email_user, password, description, context);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const PricipalPageScreen()),
-              );
-            },
+            onPressed: _onSavePressed,
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,
               minimumSize: const Size.fromHeight(50),
