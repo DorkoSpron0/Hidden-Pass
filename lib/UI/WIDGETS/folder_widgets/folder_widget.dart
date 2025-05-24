@@ -1,8 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/LOGICA/api_config.dart';
+import 'package:hidden_pass/LOGICA/folder/folder_delet.dart';
+import 'package:hidden_pass/LOGICA/folder/mensaje_deletFolder.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
+import 'package:hidden_pass/UI/WIDGETS/folder_widgets/folder_detail.dart';
+import 'package:hidden_pass/UI/WIDGETS/folder_widgets/folder_edit.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
@@ -22,11 +26,11 @@ class _FolderListWidgetState extends State<FolderListWidget> {
     super.initState();
     loadingFolders();
   }
-  
+
   Future<void> loadingFolders() async {
     final token = context.read<TokenAuthProvider>().token.trim();
     final idUser = context.read<IdUserProvider>().idUser.trim();
-    
+
     setState(() => isLoading = true);
     try {
       final response = await http.get(
@@ -53,6 +57,19 @@ class _FolderListWidgetState extends State<FolderListWidget> {
     }
   }
 
+  void goToFolderDetail(Map<String, dynamic> folder) {
+     Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => FolderPasswordListWidget(
+        folderId: folder['id_folder'].toString(),
+        name: folder['name'].toString(),
+        folderDescription: folder['description'].toString(),
+      ),
+    ),
+  );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -61,8 +78,8 @@ class _FolderListWidgetState extends State<FolderListWidget> {
 
     if (folders.isEmpty) {
       return const Center(
-        child: Text('No hay folders disponibles', 
-              style: TextStyle(color: Colors.white)),
+        child: Text('No hay folders disponibles',
+            style: TextStyle(color: Colors.white)),
       );
     }
 
@@ -87,38 +104,77 @@ class _FolderListWidgetState extends State<FolderListWidget> {
     final name = folder['name']?.toString() ?? 'Sin nombre';
     final description = folder['description']?.toString() ?? '';
 
-    return Card(
-      color: const Color(0xFF232323),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+    return GestureDetector(
+      onTap: () => goToFolderDetail(folder),
+      child: Card(
+        color: const Color(0xFF232323),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Stack(
           children: [
-            _buildDynamicIcon(iconPath),
-            const SizedBox(height: 12),
-            Text(
-              name,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildDynamicIcon(iconPath),
+                    const SizedBox(height: 12),
+                    Text(
+                      name,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      description,
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 13,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 4),
-            Text(
-              description,
-              style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 13,
+            Positioned(
+              top: 4,
+              right: 4,
+              child: PopupMenuButton<String>(
+                icon: const Icon(Icons.more_vert, color: Colors.white),
+                onSelected: (value) async {
+                  if (value == 'actualizar') {
+                    print( "este es el icono que se esta enviando a la vista $iconPath");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FolderEditForm(folder: folder),
+                      ),
+                    );
+                  } else if (value == 'eliminar') {
+                    final id = folder['id_folder'];
+                    final confirm = await confirmacionDelete(context);
+                    final deleted = await deleteFolder(id, context);
+                    if (confirm && deleted) {
+                      loadingFolders();
+                    }
+                  }
+                },
+                itemBuilder: (context) => const [
+                  PopupMenuItem(value: 'actualizar', child: Text('Actualizar')),
+                  PopupMenuItem(value: 'eliminar', child: Text('Eliminar')),
+                ],
               ),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
@@ -127,11 +183,9 @@ class _FolderListWidgetState extends State<FolderListWidget> {
   }
 
   Widget _buildDynamicIcon(String iconPath) {
-    
     String cleanPath = iconPath.replaceFirst('images/', '');
-    
     final assetPath = 'assets/images/$cleanPath';
-    
+
     debugPrint('Ruta final del ícono: $assetPath');
 
     return Container(
@@ -151,9 +205,7 @@ class _FolderListWidgetState extends State<FolderListWidget> {
           fit: BoxFit.contain,
           errorBuilder: (context, error, stackTrace) {
             debugPrint('Error cargando ícono: $error');
-            return const Icon(Icons.image, 
-                  color: Colors.blue, 
-                  size: 36);
+            return const Icon(Icons.image, color: Colors.blue, size: 36);
           },
         ),
       ),

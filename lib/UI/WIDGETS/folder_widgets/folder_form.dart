@@ -27,7 +27,7 @@ class _FolderFormState extends State<FolderForm> {
   ];
 
   List<Map<String, dynamic>> _passwordsList = [];
-  List<String> _selectedPasswords = [];
+  List<String> _selectedPasswordNames = [];
   bool _loadingPasswords = false;
 
   @override
@@ -39,18 +39,16 @@ class _FolderFormState extends State<FolderForm> {
   void saveFolder(String name, String icon, String description, BuildContext context) async {
     final token = context.read<TokenAuthProvider>().token.trim();
     final idUser = context.read<IdUserProvider>().idUser.trim();
-
     final authHeader = token.startsWith('Bearer ') ? token : 'Bearer $token';
 
     try {
       var response = await http.post(
         Uri.parse(ApiConfig.endpoint("/folders/$idUser")),
-
         body: json.encode({
           "name": name.trim(),
           "icon": icon.trim(),
           "description": description.trim(),
-          "passwords": _selectedPasswords,
+          "passwords": _selectedPasswordNames.map((n) => n.replaceAll(' ', '')).toList(),
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -78,25 +76,17 @@ class _FolderFormState extends State<FolderForm> {
     try {
       final token = context.read<TokenAuthProvider>().token.trim();
       final idUser = context.read<IdUserProvider>().idUser.trim();
-
       final authHeader = token.startsWith('Bearer ') ? token : 'Bearer $token';
-
-      print('Token: $token');
-      print('Este es el id usuario: $idUser');
-      print('Authorization Header: $authHeader');
 
       final url = Uri.parse(ApiConfig.endpoint("/passwords/$idUser"));
 
-    final response = await http.get(
+      final response = await http.get(
         url,
         headers: {
           'Authorization': authHeader,
           'Content-Type': 'application/json',
         },
       );
-
-      print('Código de respuesta: ${response.statusCode}');
-      print('Respuesta: ${response.body}');
 
       if (response.statusCode == 200) {
         setState(() {
@@ -138,8 +128,16 @@ class _FolderFormState extends State<FolderForm> {
                     Navigator.of(context).pop();
                   },
                   child: CircleAvatar(
-                    radius: 30,
-                    backgroundImage: AssetImage('assets/${_availableIcons[index]}'),
+                    radius: 40,
+                    backgroundColor: Colors.transparent,
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/$_selectedIcon',
+                        width: 80, 
+                        height: 80,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 );
               },
@@ -190,6 +188,7 @@ class _FolderFormState extends State<FolderForm> {
           TextField(
             controller: _descriptionController,
             style: const TextStyle(color: Colors.white),
+            maxLines: 3,
             decoration: InputDecoration(
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -230,29 +229,32 @@ class _FolderFormState extends State<FolderForm> {
                         style: TextStyle(color: Colors.white)),
                   )
                 else
-                  ..._passwordsList.map((password) => CheckboxListTile(
-                        title: Text(password['name'] ?? 'Sin nombre',
-                            style: const TextStyle(color: Colors.white)),
-                        subtitle: Text(password['username'] ?? '',
-                            style: const TextStyle(color: Colors.white70)),
-                        value: _selectedPasswords.contains(password['id']),
-                        onChanged: (value) {
-                          setState(() {
-                            if (value == true) {
-                              _selectedPasswords.add(password['id']);
-                            } else {
-                              _selectedPasswords.remove(password['id']);
-                            }
-                          });
-                        },
-                        controlAffinity: ListTileControlAffinity.leading,
-                      ))
+                  ..._passwordsList.map((password) {
+                    String passwordName = password['name'] ?? 'SinNombre';
+                    return CheckboxListTile(
+                      title: Text(passwordName,
+                          style: const TextStyle(color: Colors.white)),
+                      subtitle: Text(password['username'] ?? '',
+                          style: const TextStyle(color: Colors.white70)),
+                      value: _selectedPasswordNames.contains(passwordName),
+                      onChanged: (value) {
+                        setState(() {
+                          if (value == true) {
+                            _selectedPasswordNames.add(passwordName);
+                          } else {
+                            _selectedPasswordNames.remove(passwordName);
+                          }
+                        });
+                      },
+                      controlAffinity: ListTileControlAffinity.leading,
+                    );
+                  })
               ],
             ),
           ),
           const SizedBox(height: 10),
           Text(
-            'Contraseñas seleccionadas: ${_selectedPasswords.length}',
+            'Contraseñas seleccionadas: ${_selectedPasswordNames.length}',
             style: const TextStyle(color: Colors.white),
           ),
           const SizedBox(height: 24.0),
