@@ -87,7 +87,7 @@ class _PricipalPageScreenState extends State<PricipalPageScreen> {
           if (screenToOpen != null) {
             final result = await Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => screenToOpen!), // el ! es clave aquí
+              MaterialPageRoute(builder: (context) => screenToOpen!),
             );
 
             if (result == true) {

@@ -107,7 +107,7 @@ class _FolderListWidgetState extends State<FolderListWidget> {
     return GestureDetector(
       onTap: () => goToFolderDetail(folder),
       child: Card(
-        color: const Color(0xFF232323),
+        color: Colors.black.withAlpha(1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
         ),
@@ -124,8 +124,8 @@ class _FolderListWidgetState extends State<FolderListWidget> {
                     const SizedBox(height: 12),
                     Text(
                       name,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.tertiary,
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                       ),
@@ -135,8 +135,8 @@ class _FolderListWidgetState extends State<FolderListWidget> {
                     const SizedBox(height: 4),
                     Text(
                       description,
-                      style: const TextStyle(
-                        color: Colors.grey,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
                         fontSize: 13,
                       ),
                       textAlign: TextAlign.center,
