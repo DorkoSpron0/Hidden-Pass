@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:hidden_pass/LOGICA/folder/folderPassword_delete.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:hidden_pass/LOGICA/api_config.dart';
@@ -99,14 +99,13 @@ class _FolderPasswordListWidgetState extends State<FolderPasswordListWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                      widget.folderDescription,
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18, 
-                      ),
-                    ),
+                  widget.folderDescription,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                
               ],
             ),
           ),
@@ -121,53 +120,33 @@ class _FolderPasswordListWidgetState extends State<FolderPasswordListWidget> {
                       final accountName = password['name'] ?? 'Sin nombre';
                       final passwordValue = password['password'] ?? '******';
 
-                      return Slidable(
-                        key: UniqueKey(),
-                        endActionPane: ActionPane(
-                          motion: const DrawerMotion(),
-                          children: [
-                            SlidableAction(
-                              onPressed: (_) {},
-                              icon: Icons.delete,
-                              backgroundColor: Colors.red,
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            SlidableAction(
-                              onPressed: (_) {},
-                              icon: Icons.edit,
-                              backgroundColor: Colors.blue,
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ],
+                      return Container(
+                        width: double.infinity,
+                        margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withAlpha(20),
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
-                        child: Container(
-                          width: double.infinity,
-                          margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withAlpha(20),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: theme.colorScheme.secondary,
-                              child: Text(
-                                accountName.isNotEmpty ? accountName[0] : '?',
-                                style: const TextStyle(color: Colors.white),
-                              ),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: theme.colorScheme.secondary,
+                            child: Text(
+                              accountName.isNotEmpty ? accountName[0] : '?',
+                              style: const TextStyle(color: Colors.white),
                             ),
-                            title: Text(accountName, style: theme.textTheme.titleMedium),
-                            subtitle: Text(passwordValue, style: theme.textTheme.bodySmall),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.copy, color: Colors.grey),
-                              onPressed: () {
-                                Clipboard.setData(ClipboardData(text: passwordValue));
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Contraseña copiada')),
-                                );
-                              },
-                            ),
-                            onTap: () {},
                           ),
+                          title: Text(accountName, style: theme.textTheme.titleMedium),
+                          subtitle: Text(passwordValue, style: theme.textTheme.bodySmall),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.copy, color: Colors.grey),
+                            onPressed: () {
+                              Clipboard.setData(ClipboardData(text: passwordValue));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Contraseña copiada')),
+                              );
+                            },
+                          ),
+                          onTap: () {},
                         ),
                       );
                     },
