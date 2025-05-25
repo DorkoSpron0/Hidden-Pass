@@ -53,7 +53,7 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
       });
 
       if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
+        final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
         setState(() {
           passwordList =
               data.map((json) => AllPasswordModel.fromJson(json)).toList();

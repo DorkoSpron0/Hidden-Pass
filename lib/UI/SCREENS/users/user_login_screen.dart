@@ -39,7 +39,7 @@ class _UserLoginState extends State<UserLogin> {
     );
 
     if (response.statusCode == 200) {
-      final responseData = jsonDecode(response.body);
+      final responseData = jsonDecode(utf8.decode(response.bodyBytes));
       final userId = responseData['userId'];
       final token = responseData['token'];
       final username = responseData['username'] ?? '';

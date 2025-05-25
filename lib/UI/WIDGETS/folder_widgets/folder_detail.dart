@@ -50,7 +50,7 @@ class _FolderPasswordListWidgetState extends State<FolderPasswordListWidget> {
       );
 
       if (response.statusCode == 200) {
-        final List<dynamic> allPasswords = json.decode(response.body);
+        final List<dynamic> allPasswords = jsonDecode(utf8.decode(response.bodyBytes));
         final folderId = widget.folderId;
 
         final filteredPasswords = allPasswords

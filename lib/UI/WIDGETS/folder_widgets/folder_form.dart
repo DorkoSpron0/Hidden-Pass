@@ -91,7 +91,7 @@ class _FolderFormState extends State<FolderForm> {
 
       if (response.statusCode == 200) {
         setState(() {
-          _passwordsList = List<Map<String, dynamic>>.from(json.decode(response.body));
+          _passwordsList = List<Map<String, dynamic>>.from(jsonDecode(utf8.decode(response.bodyBytes)));
         });
       } else {
         print('Failed to load passwords: ${response.statusCode}');

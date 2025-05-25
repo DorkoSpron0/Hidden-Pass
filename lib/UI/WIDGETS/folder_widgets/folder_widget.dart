@@ -42,7 +42,7 @@ class _FolderListWidgetState extends State<FolderListWidget> {
       );
 
       if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
+        final List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
         setState(() {
           folders = data.cast<Map<String, dynamic>>();
           debugPrint('Datos recibidos: $data');

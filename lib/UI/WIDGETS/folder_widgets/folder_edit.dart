@@ -77,7 +77,7 @@ class _FolderEditFormState extends State<FolderEditForm> {
 
       if (response.statusCode == 200) {
         final List<Map<String, dynamic>> allPasswords =
-            List<Map<String, dynamic>>.from(json.decode(response.body));
+            List<Map<String, dynamic>>.from(jsonDecode(utf8.decode(response.bodyBytes)));
 
         final folderId = widget.folder['id_folder']?.toString();
         _selectedPasswords = allPasswords
