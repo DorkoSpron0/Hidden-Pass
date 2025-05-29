@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hidden_pass/DOMAIN/HIVE/ADAPTERS/PasswordHiveAdapter.dart';
 import 'package:hidden_pass/DOMAIN/HIVE/PasswordHiveObject.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
@@ -29,6 +30,12 @@ void main() async {
   } else {
     Hive.init(Directory.current.path);
   }
+
+  // Bloquear solo orientación vertical
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   Hive.registerAdapter(NoteHiveAdapter());
   Hive.registerAdapter(PasswordHiveAdapter());
