@@ -42,13 +42,14 @@ class _FolderFormState extends State<FolderForm> {
     final authHeader = token.startsWith('Bearer ') ? token : 'Bearer $token';
 
     try {
+      print("passwords ${_selectedPasswordNames.map((n) => n.replaceAll(' ', '')).toList()}");
       var response = await http.post(
         Uri.parse(ApiConfig.endpoint("/folders/$idUser")),
         body: json.encode({
           "name": name.trim(),
           "icon": icon.trim(),
           "description": description.trim(),
-          "passwords": _selectedPasswordNames.map((n) => n.replaceAll(' ', '')).toList(),
+          "passwords": _selectedPasswordNames.map((n) => n.trim()).toList(),
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -90,7 +91,7 @@ class _FolderFormState extends State<FolderForm> {
 
       if (response.statusCode == 200) {
         setState(() {
-          _passwordsList = List<Map<String, dynamic>>.from(json.decode(response.body));
+          _passwordsList = List<Map<String, dynamic>>.from(jsonDecode(utf8.decode(response.bodyBytes)));
         });
       } else {
         print('Failed to load passwords: ${response.statusCode}');
@@ -150,6 +151,9 @@ class _FolderFormState extends State<FolderForm> {
 
   @override
   Widget build(BuildContext context) {
+
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.all(18.0),
       child: Column(
@@ -168,47 +172,65 @@ class _FolderFormState extends State<FolderForm> {
             ),
           ),
           const SizedBox(height: 20),
-          const Text('Nombre', style: TextStyle(color: Colors.white)),
+          Text('Nombre', style: TextStyle(color: Theme.of(context).colorScheme.tertiary)),
           TextField(
             controller: _folderNameController,
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(color: colorScheme.onSurface), // texto del input
             decoration: InputDecoration(
+              hintText: 'Nombre de la cuenta',
+              hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
+              filled: true,
+              fillColor: colorScheme.surface, // fondo del input
+
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: Colors.white),
+                borderSide: BorderSide(color: colorScheme.outline), // contorno
               ),
-              hintText: 'Nombre de la carpeta',
-              hintStyle: const TextStyle(color: Colors.grey),
-              filled: true,
-              fillColor: const Color.fromARGB(255, 49, 49, 49),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: colorScheme.outline),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: colorScheme.secondary, width: 2),
+              ),
             ),
           ),
           const SizedBox(height: 16),
-          const Text('Descripción', style: TextStyle(color: Colors.white)),
+          Text('Descripción', style: TextStyle(color: Theme.of(context).colorScheme.tertiary)),
           TextField(
             controller: _descriptionController,
-            style: const TextStyle(color: Colors.white),
             maxLines: 3,
+            style: TextStyle(color: colorScheme.onSurface), // texto del input
             decoration: InputDecoration(
+              hintText: 'Nombre de la cuenta',
+              hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
+              filled: true,
+              fillColor: colorScheme.surface, // fondo del input
+
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: Colors.white),
+                borderSide: BorderSide(color: colorScheme.outline), // contorno
               ),
-              hintText: 'Ingresa una breve descripción',
-              hintStyle: const TextStyle(color: Colors.grey),
-              filled: true,
-              fillColor: const Color.fromARGB(255, 49, 49, 49),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: colorScheme.outline),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: colorScheme.secondary, width: 2),
+              ),
             ),
           ),
           const SizedBox(height: 16.0),
-          const Text('Añadir contraseñas',
+          Text('Añadir contraseñas',
               style: TextStyle(
-                  color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                  color: colorScheme.tertiary, fontSize: 16, fontWeight: FontWeight.bold)),
           Card(
-            color: const Color.fromARGB(255, 49, 49, 49),
+            color: colorScheme.surface,
             child: ExpansionTile(
-              title: const Text('Seleccionar contraseñas',
-                  style: TextStyle(color: Colors.white)),
+              title: Text('Seleccionar contraseñas',
+                  style: TextStyle(color: colorScheme.secondary)),
               trailing: _loadingPasswords
                   ? const SizedBox(
                       width: 20,
@@ -223,19 +245,19 @@ class _FolderFormState extends State<FolderForm> {
                     child: CircularProgressIndicator(),
                   )
                 else if (_passwordsList.isEmpty)
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.all(16.0),
                     child: Text('No hay contraseñas disponibles',
-                        style: TextStyle(color: Colors.white)),
+                        style: TextStyle(color: colorScheme.secondary)),
                   )
                 else
                   ..._passwordsList.map((password) {
                     String passwordName = password['name'] ?? 'SinNombre';
                     return CheckboxListTile(
                       title: Text(passwordName,
-                          style: const TextStyle(color: Colors.white)),
+                          style: TextStyle(color: colorScheme.secondary)),
                       subtitle: Text(password['username'] ?? '',
-                          style: const TextStyle(color: Colors.white70)),
+                          style: TextStyle(color: colorScheme.secondary)),
                       value: _selectedPasswordNames.contains(passwordName),
                       onChanged: (value) {
                         setState(() {
@@ -255,7 +277,7 @@ class _FolderFormState extends State<FolderForm> {
           const SizedBox(height: 10),
           Text(
             'Contraseñas seleccionadas: ${_selectedPasswordNames.length}',
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(color: colorScheme.tertiary),
           ),
           const SizedBox(height: 24.0),
           ElevatedButton(

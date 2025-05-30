@@ -17,11 +17,7 @@ class FoldersListScreen extends StatefulWidget {
 class _FoldersListScreenState extends State<FoldersListScreen> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Crear contraseñas',
-      theme: customThemeData(isDarkMode: true),
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           titleTextStyle: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
           actions: <Widget>[],
@@ -29,7 +25,6 @@ class _FoldersListScreenState extends State<FoldersListScreen> {
         body: Center( 
           child: FolderListWidget(),
         ),
-      ),
     );
   }
 }
