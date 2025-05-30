@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:hidden_pass/UI/SCREENS/users/register_password_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/users/user_login_screen.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class RegisterAvatar extends StatefulWidget {
   final String email;
@@ -24,6 +26,8 @@ class RegisterAvatar extends StatefulWidget {
 }
 
 class _RegisterAvatarState extends State<RegisterAvatar> {
+
+  bool isLoading = false;
   String? _selectedAvatar;
 
   final List<String> _avatarImages = [
@@ -72,6 +76,9 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
 
  void sendData() async {
   var url = Uri.parse(ApiConfig.endpoint("/users/register"));
+  setState(() {
+    isLoading = true;
+  });
 
   try {
     var body = json.encode({
@@ -90,6 +97,9 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
     print(body);
 
     if (response.statusCode == 201) {
+
+      await Future.delayed(Duration(seconds: 10));
+
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -114,6 +124,10 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("Hubo un error en el registro: $e")),
     );
+  } finally {
+    setState(() {
+      isLoading = false;
+    });
   }
 }
 
@@ -129,7 +143,8 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
           double avatarSize = isSmallScreen ? 80 : 120; // Tamaño del avatar según la pantalla
           double iconSize = isSmallScreen ? 28 : 36; // Tamaño de los iconos según la pantalla
 
-          return Stack(
+          return 
+            Stack(
             children: [
               Center(
                 child: Padding(
@@ -163,6 +178,25 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
                           ],
                         ),
                       ),
+
+                      isLoading ?
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 50.0),
+                          child: Column(
+                            children: [
+                              LoadingAnimationWidget.discreteCircle(
+                                size: 30, color: Theme.of(context).colorScheme.tertiary,
+                                secondRingColor: Theme.of(context).colorScheme.surface,
+                                thirdRingColor: Theme.of(context).colorScheme.secondary
+                              ),
+                              Text("Completando registro..."),
+                            ],
+                          ),
+                        ),
+                      )
+                      : Text("")
+                      
                     ],
                   ),
                 ),

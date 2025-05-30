@@ -9,6 +9,7 @@ import 'package:hidden_pass/UI/SCREENS/users/recover_password_screen.dart';
 import 'package:hidden_pass/main.dart';
 import 'package:http/http.dart' as http;
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 class UserLogin extends StatefulWidget {
@@ -19,6 +20,7 @@ class UserLogin extends StatefulWidget {
 }
 
 class _UserLoginState extends State<UserLogin> {
+  bool isLoading = false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscureText = true;
@@ -26,6 +28,10 @@ class _UserLoginState extends State<UserLogin> {
 
   void sendData(String email, String password) async {
   var url = Uri.parse(ApiConfig.endpoint("/users/login"));
+
+  setState(() {
+    isLoading = true;
+  });
 
   var body = json.encode({
     'email': email.trim(),
@@ -77,6 +83,10 @@ class _UserLoginState extends State<UserLogin> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Error de conexión")),
     );
+  }finally {
+    setState(() {
+      isLoading = false;
+    });
   }
 }
 
@@ -231,6 +241,23 @@ class _UserLoginState extends State<UserLogin> {
                           }
                         },
                       ),
+
+                      isLoading ?
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 50.0),
+                          child: Column(
+                            children: [
+                              LoadingAnimationWidget.discreteCircle(
+                                  size: 30, color: Theme.of(context).colorScheme.tertiary,
+                                  secondRingColor: Theme.of(context).colorScheme.surface,
+                                  thirdRingColor: Theme.of(context).colorScheme.secondary
+                              ),
+                              Text("Iniciando sesión..."),
+                            ],
+                          ),
+                        ),
+                      ) : Text(""),
                       if (_isLoadingForgotPassword)
                         Padding(
                           padding: const EdgeInsets.only(top: 20.0),

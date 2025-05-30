@@ -9,6 +9,7 @@ import 'package:hive/hive.dart';
 import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 class PasswordForm extends StatefulWidget {
@@ -19,6 +20,9 @@ class PasswordForm extends StatefulWidget {
 }
 
 class _PasswordFormState extends State<PasswordForm> {
+
+  bool isLoading = false;
+
   PasswordOptions options = PasswordOptions();
   bool _showPassword = false;
   String _generatedPassword = '';
@@ -87,6 +91,10 @@ class _PasswordFormState extends State<PasswordForm> {
     } else {
       final Url = Uri.parse(ApiConfig.endpoint("/passwords/$IdUser"));
 
+      setState(() {
+        isLoading = true;
+      });
+
       var Body = json.encode({
         "name": name,
         "url": url,
@@ -101,8 +109,13 @@ class _PasswordFormState extends State<PasswordForm> {
       });
       print("Body enviado: $Body");
       print(response.statusCode);
-      if (response.statusCode == 200 || response.statusCode == 201) {
+      if (response.statusCode == 201) {
         print("Contraseña guardada correctamente");
+
+        isLoading = false;
+
+        await Future.delayed(Duration(seconds: 10));
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -110,6 +123,7 @@ class _PasswordFormState extends State<PasswordForm> {
           ),
         );
       } else {
+        isLoading = false;
         print("Error al guardar la contraseña: ${response.statusCode}");
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error al guardar la contraseña')),
@@ -382,6 +396,24 @@ class _PasswordFormState extends State<PasswordForm> {
             ),
             child: const Text('Guardar', style: TextStyle(color: Colors.white)),
           ),
+
+
+          isLoading ?
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  LoadingAnimationWidget.discreteCircle(
+                      size: 30, color: Theme.of(context).colorScheme.tertiary,
+                      secondRingColor: Theme.of(context).colorScheme.surface,
+                      thirdRingColor: Theme.of(context).colorScheme.secondary
+                  ),
+                  Text("Creando contraseña..."),
+                ],
+              ),
+            ),
+          ) : Text(""),
         ],
       ),
     );

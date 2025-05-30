@@ -19,8 +19,6 @@ import 'DOMAIN/HIVE/ADAPTERS/NoteHiveAdapter.dart';
 import 'DOMAIN/HIVE/NoteHiveObject.dart';
 import 'UI/PROVIDERS/theme_provider.dart'; // Para usar Timer
 
-
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
