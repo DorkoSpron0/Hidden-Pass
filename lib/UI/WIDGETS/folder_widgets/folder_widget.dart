@@ -57,7 +57,7 @@ class _FolderListWidgetState extends State<FolderListWidget> {
     }
   }
 
-  void goToFolderDetail(Map<String, dynamic> folder) {
+  Future<void> goToFolderDetail(Map<String, dynamic> folder) async {
      Navigator.push(
     context,
     MaterialPageRoute(
@@ -154,13 +154,17 @@ class _FolderListWidgetState extends State<FolderListWidget> {
                 icon: const Icon(Icons.more_vert, color: Colors.white),
                 onSelected: (value) async {
                   if (value == 'actualizar') {
-                    print( "este es el icono que se esta enviando a la vista $iconPath");
-                    Navigator.push(
+                   
+                    final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => FolderEditForm(folder: folder),
                       ),
                     );
+                    if (result == true) {
+                      await loadingFolders();
+                    }
+                    
                   } else if (value == 'eliminar') {
                     final id = folder['id_folder'];
                     final confirm = await confirmacionDelete(context);

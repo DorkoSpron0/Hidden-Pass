@@ -54,9 +54,12 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
+        final filteredPass = data.where((item) 
+        => item['id_folder'] == null || item['id_folder'].toString().isEmpty);
+
         setState(() {
           passwordList =
-              data.map((json) => AllPasswordModel.fromJson(json)).toList();
+              filteredPass.map((json) => AllPasswordModel.fromJson(json)).toList();
         });
       } else {
         print("Failed to load passwords: ${response.statusCode}");

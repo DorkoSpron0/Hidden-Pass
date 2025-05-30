@@ -87,7 +87,7 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
           }),
         );
 
-        if (response.statusCode == 200) {
+        if (response.statusCode == 201) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(

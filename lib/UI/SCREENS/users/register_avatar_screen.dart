@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/UI/SCREENS/users/register_password_screen.dart';
@@ -68,20 +70,17 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
     );
   }
 
-  void sendData() async {
-    //var url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/users/register');
-    var url = Uri.parse(ApiConfig.endpoint("/users/register"));
+ void sendData() async {
+  var url = Uri.parse(ApiConfig.endpoint("/users/register"));
 
-  // http://10.0.2.2:8081/api/v1/hidden_pass/users/register
-    // Crear el cuerpo de la solicitud
+  try {
     var body = json.encode({
       'username': widget.username,
       'email': widget.email,
       'master_password': widget.password,
-      'url_image': _selectedAvatar, // Añadir la imagen seleccionada al cuerpo de la solicitud
+      'url_image': _selectedAvatar,
     });
 
-    // Realizar la solicitud POST
     var response = await http.post(
       url,
       body: body,
@@ -91,32 +90,34 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
     print(body);
 
     if (response.statusCode == 201) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UserLogin(),
+        ),
+      );
 
-      // context.read<TokenAuthProvider>().setToken(token: response.body);
-
-      // void decodificarToken(String token) {
-      //   try {
-      //     final jwt = JWT.decode(token);
-      //     print("Payload del JWT: ${jwt.payload}");
-      //     final sub = jwt.payload['sub'];
-      //     print('ID de usuario almacenado: $sub');
-      //     context.read<IdUserProvider>().setidUser(idUser: sub);
-      //   } catch (e) {
-      //     print("Error al decodificar el JWT: $e");
-      //   }
-      // }
-
-      // decodificarToken(response.body);
-      // var data = json.decode(response.body); // Decodifica la respuesta del servidor
-      // print('Datos enviados y recibidos: $data');
-      print('codigo: ${response.statusCode}');
+      print('Código: ${response.statusCode}');
       print('Cuerpo de la respuesta: ${response.body}');
-
     } else {
-      print('Error en la solicitud: ${response.statusCode}');
-      print('Cuerpo de la respuesta: ${response.body}'); // Imprimir el cuerpo de la respuesta para depuración
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: ${response.statusCode}")),
+      );
     }
+
+  } on SocketException {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Error en la conexion")),
+    );
+
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Hubo un error en el registro: $e")),
+    );
   }
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -204,12 +205,6 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
                       if (_selectedAvatar == null) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Debes selccionar un avatar para poder avanzar")));
                       } else{
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UserLogin(),
-                          ),
-                        );
                       sendData();
                     }
                     }

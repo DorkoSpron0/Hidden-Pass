@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
@@ -66,6 +67,11 @@ class _UserLoginState extends State<UserLogin> {
         const SnackBar(content: Text("Credenciales incorrectas")),
       );
     }
+  } on SocketException {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Error en la conexion")),
+    );
+
   } catch (e) {
     print("Error de conexión: $e");
     ScaffoldMessenger.of(context).showSnackBar(
