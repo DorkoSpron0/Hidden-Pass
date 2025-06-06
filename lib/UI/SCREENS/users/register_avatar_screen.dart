@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/UI/SCREENS/users/register_password_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/users/user_login_screen.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class RegisterAvatar extends StatefulWidget {
   final String email;
@@ -22,6 +25,7 @@ class RegisterAvatar extends StatefulWidget {
 }
 
 class _RegisterAvatarState extends State<RegisterAvatar> {
+  bool isLoading = false;
   String? _selectedAvatar;
 
   final List<String> _avatarImages = [
@@ -42,7 +46,9 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
       builder: (context) {
         return LayoutBuilder(
           builder: (context, constraints) {
-            int columns = constraints.maxWidth > 600 ? 4 : 3; // Más columnas en pantallas grandes
+            int columns = constraints.maxWidth > 600
+                ? 4
+                : 3; // Más columnas en pantallas grandes
 
             return Container(
               padding: EdgeInsets.all(20),
@@ -69,52 +75,56 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
   }
 
   void sendData() async {
-    //var url = Uri.parse('http://10.0.2.2:8081/api/v1/hidden_pass/users/register');
     var url = Uri.parse(ApiConfig.endpoint("/users/register"));
-
-  // http://10.0.2.2:8081/api/v1/hidden_pass/users/register
-    // Crear el cuerpo de la solicitud
-    var body = json.encode({
-      'username': widget.username,
-      'email': widget.email,
-      'master_password': widget.password,
-      'url_image': _selectedAvatar, // Añadir la imagen seleccionada al cuerpo de la solicitud
+    setState(() {
+      isLoading = true;
     });
 
-    // Realizar la solicitud POST
-    var response = await http.post(
-      url,
-      body: body,
-      headers: {'Content-Type': 'application/json'},
-    );
+    try {
+      var body = json.encode({
+        'username': widget.username,
+        'email': widget.email,
+        'master_password': widget.password,
+        'url_image': _selectedAvatar,
+      });
 
-    print(body);
+      var response = await http.post(
+        url,
+        body: body,
+        headers: {'Content-Type': 'application/json'},
+      );
 
-    if (response.statusCode == 201) {
+      print(body);
 
-      // context.read<TokenAuthProvider>().setToken(token: response.body);
+      if (response.statusCode == 201) {
+        await Future.delayed(Duration(seconds: 10));
 
-      // void decodificarToken(String token) {
-      //   try {
-      //     final jwt = JWT.decode(token);
-      //     print("Payload del JWT: ${jwt.payload}");
-      //     final sub = jwt.payload['sub'];
-      //     print('ID de usuario almacenado: $sub');
-      //     context.read<IdUserProvider>().setidUser(idUser: sub);
-      //   } catch (e) {
-      //     print("Error al decodificar el JWT: $e");
-      //   }
-      // }
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UserLogin(),
+          ),
+        );
 
-      // decodificarToken(response.body);
-      // var data = json.decode(response.body); // Decodifica la respuesta del servidor
-      // print('Datos enviados y recibidos: $data');
-      print('codigo: ${response.statusCode}');
-      print('Cuerpo de la respuesta: ${response.body}');
-
-    } else {
-      print('Error en la solicitud: ${response.statusCode}');
-      print('Cuerpo de la respuesta: ${response.body}'); // Imprimir el cuerpo de la respuesta para depuración
+        print('Código: ${response.statusCode}');
+        print('Cuerpo de la respuesta: ${response.body}');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: ${response.statusCode}")),
+        );
+      }
+    } on SocketException {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error en la conexion")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Hubo un error en el registro: $e")),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -124,9 +134,13 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           bool isSmallScreen = constraints.maxWidth < 600;
-          double containerWidth = isSmallScreen ? constraints.maxWidth * 0.85 : constraints.maxWidth * 0.5;
-          double avatarSize = isSmallScreen ? 80 : 120; // Tamaño del avatar según la pantalla
-          double iconSize = isSmallScreen ? 28 : 36; // Tamaño de los iconos según la pantalla
+          double containerWidth = isSmallScreen
+              ? constraints.maxWidth * 0.85
+              : constraints.maxWidth * 0.5;
+          double avatarSize =
+              isSmallScreen ? 80 : 120; // Tamaño del avatar según la pantalla
+          double iconSize =
+              isSmallScreen ? 28 : 36; // Tamaño de los iconos según la pantalla
 
           return Stack(
             children: [
@@ -155,13 +169,39 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
                             CircleAvatar(
                               radius: avatarSize / 2,
                               backgroundColor: Colors.grey[300],
-                              backgroundImage: _selectedAvatar != null ? AssetImage(_selectedAvatar!) : null,
+                              backgroundImage: _selectedAvatar != null
+                                  ? AssetImage(_selectedAvatar!)
+                                  : null,
                             ),
                             if (_selectedAvatar == null)
-                              Icon(Icons.add, color: Colors.white, size: iconSize),
+                              Icon(Icons.add,
+                                  color: Colors.white, size: iconSize),
                           ],
                         ),
                       ),
+                      isLoading
+                          ? Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 50.0),
+                                child: Column(
+                                  children: [
+                                    LoadingAnimationWidget.discreteCircle(
+                                        size: 30,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .tertiary,
+                                        secondRingColor: Theme.of(context)
+                                            .colorScheme
+                                            .surface,
+                                        thirdRingColor: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                                    Text("Completando registro..."),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : Text("")
                     ],
                   ),
                 ),
@@ -195,25 +235,23 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Color(0xff323232),
-                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 8)],
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black.withOpacity(0.2), blurRadius: 8)
+                    ],
                   ),
                   child: IconButton(
-                    iconSize: iconSize,
-                    icon: Icon(Icons.arrow_forward, color: Colors.white),
-                    onPressed: (){
-                      if (_selectedAvatar == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Debes selccionar un avatar para poder avanzar")));
-                      } else{
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UserLogin(),
-                          ),
-                        );
-                      sendData();
-                    }
-                    }
-                  ),
+                      iconSize: iconSize,
+                      icon: Icon(Icons.arrow_forward, color: Colors.white),
+                      onPressed: () {
+                        if (_selectedAvatar == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                  "Debes selccionar un avatar para poder avanzar")));
+                        } else {
+                          sendData();
+                        }
+                      }),
                 ),
               ),
             ],

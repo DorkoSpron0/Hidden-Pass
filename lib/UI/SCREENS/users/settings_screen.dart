@@ -28,7 +28,7 @@ class SettingsScreen extends StatelessWidget {
       );
 
         if (response.statusCode == 200) {
-          final userData = json.decode(response.body);
+          final userData = jsonDecode(utf8.decode(response.bodyBytes));
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => ProfileScreen(userData: userData)),

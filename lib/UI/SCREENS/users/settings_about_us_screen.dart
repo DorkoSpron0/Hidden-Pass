@@ -43,7 +43,8 @@ al iniciar sesión.""",
             Center(
               child: ElevatedButton(
                 onPressed: () async {
-                  final Uri url = Uri.parse('https://github.com/tu-repositorio');
+                  final Uri url =
+                      Uri.parse('https://github.com/DorkoSpron0/Hidden-Pass');
                   if (await canLaunchUrl(url)) {
                     await launchUrl(url);
                   } else {

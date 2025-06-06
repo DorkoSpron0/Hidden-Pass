@@ -12,11 +12,7 @@ class CreateNewFolderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Crear contraseñas',
-      theme: customThemeData(isDarkMode: true),
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
@@ -25,19 +21,7 @@ class CreateNewFolderScreen extends StatelessWidget {
             },
           ),
           title: const Text('Nueva carpeta'),
-          titleTextStyle: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                print("Guardar presionado");
-              },
-              style: ElevatedButton.styleFrom(
-                shape: const CircleBorder(),
-                padding: const EdgeInsets.all(8),
-              ),
-              child: const Text("Crear"),
-            ),
-          ],
+          titleTextStyle: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.tertiary),
         ),
         body: SingleChildScrollView( // Cambiado aquí
           child: Padding(
@@ -49,7 +33,6 @@ class CreateNewFolderScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
     );
   }
 }

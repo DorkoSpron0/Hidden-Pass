@@ -8,6 +8,7 @@ import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:hidden_pass/main.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
 
@@ -17,6 +18,9 @@ class AddNoteScreen extends StatefulWidget {
 }
 
 class _AddNoteScreenState extends State<AddNoteScreen> {
+
+  bool isLoading = false;
+
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _bodyController = TextEditingController();
   String _selectedPriority = 'BAJA';
@@ -37,6 +41,10 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
     final userId = context.read<IdUserProvider>().idUser;
     final token = context.read<TokenAuthProvider>().token;
     var url = Uri.parse(ApiConfig.endpoint("/notes/$userId"));
+
+    setState(() {
+      isLoading = true;
+    });
 
 
     if (token == null || token.isEmpty) {
@@ -87,7 +95,10 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
           }),
         );
 
-        if (response.statusCode == 200) {
+        if (response.statusCode == 201) {
+
+          await Future.delayed(Duration(seconds: 10));
+
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -105,6 +116,10 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
         );
         print('Error: $e');
         print('token: $token');
+      }finally {
+        setState(() {
+          isLoading = false;
+        });
       }
     }
   }
@@ -224,6 +239,26 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                           dropdownColor: const Color.fromARGB(255, 53, 53, 53),
                         ),
                       ),
+
+                      isLoading ?
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              LoadingAnimationWidget.discreteCircle(
+                                  size: 30, color: Theme.of(context).colorScheme.tertiary,
+                                  secondRingColor: Theme.of(context).colorScheme.surface,
+                                  thirdRingColor: Theme.of(context).colorScheme.secondary
+                              ),
+                              Text("Creando nota..."),
+                            ],
+                          ),
+                        ),
+                      ) : Text(""),
+
+
+
                     ],
                   ),
                 ),
@@ -263,7 +298,6 @@ class _AddNoteScreenState extends State<AddNoteScreen> {
                   ],
                 ),
               ),
-              
               Positioned(
                 bottom: 40,
                 right: 20,

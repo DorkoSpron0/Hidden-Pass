@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hidden_pass/DOMAIN/HIVE/ADAPTERS/PasswordHiveAdapter.dart';
 import 'package:hidden_pass/DOMAIN/HIVE/PasswordHiveObject.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
@@ -18,8 +19,6 @@ import 'DOMAIN/HIVE/ADAPTERS/NoteHiveAdapter.dart';
 import 'DOMAIN/HIVE/NoteHiveObject.dart';
 import 'UI/PROVIDERS/theme_provider.dart'; // Para usar Timer
 
-
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -29,6 +28,12 @@ void main() async {
   } else {
     Hive.init(Directory.current.path);
   }
+
+  // Bloquear solo orientación vertical
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   Hive.registerAdapter(NoteHiveAdapter());
   Hive.registerAdapter(PasswordHiveAdapter());
@@ -49,10 +54,8 @@ class MyApp extends StatelessWidget {
             create: (_) => NavigationProvider()),
         ChangeNotifierProvider<TokenAuthProvider>(
             create: (_) => TokenAuthProvider()),
-        ChangeNotifierProvider<IdUserProvider>(
-            create: (_) => IdUserProvider()),
-        ChangeNotifierProvider<ThemeProvider>(
-            create: (_) => ThemeProvider()),
+        ChangeNotifierProvider<IdUserProvider>(create: (_) => IdUserProvider()),
+        ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
       ],
       // Usa el builder aquí para obtener el contexto correcto con todos los providers
       builder: (context, _) {
@@ -70,7 +73,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -81,10 +83,11 @@ class SplashScreen extends StatefulWidget {
 class SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-        context.read<TokenAuthProvider>().setToken(token: "", username: '', avatarUrl: '');
-      });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context
+          .read<TokenAuthProvider>()
+          .setToken(token: "", username: '', avatarUrl: '');
+    });
 
     super.initState();
     // Hacemos que la pantalla de inicio cambie después de 2 segundos
@@ -128,7 +131,6 @@ class HomeScreen extends StatelessWidget {
             width: 346,
             height: 361,
           ),
-          
           SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
@@ -166,19 +168,17 @@ class HomeScreen extends StatelessWidget {
           SizedBox(height: 20),
           InkWell(
             child: Text(
-            'Ingresar sin iniciar sesion',
-            style: TextStyle(color: Colors.grey),
-          ),
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const PricipalPageScreen()),
-          ),
+              'Ingresar sin iniciar sesion',
+              style: TextStyle(color: Colors.grey),
+            ),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const PricipalPageScreen()),
+            ),
           )
-          
         ],
       )),
     );
   }
 }
-
-
