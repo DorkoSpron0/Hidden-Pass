@@ -18,7 +18,8 @@ import 'package:provider/provider.dart';
 
 import 'DOMAIN/HIVE/ADAPTERS/NoteHiveAdapter.dart';
 import 'DOMAIN/HIVE/NoteHiveObject.dart';
-import 'UI/PROVIDERS/theme_provider.dart'; // Para usar Timer
+import 'UI/PROVIDERS/theme_provider.dart';
+import 'inactivity_logout.dart'; // Para usar Timer
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,36 +45,54 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  void _handleSessionTimeout() {
+    navigatorKey.currentState?.pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => UserLogin()),
+          (route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<NavigationProvider>(
-            create: (_) => NavigationProvider()),
-        ChangeNotifierProvider<TokenAuthProvider>(
-            create: (_) => TokenAuthProvider()),
-        ChangeNotifierProvider<IdUserProvider>(create: (_) => IdUserProvider()),
-        ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider<DataListProvider>(create: (_) => DataListProvider()),
+        ChangeNotifierProvider(create: (_) => NavigationProvider()),
+        ChangeNotifierProvider(create: (_) => TokenAuthProvider()),
+        ChangeNotifierProvider(create: (_) => IdUserProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => DataListProvider()),
       ],
-      // Usa el builder aquí para obtener el contexto correcto con todos los providers
       builder: (context, _) {
         final themeData = Provider.of<ThemeProvider>(context);
-        return MaterialApp(
-          title: 'Hidden Pass',
-          themeMode: themeData.themeMode,
-          theme: customThemeData(isDarkMode: false),
-          darkTheme: customThemeData(isDarkMode: true),
-          debugShowCheckedModeBanner: false,
-          home: const SplashScreen(),
+
+        return InactivityLogout(
+          timeoutDuration: const Duration(minutes: 10),
+          onTimeout: _handleSessionTimeout,
+          child: MaterialApp(
+            navigatorKey: navigatorKey,
+            title: 'Hidden Pass',
+            themeMode: themeData.themeMode,
+            theme: customThemeData(isDarkMode: false),
+            darkTheme: customThemeData(isDarkMode: true),
+            debugShowCheckedModeBanner: false,
+            home: const SplashScreen(),
+          ),
         );
       },
     );
   }
 }
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
