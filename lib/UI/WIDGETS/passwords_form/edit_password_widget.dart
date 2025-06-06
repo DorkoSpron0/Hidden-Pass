@@ -6,6 +6,7 @@ import 'package:hidden_pass/DOMAIN/HIVE/PasswordHiveObject.dart';
 import 'package:hidden_pass/DOMAIN/MODELS/password_options.dart';
 import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
+import 'package:hidden_pass/UI/PROVIDERS/password_list_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:hive/hive.dart';
@@ -366,6 +367,8 @@ class _PasswordFormState extends State<EditPasswordWidget> {
             const SizedBox(height: 38),
             ElevatedButton(
               onPressed: () {
+                Provider.of<DataListProvider>(context, listen: false).reloadPasswordList([]);
+
                 String name = _accountNameController.text;
                 String url = _urlController.text;
                 String email_user = _emailController.text;

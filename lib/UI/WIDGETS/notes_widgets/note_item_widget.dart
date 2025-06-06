@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hidden_pass/LOGICA/api_config.dart';
+import 'package:hidden_pass/UI/PROVIDERS/password_list_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/notes/edit_notes_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/notes/see_notes_screen.dart';
@@ -55,6 +56,7 @@ class NoteItemWidget extends StatelessWidget {
 
         if (response.statusCode == 200) {
           print("Nota eliminada en el servidor: $idNote");
+          Provider.of<DataListProvider>(context, listen: false).reloadNoteList(<Map<String, dynamic>>[]);
         } else {
           print("Error al eliminar en el backend: ${response.body}");
         }
