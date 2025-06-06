@@ -20,7 +20,7 @@ class _FolderFormState extends State<FolderForm> {
 
   String _selectedIcon = 'images/LogoSimple.png';
   final List<String> _availableIcons = [
-    'images/dindey.png',
+    'images/dinsey.png',
     'images/netflix.png',
     'images/perro.png',
     'images/zorro.png',
@@ -133,7 +133,7 @@ class _FolderFormState extends State<FolderForm> {
                     backgroundColor: Colors.transparent,
                     child: ClipOval(
                       child: Image.asset(
-                        'assets/$_selectedIcon',
+                        'assets/${_availableIcons[index]}',
                         width: 80, 
                         height: 80,
                         fit: BoxFit.cover,
