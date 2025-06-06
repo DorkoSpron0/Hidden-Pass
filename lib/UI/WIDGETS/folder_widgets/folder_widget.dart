@@ -208,8 +208,10 @@ class _FolderListWidgetState extends State<FolderListWidget> {
                   } else if (value == 'eliminar') {
                     final id = folder['id_folder'];
                     final confirm = await confirmacionDelete(context);
-                    final deleted = await deleteFolder(id, context);
-                    if (confirm && deleted) {
+                    if(confirm){
+                      final deleted = await deleteFolder(id, context);
+                    }
+                    if (confirm) {
                       loadingFolders();
                     }
                   }
