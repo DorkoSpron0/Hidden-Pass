@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -26,7 +25,6 @@ class RegisterAvatar extends StatefulWidget {
 }
 
 class _RegisterAvatarState extends State<RegisterAvatar> {
-
   bool isLoading = false;
   String? _selectedAvatar;
 
@@ -48,7 +46,9 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
       builder: (context) {
         return LayoutBuilder(
           builder: (context, constraints) {
-            int columns = constraints.maxWidth > 600 ? 4 : 3; // Más columnas en pantallas grandes
+            int columns = constraints.maxWidth > 600
+                ? 4
+                : 3; // Más columnas en pantallas grandes
 
             return Container(
               padding: EdgeInsets.all(20),
@@ -74,64 +74,59 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
     );
   }
 
- void sendData() async {
-  var url = Uri.parse(ApiConfig.endpoint("/users/register"));
-  setState(() {
-    isLoading = true;
-  });
-
-  try {
-    var body = json.encode({
-      'username': widget.username,
-      'email': widget.email,
-      'master_password': widget.password,
-      'url_image': _selectedAvatar,
-    });
-
-    var response = await http.post(
-      url,
-      body: body,
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    print(body);
-
-    if (response.statusCode == 201) {
-
-      await Future.delayed(Duration(seconds: 10));
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => UserLogin(),
-        ),
-      );
-
-      print('Código: ${response.statusCode}');
-      print('Cuerpo de la respuesta: ${response.body}');
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: ${response.statusCode}")),
-      );
-    }
-
-  } on SocketException {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Error en la conexion")),
-    );
-
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Hubo un error en el registro: $e")),
-    );
-  } finally {
+  void sendData() async {
+    var url = Uri.parse(ApiConfig.endpoint("/users/register"));
     setState(() {
-      isLoading = false;
+      isLoading = true;
     });
+
+    try {
+      var body = json.encode({
+        'username': widget.username,
+        'email': widget.email,
+        'master_password': widget.password,
+        'url_image': _selectedAvatar,
+      });
+
+      var response = await http.post(
+        url,
+        body: body,
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      print(body);
+
+      if (response.statusCode == 201) {
+        await Future.delayed(Duration(seconds: 10));
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UserLogin(),
+          ),
+        );
+
+        print('Código: ${response.statusCode}');
+        print('Cuerpo de la respuesta: ${response.body}');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: ${response.statusCode}")),
+        );
+      }
+    } on SocketException {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error en la conexion")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Hubo un error en el registro: $e")),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
-}
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -139,12 +134,15 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           bool isSmallScreen = constraints.maxWidth < 600;
-          double containerWidth = isSmallScreen ? constraints.maxWidth * 0.85 : constraints.maxWidth * 0.5;
-          double avatarSize = isSmallScreen ? 80 : 120; // Tamaño del avatar según la pantalla
-          double iconSize = isSmallScreen ? 28 : 36; // Tamaño de los iconos según la pantalla
+          double containerWidth = isSmallScreen
+              ? constraints.maxWidth * 0.85
+              : constraints.maxWidth * 0.5;
+          double avatarSize =
+              isSmallScreen ? 80 : 120; // Tamaño del avatar según la pantalla
+          double iconSize =
+              isSmallScreen ? 28 : 36; // Tamaño de los iconos según la pantalla
 
-          return 
-            Stack(
+          return Stack(
             children: [
               Center(
                 child: Padding(
@@ -171,32 +169,39 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
                             CircleAvatar(
                               radius: avatarSize / 2,
                               backgroundColor: Colors.grey[300],
-                              backgroundImage: _selectedAvatar != null ? AssetImage(_selectedAvatar!) : null,
+                              backgroundImage: _selectedAvatar != null
+                                  ? AssetImage(_selectedAvatar!)
+                                  : null,
                             ),
                             if (_selectedAvatar == null)
-                              Icon(Icons.add, color: Colors.white, size: iconSize),
+                              Icon(Icons.add,
+                                  color: Colors.white, size: iconSize),
                           ],
                         ),
                       ),
-
-                      isLoading ?
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 50.0),
-                          child: Column(
-                            children: [
-                              LoadingAnimationWidget.discreteCircle(
-                                size: 30, color: Theme.of(context).colorScheme.tertiary,
-                                secondRingColor: Theme.of(context).colorScheme.surface,
-                                thirdRingColor: Theme.of(context).colorScheme.secondary
+                      isLoading
+                          ? Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 50.0),
+                                child: Column(
+                                  children: [
+                                    LoadingAnimationWidget.discreteCircle(
+                                        size: 30,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .tertiary,
+                                        secondRingColor: Theme.of(context)
+                                            .colorScheme
+                                            .surface,
+                                        thirdRingColor: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                                    Text("Completando registro..."),
+                                  ],
+                                ),
                               ),
-                              Text("Completando registro..."),
-                            ],
-                          ),
-                        ),
-                      )
-                      : Text("")
-                      
+                            )
+                          : Text("")
                     ],
                   ),
                 ),
@@ -230,19 +235,23 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Color(0xff323232),
-                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 8)],
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black.withOpacity(0.2), blurRadius: 8)
+                    ],
                   ),
                   child: IconButton(
-                    iconSize: iconSize,
-                    icon: Icon(Icons.arrow_forward, color: Colors.white),
-                    onPressed: (){
-                      if (_selectedAvatar == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Debes selccionar un avatar para poder avanzar")));
-                      } else{
-                      sendData();
-                    }
-                    }
-                  ),
+                      iconSize: iconSize,
+                      icon: Icon(Icons.arrow_forward, color: Colors.white),
+                      onPressed: () {
+                        if (_selectedAvatar == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                  "Debes selccionar un avatar para poder avanzar")));
+                        } else {
+                          sendData();
+                        }
+                      }),
                 ),
               ),
             ],
