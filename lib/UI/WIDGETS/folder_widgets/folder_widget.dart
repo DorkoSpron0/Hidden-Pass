@@ -4,6 +4,7 @@ import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/LOGICA/folder/folder_delet.dart';
 import 'package:hidden_pass/LOGICA/folder/mensaje_deletFolder.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
+import 'package:hidden_pass/UI/PROVIDERS/password_list_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/WIDGETS/folder_widgets/folder_detail.dart';
 import 'package:hidden_pass/UI/WIDGETS/folder_widgets/folder_edit.dart';
@@ -24,7 +25,14 @@ class _FolderListWidgetState extends State<FolderListWidget> {
   @override
   void initState() {
     super.initState();
-    loadingFolders();
+    folders = context.read<DataListProvider>().folderList;
+    if(folders.isEmpty){
+      loadingFolders();
+    }else{
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> loadingFolders() async {
@@ -32,6 +40,8 @@ class _FolderListWidgetState extends State<FolderListWidget> {
     final idUser = context.read<IdUserProvider>().idUser.trim();
 
     setState(() => isLoading = true);
+    await Future.delayed(Duration(seconds: 5));
+
     try {
       final response = await http.get(
         Uri.parse(ApiConfig.endpoint("/folders/$idUser")),
@@ -47,6 +57,9 @@ class _FolderListWidgetState extends State<FolderListWidget> {
           folders = data.cast<Map<String, dynamic>>();
           debugPrint('Datos recibidos: $data');
         });
+
+        Provider.of<DataListProvider>(context, listen: false).reloadFolderList(folders);
+
       } else {
         debugPrint('Error al cargar folders: ${response.statusCode}');
       }
@@ -73,7 +86,10 @@ class _FolderListWidgetState extends State<FolderListWidget> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return Center(child: CircularProgressIndicator(
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
+        color: Theme.of(context).colorScheme.secondary,
+      ));
     }
 
     if (folders.isEmpty) {
@@ -83,19 +99,43 @@ class _FolderListWidgetState extends State<FolderListWidget> {
       );
     }
 
-    return GridView.builder(
-      padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 18,
-        crossAxisSpacing: 18,
-        childAspectRatio: 0.95,
-      ),
-      itemCount: folders.length,
-      itemBuilder: (context, index) {
-        final folder = folders[index];
-        return _buildFolderItem(folder);
-      },
+    return Column(
+      children: [
+
+        Padding(
+          padding: const EdgeInsets.only(left: 15.0),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: IconButton(
+                onPressed: () => {
+                  setState(() {
+                    isLoading = true;
+                    folders = <Map<String, dynamic>>[];
+                    loadingFolders();
+                  })
+                },
+                icon: Icon(Icons.refresh)
+            ),
+          ),
+        ),
+
+        Expanded(
+          child: GridView.builder(
+            padding: const EdgeInsets.all(16),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 18,
+              crossAxisSpacing: 18,
+              childAspectRatio: 0.95,
+            ),
+            itemCount: folders.length,
+            itemBuilder: (context, index) {
+              final folder = folders[index];
+              return _buildFolderItem(folder);
+            },
+          ),
+        )
+      ],
     );
   }
 

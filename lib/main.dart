@@ -5,6 +5,7 @@ import 'package:hidden_pass/DOMAIN/HIVE/ADAPTERS/PasswordHiveAdapter.dart';
 import 'package:hidden_pass/DOMAIN/HIVE/PasswordHiveObject.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/navigation_provider.dart';
+import 'package:hidden_pass/UI/PROVIDERS/password_list_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'dart:async';
@@ -56,6 +57,7 @@ class MyApp extends StatelessWidget {
             create: (_) => TokenAuthProvider()),
         ChangeNotifierProvider<IdUserProvider>(create: (_) => IdUserProvider()),
         ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider<DataListProvider>(create: (_) => DataListProvider()),
       ],
       // Usa el builder aquí para obtener el contexto correcto con todos los providers
       builder: (context, _) {

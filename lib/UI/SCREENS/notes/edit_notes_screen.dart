@@ -3,6 +3,7 @@ import 'package:hidden_pass/DOMAIN/HIVE/NoteHiveObject.dart';
 import 'package:hidden_pass/DOMAIN/MODELS/notes_model.dart';
 import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
+import 'package:hidden_pass/UI/PROVIDERS/password_list_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:hive/hive.dart';
@@ -93,12 +94,15 @@ class _EditNotesScreenState extends State<EditNotesScreen> {
         );
 
         if (response.statusCode == 200) {
+          Provider.of<DataListProvider>(context, listen: false).reloadNoteList(<Map<String, dynamic>>[]);
+
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => PricipalPageScreen(),
             ),
           );
+
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error al modificar la nota: ${response.statusCode}')),

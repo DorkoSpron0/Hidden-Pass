@@ -9,7 +9,6 @@ import 'package:hidden_pass/UI/SCREENS/folders/folders_list_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/users/settings_screen.dart';
 import 'package:hidden_pass/UI/WIDGETS/appbar_widget.dart';
 import 'package:hidden_pass/UI/WIDGETS/bottom_navigation_bar.dart';
-import 'package:hidden_pass/UI/WIDGETS/bottom_navigation_bar_widgets/bottom_item_widget_big.dart';
 import 'package:hidden_pass/UI/WIDGETS/password_list_widgets/password_list_body_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
@@ -190,9 +189,7 @@ class _PricipalPageScreenState extends State<PricipalPageScreen> {
             ),
           ],
         ),
-        bottomNavigationBar: MediaQuery.of(context).size.width > 600
-            ? const BottomNavigationBarBigWidget()
-            : const BottomNavigationBarWidget(),
+        bottomNavigationBar: const BottomNavigationBarWidget(),
         floatingActionButton:
             _buildFloatingActionButton(context, adjustedIndex, showFolders),
       );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
+import 'package:hidden_pass/UI/PROVIDERS/password_list_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
@@ -23,6 +24,9 @@ Future<bool> deleteFolder(String id, BuildContext context) async {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('La carpeta se ha eliminado con exito!'))
         );
+
+        Provider.of<DataListProvider>(context, listen: false).reloadFolderList(<Map<String, dynamic>>[]);
+
         return true;
       }
       return false;
