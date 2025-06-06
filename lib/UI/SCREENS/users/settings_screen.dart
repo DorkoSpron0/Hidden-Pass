@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/LOGICA/api_config.dart';
+import 'package:hidden_pass/LOGICA/cerrarSesion/cerrarSesioon.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/theme_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
+import 'package:hidden_pass/UI/SCREENS/users/user_login_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
@@ -72,7 +74,29 @@ class SettingsScreen extends StatelessWidget {
               value: themeProvider.isDarkMode,
               onChanged: (value) => themeProvider.toggleTheme(value),
             ),
+             GestureDetector(
+              onTap: () async {
+                final respuesta = await cerrarSesion(context);
 
+                if(respuesta){
+                  await Provider.of<TokenAuthProvider>(context, listen: false).setToken(
+                    token: '', 
+                    username: '',
+                    avatarUrl: '',
+                  );
+                  await Provider.of<IdUserProvider>(context, listen: false).setidUser(
+                    idUser: '',
+                  );
+                  Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => UserLogin()),
+                );
+                
+                }
+                
+              },
+              child: buildListTile("Cerrar sesion"),
+            ),
           ],
         ),
       ),

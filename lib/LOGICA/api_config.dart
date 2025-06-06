@@ -1,5 +1,5 @@
 class ApiConfig {
-  static const String baseUrl = _androidEmulator;
+  static const String baseUrl = _webLocal;
 
   static const String _webLocal = "http://127.0.0.1:8081/api/v1/hidden_pass";
   static const String _androidEmulator =

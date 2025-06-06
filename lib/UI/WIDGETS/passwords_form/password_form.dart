@@ -21,7 +21,7 @@ class PasswordForm extends StatefulWidget {
 
 class _PasswordFormState extends State<PasswordForm> {
   List<Map<String, dynamic>> folders = [];
-  String? _selectedFolderId;
+  String? _selectedFolderName;
   bool isLoading = false;
 
   PasswordOptions options = PasswordOptions();
@@ -67,7 +67,7 @@ class _PasswordFormState extends State<PasswordForm> {
         setState(() {
           folders = data.cast<Map<String, dynamic>>();
           if (folders.isNotEmpty) {
-            _selectedFolderId = folders.first['id_folder'].toString();
+            _selectedFolderName = folders.first['name'].toString();
           }
           debugPrint('Datos recibidos: $data');
         });
@@ -86,7 +86,7 @@ class _PasswordFormState extends State<PasswordForm> {
   }
 
   void savePassword(String name, String url, String email_user, String password,
-      String description, String id_folder, BuildContext context) async {
+      String description, String? name_folder, BuildContext context) async {
     final Token = context.read<TokenAuthProvider>().token;
     final IdUser = context.read<IdUserProvider>().idUser;
 
@@ -138,10 +138,12 @@ class _PasswordFormState extends State<PasswordForm> {
         "email_user": email_user,
         "password": password,
         "description": description,
-        "id_folder": id_folder, // Ahora siempre tiene un valor
+        "folder_name":  name_folder,
       });
 
       print("Body a enviar: $Body");
+      print("El nombre del folder es: $name_folder");
+      print("Este es el valor enviado************************************* ${name_folder == null ? 'NULL REAL' : name_folder}");
       
       try {
         var response = await http.post(Url, body: Body, headers: {
@@ -183,21 +185,7 @@ class _PasswordFormState extends State<PasswordForm> {
     final password = _passwordController.text.trim();
     final description = _descriptionController.text.trim();
 
-    if (name.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Nombre y contraseña son obligatorios')),
-      );
-      return;
-    }
-
-    if (_selectedFolderId == null || _selectedFolderId!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Debes seleccionar una carpeta válida')),
-      );
-      return;
-    }
-
-    savePassword(name, url, email_user, password, description, _selectedFolderId!, context);
+    savePassword(name, url, email_user, password, description, _selectedFolderName, context);
   }
 
   @override
@@ -358,7 +346,7 @@ class _PasswordFormState extends State<PasswordForm> {
             Text('Selecciona una carpeta',
               style: TextStyle(color: colorScheme.secondary, fontSize: 16)),
             DropdownButtonFormField<String>(
-              value: _selectedFolderId,
+              value: _selectedFolderName,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: colorScheme.surface,
@@ -367,19 +355,24 @@ class _PasswordFormState extends State<PasswordForm> {
                   borderSide: BorderSide(color: colorScheme.outline),
                 ),
               ),
-              hint: Text('Elige un folder'),
-              items: folders.map<DropdownMenuItem<String>>((folder) {
+              items: [
+              DropdownMenuItem<String>(
+                value: null,
+                child: Text('Sin carpeta'),
+              ),
+              ...folders.map<DropdownMenuItem<String>>((folder) {
                 return DropdownMenuItem<String>(
-                  value: folder['id_folder'].toString(),
+                  value: folder['name'].toString(),
                   child: Text(folder['name'] ?? 'Sin nombre'),
                 );
               }).toList(),
+              ],
               onChanged: (String? newValue) {
                 setState(() {
-                  _selectedFolderId = newValue;
+                   _selectedFolderName = newValue;
                 });
               },
-              validator: (value) => value == null ? 'Selecciona una carpeta' : null,
+              validator: (value) => null,
             ),
             const SizedBox(height: 16),
             const Text('Caracteres', style: TextStyle(color: Colors.white)),

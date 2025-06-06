@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:hidden_pass/UI/SCREENS/users/user_login_screen.dart';
 
-Future<bool> confirmacionDelete(BuildContext context) async {
+Future<bool> cerrarSesion(BuildContext context) async {
   return await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('Confirmar eliminación'),
-      content: const Text('¿Estás seguro que deseas eliminar este folder?'),
+      title: const Text('Confirmar de cerrar sesion'),
+      content: const Text('¿Estás seguro que deseas cerrar sesión?'),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
@@ -20,7 +21,7 @@ Future<bool> confirmacionDelete(BuildContext context) async {
           ),
           onPressed: () => Navigator.of(context).pop(true),
           child: const Text(
-            'Eliminar',
+            'Cerrar',
             style: TextStyle(color: Colors.white),
           ),
         ),
