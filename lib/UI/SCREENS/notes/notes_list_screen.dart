@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
 
+import '../../../DOMAIN/HIVE/PasswordHiveObject.dart';
 import '../../PROVIDERS/password_list_provider.dart';
 
 class NotesListScreen extends StatefulWidget {
@@ -18,6 +19,7 @@ class NotesListScreen extends StatefulWidget {
 
 class _NotesListScreenState extends State<NotesListScreen> {
   List<Map<String, dynamic>> notesList = [];
+  final box = Hive.box<NoteHiveObject>('notes');
   bool isLoading = true;
 
   // se asigna un valor a cada prioridad para asi poderle dar un orden a la lista
@@ -40,10 +42,9 @@ class _NotesListScreenState extends State<NotesListScreen> {
     final userId = context.read<IdUserProvider>().idUser;
     final token = context.read<TokenAuthProvider>().token;
 
-    await Future.delayed(Duration(seconds: 2));
+    //await Future.delayed(Duration(seconds: 2));
 
     if (token == null || token.isEmpty) {
-      final box = Hive.box<NoteHiveObject>('notes');
       final notas = box.values.toList();
 
       setState(() {
@@ -91,6 +92,26 @@ class _NotesListScreenState extends State<NotesListScreen> {
           });
 
           Provider.of<DataListProvider>(context, listen: false).reloadNoteList(notesList);
+
+          for(Map<String, dynamic> note in notesList){
+            Future<bool> tituloExiste(String title) async {
+              return box.values.any((note) => note.title == title);
+            }
+
+            try{
+              Future<void> agregarObjetoUnico() async {
+                if (!await tituloExiste(note['title'].toString())) {
+                  final newNote = NoteHiveObject(note['priorityName'].toString(), note['title'].toString(), note['description'].toString());
+
+                  await box.put(newNote.title, newNote);
+                }
+              }
+
+              await agregarObjetoUnico();
+            }catch(e){
+              print(e);
+            }
+          }
         } else {
           print('Error al cargar las notas: ${response.statusCode}');
           setState(() {
