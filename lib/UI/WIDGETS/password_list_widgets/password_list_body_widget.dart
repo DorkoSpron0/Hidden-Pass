@@ -22,6 +22,7 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
 
   List<AllPasswordModel> passwordList = [];
   bool isLoading = true;
+  final box = Hive.box<PasswordHiveObject>('passwords');
 
   @override
   void initState() {
@@ -40,7 +41,7 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
   Future<void> fetchPasswords(String token) async {
     final idUser = context.read<IdUserProvider>().idUser;
 
-    await Future.delayed(Duration(seconds: 5));
+    //await Future.delayed(Duration(seconds: 5));
 
     if (token.isEmpty) {
       final box = Hive.box<PasswordHiveObject>('passwords');
@@ -56,6 +57,7 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
             description: json.description
         )).toList();
       });
+      isLoading = false;
     } else {
       final url = Uri.parse(ApiConfig.endpoint("/passwords/$idUser"));
 
@@ -77,13 +79,38 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
         isLoading = false;
 
         Provider.of<DataListProvider>(context, listen: false).reloadPasswordList(passwordList);
+
+        for(AllPasswordModel model in passwordList) {
+          Future<bool> tituloExiste(String name) async {
+            return box.values.any((password) => password.name == name);
+          }
+
+          try {
+            Future<void> agregarObjetoUnico() async {
+              if (!await tituloExiste(model.name)) {
+                final newPassword = PasswordHiveObject(
+                  name: model.name,
+                  description: model.description,
+                  email_user: model.email_user,
+                  password: model.password,
+                  url: model.url,
+                );
+
+                await box.put(newPassword.name, newPassword);
+              }
+            }
+
+            await agregarObjetoUnico();
+          } catch (e) {
+            print(e);
+          }
+        }
       } else {
         print("Failed to load passwords: ${response.statusCode}");
         isLoading = false;
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
