@@ -97,7 +97,7 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
       print(body);
 
       if (response.statusCode == 201) {
-        await Future.delayed(Duration(seconds: 10));
+        //await Future.delayed(Duration(seconds: 10));
 
         Navigator.push(
           context,

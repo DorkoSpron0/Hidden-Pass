@@ -56,11 +56,50 @@ class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   void _handleSessionTimeout() {
-    navigatorKey.currentState?.pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => UserLogin()),
-          (route) => false,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final ctx = navigatorKey.currentContext;
+      if (ctx != null) {
+        showDialog(
+          context: ctx,
+          builder: (context) => AlertDialog(
+            title: const Text('Aviso inactividad'),
+            content: const Text('La sesión se ha cerrado por inactividad'),
+            actions: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 53, 51, 51),
+                ),
+                onPressed: () {
+                  Provider.of<TokenAuthProvider>(ctx, listen: false).setToken(
+                    token: '',
+                    username: '',
+                    avatarUrl: '',
+                  );
+                  Provider.of<IdUserProvider>(ctx, listen: false).setidUser(
+                    idUser: '',
+                  );
+                  Provider.of<DataListProvider>(ctx, listen: false).reloadPasswordList([]);
+                  Provider.of<DataListProvider>(ctx, listen: false).reloadNoteList([]);
+                  Provider.of<DataListProvider>(ctx, listen: false).reloadFolderList([]);
+
+                  Navigator.of(ctx).pop(); // Cierra el diálogo
+                  navigatorKey.currentState?.pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (_) => UserLogin()),
+                        (route) => false,
+                  );
+                },
+                child: const Text(
+                  'Aceptar',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +115,7 @@ class _MyAppState extends State<MyApp> {
         final themeData = Provider.of<ThemeProvider>(context);
 
         return InactivityLogout(
-          timeoutDuration: const Duration(minutes: 10),
+          timeoutDuration: const Duration(minutes: 5),
           onTimeout: _handleSessionTimeout,
           child: MaterialApp(
             navigatorKey: navigatorKey,

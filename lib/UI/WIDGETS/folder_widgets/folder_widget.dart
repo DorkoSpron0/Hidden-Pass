@@ -40,7 +40,7 @@ class _FolderListWidgetState extends State<FolderListWidget> {
     final idUser = context.read<IdUserProvider>().idUser.trim();
 
     setState(() => isLoading = true);
-    await Future.delayed(Duration(seconds: 5));
+    //await Future.delayed(Duration(seconds: 5));
 
     try {
       final response = await http.get(
