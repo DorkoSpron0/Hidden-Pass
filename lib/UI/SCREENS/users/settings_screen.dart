@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/LOGICA/cerrarSesion/cerrarSesioon.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
+import 'package:hidden_pass/UI/PROVIDERS/password_list_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/theme_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/users/user_login_screen.dart';
@@ -87,6 +88,9 @@ class SettingsScreen extends StatelessWidget {
                   await Provider.of<IdUserProvider>(context, listen: false).setidUser(
                     idUser: '',
                   );
+                  Provider.of<DataListProvider>(context, listen: false).reloadPasswordList([]);
+                  Provider.of<DataListProvider>(context, listen: false).reloadNoteList(<Map<String, dynamic>>[]);
+                  Provider.of<DataListProvider>(context, listen: false).reloadFolderList(<Map<String, dynamic>>[]);
                   Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => UserLogin()),
