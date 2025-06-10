@@ -14,14 +14,13 @@ import 'package:provider/provider.dart';
 
 class PasswordForm extends StatefulWidget {
   const PasswordForm({Key? key}) : super(key: key);
-  
+
   @override
   State<PasswordForm> createState() => _PasswordFormState();
 }
 
 class _PasswordFormState extends State<PasswordForm> {
-  List<Map<String, dynamic>> folders = [];
-  String? _selectedFolderName;
+
   bool isLoading = false;
 
   PasswordOptions options = PasswordOptions();
@@ -37,14 +36,70 @@ class _PasswordFormState extends State<PasswordForm> {
   final FocusNode _descriptionFocus = FocusNode();
   final FocusNode _urlFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
+  final FocusNode _passwordFocus = FocusNode();
 
   late Box<PasswordHiveObject> box;
+
+  // Método para verificar si hay al menos un checkbox seleccionado
+  bool get _canGeneratePassword {
+    return options.includeLowercase ||
+        options.includeUppercase ||
+        options.includeNumbers ||
+        options.includeSymbols;
+  }
+
+  // Método para verificar si hay al menos un campo con texto
+  bool get _canSave {
+    return _accountNameController.text.trim().isNotEmpty ||
+        _descriptionController.text.trim().isNotEmpty ||
+        _urlController.text.trim().isNotEmpty ||
+        _emailController.text.trim().isNotEmpty ||
+        _passwordController.text.trim().isNotEmpty;
+  }
 
   @override
   void initState() {
     super.initState();
     _openBox();
+<<<<<<< Updated upstream
+=======
     loadingFolders();
+
+    // se agregan listeners a los controllers para detectar cambios
+    _accountNameController.addListener(() => setState(() {}));
+    _descriptionController.addListener(() => setState(() {}));
+    _urlController.addListener(() => setState(() {}));
+    _emailController.addListener(() => setState(() {}));
+    _passwordController.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _accountNameFocus.dispose();
+    _descriptionFocus.dispose();
+    _urlFocus.dispose();
+    _emailFocus.dispose();
+    _passwordFocus.dispose();
+    _accountNameController.dispose();
+    _descriptionController.dispose();
+    _urlController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 4),
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(10),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
   }
 
   Future<void> loadingFolders() async {
@@ -79,6 +134,7 @@ class _PasswordFormState extends State<PasswordForm> {
     } finally {
       setState(() => isLoading = false);
     }
+>>>>>>> Stashed changes
   }
 
   Future<void> _openBox() async {
@@ -86,7 +142,7 @@ class _PasswordFormState extends State<PasswordForm> {
   }
 
   void savePassword(String name, String url, String email_user, String password,
-      String description, String? name_folder, BuildContext context) async {
+      String description, BuildContext context) async {
     final Token = context.read<TokenAuthProvider>().token;
     final IdUser = context.read<IdUserProvider>().idUser;
 
@@ -99,12 +155,11 @@ class _PasswordFormState extends State<PasswordForm> {
         Future<void> agregarObjetoUnico() async {
           if (!await tituloExiste(name)) {
             final newPassword = PasswordHiveObject(
-              name: name,
-              description: description,
-              email_user: email_user,
-              password: password,
-              url: url,
-            );
+                name: name,
+                description: description,
+                email_user: email_user,
+                password: password,
+                url: url);
 
             await box.put(newPassword.name, newPassword);
 
@@ -116,7 +171,7 @@ class _PasswordFormState extends State<PasswordForm> {
             );
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('El titulo debe ser único')),
+              SnackBar(content: Text('El título debe ser único')),
             );
           }
         }
@@ -138,24 +193,52 @@ class _PasswordFormState extends State<PasswordForm> {
         "email_user": email_user,
         "password": password,
         "description": description,
-        "folder_name":  name_folder,
+<<<<<<< Updated upstream
+      });
+
+      var response = await http.post(Url, body: Body, headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $Token'
+      });
+      print("Body enviado: $Body");
+      print(response.statusCode);
+      if (response.statusCode == 201) {
+        print("Contraseña guardada correctamente");
+=======
+        "folder_name": name_folder,
       });
 
       print("Body a enviar: $Body");
       print("El nombre del folder es: $name_folder");
-      print("Este es el valor enviado************************************* ${name_folder == null ? 'NULL REAL' : name_folder}");
-      
+      print(
+          "Este es el valor enviado************************************* ${name_folder == null ? 'NULL REAL' : name_folder}");
+
       try {
         var response = await http.post(Url, body: Body, headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $Token'
         });
+>>>>>>> Stashed changes
 
-        print("Respuesta del servidor: ${response.body}");
-        print("Status code: ${response.statusCode}");
+        isLoading = false;
 
+<<<<<<< Updated upstream
+        await Future.delayed(Duration(seconds: 10));
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PricipalPageScreen(),
+          ),
+        );
+      } else {
+        isLoading = false;
+        print("Error al guardar la contraseña: ${response.statusCode}");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al guardar la contraseña')),
+=======
         if (response.statusCode == 201) {
-          print("Contraseña guardada correctamente");
+          print("Contraseña guardada correctamente!");
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -164,103 +247,410 @@ class _PasswordFormState extends State<PasswordForm> {
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error al guardar la contraseña: ${response.statusCode}')),
+            SnackBar(
+                content: Text(
+                    'Error al guardar la contraseña: ${response.statusCode}')),
           );
         }
       } catch (e) {
         print("Error en la petición: $e");
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error de conexión: $e')),
+>>>>>>> Stashed changes
         );
-      } finally {
-        setState(() => isLoading = false);
       }
     }
   }
 
   void _onSavePressed() {
+    if (!_canSave) {
+      _showSnackBar(
+          'Todos los campos están vacíos, ingresa los datos de la cuenta para continuar.');
+      return;
+    }
+
     final name = _accountNameController.text.trim();
     final url = _urlController.text.trim();
     final email_user = _emailController.text.trim();
     final password = _passwordController.text.trim();
     final description = _descriptionController.text.trim();
 
-    savePassword(name, url, email_user, password, description, _selectedFolderName, context);
+<<<<<<< Updated upstream
+    savePassword(name, url, email_user, password, description, context);
+=======
+    savePassword(name, url, email_user, password, description,
+        _selectedFolderName, context);
+  }
+
+  void _onGeneratePasswordPressed() {
+    if (!_canGeneratePassword) {
+      _showSnackBar('Selecciona al menos una opción para generar contraseña');
+      return;
+    }
+
+    setState(() {
+      _generatedPassword = generatePassword(options);
+      _passwordController.text = _generatedPassword;
+    });
+>>>>>>> Stashed changes
   }
 
   @override
   Widget build(BuildContext context) {
+
     final colorScheme = Theme.of(context).colorScheme;
 
+<<<<<<< Updated upstream
     return Padding(
       padding: const EdgeInsets.all(18.0),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const Text('Nombre', style: TextStyle(color: Colors.white)),
-            TextField(
-              controller: _accountNameController,
-              focusNode: _accountNameFocus,
-              style: TextStyle(color: colorScheme.onSurface),
-              decoration: InputDecoration(
-                hintText: 'Nombre de la cuenta',
-                hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
-                filled: true,
-                fillColor: colorScheme.surface,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: colorScheme.outline),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: colorScheme.outline),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: colorScheme.secondary, width: 2),
-                ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const Text('Nombre', style: TextStyle(color: Colors.white)),
+          TextField(
+            controller: _accountNameController,
+            focusNode: _accountNameFocus,
+            style: TextStyle(color: colorScheme.onSurface), // texto del input
+            decoration: InputDecoration(
+              hintText: 'Nombre de la cuenta',
+              hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
+              filled: true,
+              fillColor: colorScheme.surface, // fondo del input
+
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: colorScheme.outline), // contorno
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: colorScheme.outline),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: colorScheme.secondary, width: 2),
               ),
             ),
-            const SizedBox(height: 16),
-            const Text('Descripcion', style: TextStyle(color: Colors.white)),
-            TextField(
-              controller: _descriptionController,
-              focusNode: _descriptionFocus,
-              style: TextStyle(color: colorScheme.onSurface),
+          ),
+          const Text('Descripcion', style: TextStyle(color: Colors.white)),
+          TextField(
+            controller: _descriptionController,
+            focusNode: _descriptionFocus,
+              style: TextStyle(color: colorScheme.onSurface), // texto del input
               decoration: InputDecoration(
+
                 hintText: 'Ingresa una breve descripcion',
                 hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
                 filled: true,
-                fillColor: colorScheme.surface,
+                fillColor: colorScheme.surface, // fondo del input
+
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: colorScheme.outline),
+                  borderSide: BorderSide(color: colorScheme.outline), // contorno
+=======
+    return GestureDetector(
+      onTap: () {
+        // Quita el focus de todos los campos cuando no se han seleccionado
+        FocusScope.of(context).unfocus();
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(18.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const Text('Nombre', style: TextStyle(color: Colors.white)),
+              TextField(
+                controller: _accountNameController,
+                focusNode: _accountNameFocus,
+                style: TextStyle(color: colorScheme.onSurface),
+                decoration: InputDecoration(
+                  hintText: 'Nombre plataforma',
+                  hintStyle:
+                      TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
+                  filled: true,
+                  fillColor: colorScheme.surface,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: colorScheme.outline),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: colorScheme.outline),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide:
+                        BorderSide(color: colorScheme.secondary, width: 2),
+                  ),
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: colorScheme.outline),
+              ),
+              const SizedBox(height: 16),
+              const Text('Descripción', style: TextStyle(color: Colors.white)),
+              TextField(
+                  controller: _descriptionController,
+                  focusNode: _descriptionFocus,
+                  style: TextStyle(color: colorScheme.onSurface),
+                  decoration: InputDecoration(
+                    hintText: 'Ingresa una breve descripción',
+                    hintStyle: TextStyle(
+                        color: colorScheme.onSurface.withOpacity(0.6)),
+                    filled: true,
+                    fillColor: colorScheme.surface,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: colorScheme.outline),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: colorScheme.outline),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide:
+                          BorderSide(color: colorScheme.secondary, width: 2),
+                    ),
+                  )),
+              const SizedBox(height: 16),
+              const Text('Sitio web', style: TextStyle(color: Colors.white)),
+              TextField(
+                  controller: _urlController,
+                  focusNode: _urlFocus,
+                  style: TextStyle(color: colorScheme.onSurface),
+                  decoration: InputDecoration(
+                    hintText: 'Ingresa el URL de la página',
+                    hintStyle: TextStyle(
+                        color: colorScheme.onSurface.withOpacity(0.6)),
+                    filled: true,
+                    fillColor: colorScheme.surface,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: colorScheme.outline),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: colorScheme.outline),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide:
+                          BorderSide(color: colorScheme.secondary, width: 2),
+                    ),
+                  )),
+              const SizedBox(height: 16),
+              const Text('Correo electrónico',
+                  style: TextStyle(color: Colors.white)),
+              TextField(
+                  controller: _emailController,
+                  focusNode: _emailFocus,
+                  style: TextStyle(color: colorScheme.onSurface),
+                  decoration: InputDecoration(
+                    hintText: 'tucorreo@gmail.com',
+                    hintStyle: TextStyle(
+                        color: colorScheme.onSurface.withOpacity(0.6)),
+                    filled: true,
+                    fillColor: colorScheme.surface,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: colorScheme.outline),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: colorScheme.outline),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide:
+                          BorderSide(color: colorScheme.secondary, width: 2),
+                    ),
+                  )),
+              const SizedBox(height: 24),
+              Text('Contraseña',
+                  style: TextStyle(
+                      color: colorScheme.secondary,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold)),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                        obscureText: !_showPassword,
+                        controller: _passwordController,
+                        focusNode: _passwordFocus,
+                        style: TextStyle(color: colorScheme.onSurface),
+                        decoration: InputDecoration(
+                          hintText: 'GhYjmJUynNJ.Mhn',
+                          hintStyle: TextStyle(
+                              color: colorScheme.onSurface.withOpacity(0.6)),
+                          filled: true,
+                          fillColor: colorScheme.surface,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: colorScheme.outline),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: colorScheme.outline),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                                color: colorScheme.secondary, width: 2),
+                          ),
+                        )),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _showPassword = !_showPassword;
+                      });
+                    },
+                    icon: Icon(
+                        _showPassword ? Icons.visibility : Icons.visibility_off,
+                        color: Colors.grey),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 18),
+              Text('Selecciona una carpeta',
+                  style: TextStyle(color: colorScheme.secondary, fontSize: 16)),
+              DropdownButtonFormField<String>(
+                value: _selectedFolderName,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: colorScheme.surface,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: colorScheme.outline),
+                  ),
+>>>>>>> Stashed changes
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: colorScheme.secondary, width: 2),
+                items: [
+                  DropdownMenuItem<String>(
+                    value: null,
+                    child: Text('Sin carpeta'),
+                  ),
+                  ...folders.map<DropdownMenuItem<String>>((folder) {
+                    return DropdownMenuItem<String>(
+                      value: folder['name'].toString(),
+                      child: Text(folder['name'] ?? 'Sin nombre'),
+                    );
+                  }).toList(),
+                ],
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedFolderName = newValue;
+                  });
+                },
+                validator: (value) => null,
+              ),
+              const SizedBox(height: 16),
+              const Text('Carácteres', style: TextStyle(color: Colors.white)),
+              Slider(
+                value: options.length.toDouble(),
+                min: 8,
+                max: 30,
+                divisions: 22,
+                label: options.length.toString(),
+                activeColor: Colors.blue,
+                inactiveColor: Colors.grey,
+                onChanged: (double value) {
+                  setState(() {
+                    options.length = value.toInt();
+                  });
+                },
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(children: [
+                    Checkbox(
+                      value: options.includeNumbers,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          options.includeNumbers = value!;
+                        });
+                      },
+                    ),
+                    Text('Números',
+                        style: TextStyle(color: colorScheme.secondary)),
+                  ]),
+                  Row(children: [
+                    Checkbox(
+                      value: options.includeSymbols,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          options.includeSymbols = value!;
+                        });
+                      },
+                    ),
+                    Text('Símbolos  ',
+                        style: TextStyle(color: colorScheme.secondary)),
+                  ]),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(children: [
+                    Checkbox(
+                      value: options.includeLowercase,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          options.includeLowercase = value!;
+                        });
+                      },
+                    ),
+                    Text('Minúsculas',
+                        style: TextStyle(color: colorScheme.secondary)),
+                  ]),
+                  Row(children: [
+                    Checkbox(
+                      value: options.includeUppercase,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          options.includeUppercase = value!;
+                        });
+                      },
+                    ),
+                    Text('Mayúsculas',
+                        style: TextStyle(color: colorScheme.secondary)),
+                  ]),
+                ],
+              ),
+              ElevatedButton(
+                onPressed: _onGeneratePasswordPressed,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colorScheme.secondary,
+                  minimumSize: const Size.fromHeight(45),
                 ),
+                child: Text('Generar contraseña',
+                    style: TextStyle(color: colorScheme.primary)),
+              ),
+              const SizedBox(height: 38),
+              ElevatedButton(
+                onPressed: _onSavePressed,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  minimumSize: const Size.fromHeight(50),
+                ),
+<<<<<<< Updated upstream
               )
-            ),
-            const SizedBox(height: 16),
-            const Text('Sitio web', style: TextStyle(color: Colors.white)),
-            TextField(
-              controller: _urlController,
-              focusNode: _urlFocus,
-              style: TextStyle(color: colorScheme.onSurface),
+          ),
+          const Text('Sitio web', style: TextStyle(color: Colors.white)),
+          TextField(
+            controller: _urlController,
+            focusNode: _urlFocus,
+              style: TextStyle(color: colorScheme.onSurface), // texto del input
               decoration: InputDecoration(
+
                 hintText: 'Ingresa el URL de la pagina',
                 hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
                 filled: true,
-                fillColor: colorScheme.surface,
+                fillColor: colorScheme.surface, // fondo del input
+
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: colorScheme.outline),
+                  borderSide: BorderSide(color: colorScheme.outline), // contorno
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -271,21 +661,23 @@ class _PasswordFormState extends State<PasswordForm> {
                   borderSide: BorderSide(color: colorScheme.secondary, width: 2),
                 ),
               )
-            ),
-            const SizedBox(height: 16),
-            const Text('Email', style: TextStyle(color: Colors.white)),
-            TextField(
-              controller: _emailController,
-              focusNode: _emailFocus,
-              style: TextStyle(color: colorScheme.onSurface),
+          ),
+          const SizedBox(height: 16.0),
+          const Text('Email', style: TextStyle(color: Colors.white)),
+          TextField(
+            controller: _emailController,
+            focusNode: _emailFocus,
+              style: TextStyle(color: colorScheme.onSurface), // texto del input
               decoration: InputDecoration(
+
                 hintText: 'tucorreo@gmail.com',
                 hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
                 filled: true,
-                fillColor: colorScheme.surface,
+                fillColor: colorScheme.surface, // fondo del input
+
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: colorScheme.outline),
+                  borderSide: BorderSide(color: colorScheme.outline), // contorno
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -296,28 +688,30 @@ class _PasswordFormState extends State<PasswordForm> {
                   borderSide: BorderSide(color: colorScheme.secondary, width: 2),
                 ),
               )
-            ),
-            const SizedBox(height: 24),
-            Text('Contraseña',
+          ),
+          const SizedBox(height: 24.0),
+          Text('Contraseña',
               style: TextStyle(
-                color: colorScheme.secondary,
-                fontSize: 16,
-                fontWeight: FontWeight.bold)),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    obscureText: !_showPassword,
-                    controller: _passwordController,
-                    style: TextStyle(color: colorScheme.onSurface),
+                  color: colorScheme.secondary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold)),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  obscureText: !_showPassword,
+                  controller: _passwordController,
+                    style: TextStyle(color: colorScheme.onSurface), // texto del input
                     decoration: InputDecoration(
+
                       hintText: 'GhYjmJUynNJ.Mhn',
                       hintStyle: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
                       filled: true,
-                      fillColor: colorScheme.surface,
+                      fillColor: colorScheme.surface, // fondo del input
+
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: colorScheme.outline),
+                        borderSide: BorderSide(color: colorScheme.outline), // contorno
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -328,165 +722,159 @@ class _PasswordFormState extends State<PasswordForm> {
                         borderSide: BorderSide(color: colorScheme.secondary, width: 2),
                       ),
                     )
-                  ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _showPassword = !_showPassword;
-                    });
-                  },
-                  icon: Icon(
+              ),
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    _showPassword = !_showPassword;
+                  });
+                },
+                icon: Icon(
                     _showPassword ? Icons.visibility : Icons.visibility_off,
                     color: Colors.grey),
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          const Text('Caracteres', style: TextStyle(color: Colors.white)),
+          Slider(
+            value: options.length.toDouble(),
+            min: 8,
+            max: 30,
+            divisions: 22,
+            label: options.length.toString(),
+            activeColor: Colors.blue,
+            inactiveColor: Colors.grey,
+            onChanged: (double value) {
+              setState(() {
+                options.length = value.toInt();
+              });
+            },
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(children: [
+                Checkbox(
+                  value: options.includeNumbers,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      options.includeNumbers = value!;
+                    });
+                  },
                 ),
-              ],
-            ),
-            const SizedBox(height: 18),
-            Text('Selecciona una carpeta',
-              style: TextStyle(color: colorScheme.secondary, fontSize: 16)),
-            DropdownButtonFormField<String>(
-              value: _selectedFolderName,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: colorScheme.surface,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: colorScheme.outline),
+                Text('Numeros', style: TextStyle(color: colorScheme.secondary)),
+              ]),
+              Row(children: [
+                Checkbox(
+                  value: options.includeSymbols,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      options.includeSymbols = value!;
+                    });
+                  },
                 ),
-              ),
-              items: [
-              DropdownMenuItem<String>(
-                value: null,
-                child: Text('Sin carpeta'),
-              ),
-              ...folders.map<DropdownMenuItem<String>>((folder) {
-                return DropdownMenuItem<String>(
-                  value: folder['name'].toString(),
-                  child: Text(folder['name'] ?? 'Sin nombre'),
-                );
-              }).toList(),
-              ],
-              onChanged: (String? newValue) {
-                setState(() {
-                   _selectedFolderName = newValue;
-                });
-              },
-              validator: (value) => null,
+                Text('Simbolos  ', style: TextStyle(color: colorScheme.secondary)),
+              ]),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(children: [
+                Checkbox(
+                  value: options.includeLowercase,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      options.includeLowercase = value!;
+                    });
+                  },
+                ),
+                Text('Minúsculas', style: TextStyle(color: colorScheme.secondary)),
+              ]),
+              Row(children: [
+                Checkbox(
+                  value: options.includeUppercase,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      options.includeUppercase = value!;
+                    });
+                  },
+                ),
+                Text('Mayúscula', style: TextStyle(color: colorScheme.secondary)),
+              ]),
+            ],
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                _generatedPassword = generatePassword(options);
+                _passwordController.text = _generatedPassword;
+              });
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: colorScheme.secondary,
+              minimumSize: const Size.fromHeight(45),
             ),
-            const SizedBox(height: 16),
-            const Text('Caracteres', style: TextStyle(color: Colors.white)),
-            Slider(
-              value: options.length.toDouble(),
-              min: 8,
-              max: 30,
-              divisions: 22,
-              label: options.length.toString(),
-              activeColor: Colors.blue,
-              inactiveColor: Colors.grey,
-              onChanged: (double value) {
-                setState(() {
-                  options.length = value.toInt();
-                });
-              },
+            child: Text('Generar contraseña',
+                style: TextStyle(color: colorScheme.primary)),
+          ),
+          const SizedBox(height: 38),
+          ElevatedButton(
+            onPressed: _onSavePressed,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              minimumSize: const Size.fromHeight(50),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(children: [
-                  Checkbox(
-                    value: options.includeNumbers,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        options.includeNumbers = value!;
-                      });
-                    },
+            child: const Text('Guardar', style: TextStyle(color: Colors.white)),
+          ),
+
+
+          isLoading ?
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  LoadingAnimationWidget.discreteCircle(
+                      size: 30, color: Theme.of(context).colorScheme.tertiary,
+                      secondRingColor: Theme.of(context).colorScheme.surface,
+                      thirdRingColor: Theme.of(context).colorScheme.secondary
                   ),
-                  Text('Numeros', style: TextStyle(color: colorScheme.secondary)),
-                ]),
-                Row(children: [
-                  Checkbox(
-                    value: options.includeSymbols,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        options.includeSymbols = value!;
-                      });
-                    },
-                  ),
-                  Text('Simbolos  ', style: TextStyle(color: colorScheme.secondary)),
-                ]),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(children: [
-                  Checkbox(
-                    value: options.includeLowercase,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        options.includeLowercase = value!;
-                      });
-                    },
-                  ),
-                  Text('Minúsculas', style: TextStyle(color: colorScheme.secondary)),
-                ]),
-                Row(children: [
-                  Checkbox(
-                    value: options.includeUppercase,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        options.includeUppercase = value!;
-                      });
-                    },
-                  ),
-                  Text('Mayúscula', style: TextStyle(color: colorScheme.secondary)),
-                ]),
-              ],
-            ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _generatedPassword = generatePassword(options);
-                  _passwordController.text = _generatedPassword;
-                });
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: colorScheme.secondary,
-                minimumSize: const Size.fromHeight(45),
+                  Text("Creando contraseña..."),
+                ],
               ),
-              child: Text('Generar contraseña',
-                  style: TextStyle(color: colorScheme.primary)),
             ),
-            const SizedBox(height: 38),
-            ElevatedButton(
-              onPressed: _onSavePressed,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                minimumSize: const Size.fromHeight(50),
+          ) : Text(""),
+        ],
+=======
+                child: const Text('Guardar',
+                    style: TextStyle(color: Colors.white)),
               ),
-              child: const Text('Guardar', style: TextStyle(color: Colors.white)),
-            ),
-            isLoading
-              ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: [
-                        LoadingAnimationWidget.discreteCircle(
-                          size: 30, 
-                          color: Theme.of(context).colorScheme.tertiary,
-                          secondRingColor: Theme.of(context).colorScheme.surface,
-                          thirdRingColor: Theme.of(context).colorScheme.secondary
+              isLoading
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          children: [
+                            LoadingAnimationWidget.discreteCircle(
+                                size: 30,
+                                color: Theme.of(context).colorScheme.tertiary,
+                                secondRingColor:
+                                    Theme.of(context).colorScheme.surface,
+                                thirdRingColor:
+                                    Theme.of(context).colorScheme.secondary),
+                            Text("Creando contraseña..."),
+                          ],
                         ),
-                        Text("Creando contraseña..."),
-                      ],
-                    ),
-                  ),
-                )
-              : const SizedBox(),
-          ],
+                      ),
+                    )
+                  : const SizedBox(),
+            ],
+          ),
         ),
+>>>>>>> Stashed changes
       ),
     );
   }

@@ -11,7 +11,12 @@ class CreateNewPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return GestureDetector(
+      onTap: () {
+        // Quita el focus de cualquier campo activo
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
@@ -21,13 +26,13 @@ class CreateNewPasswordScreen extends StatelessWidget {
           ),
           title: const Text('Nueva contraseña'),
           titleTextStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
         ),
-        body: SingleChildScrollView( // Cambiado aquí
+        body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(16.0), // Añadir padding si es necesario
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               children: const [
                 PasswordForm(),
@@ -35,6 +40,7 @@ class CreateNewPasswordScreen extends StatelessWidget {
             ),
           ),
         ),
+      ),
     );
   }
 }
