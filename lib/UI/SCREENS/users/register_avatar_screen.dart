@@ -115,7 +115,7 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
       }
     } on SocketException {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error en la conexion")),
+        SnackBar(content: Text("Error en la conexión.")),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -153,7 +153,7 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
                     children: [
                       SizedBox(height: constraints.maxHeight * 0.15),
                       Text(
-                        "Elige un avatar como foto de perfil",
+                        "Elige un avatar como foto de perfil.*",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: isSmallScreen ? 20 : 28,
@@ -247,7 +247,7 @@ class _RegisterAvatarState extends State<RegisterAvatar> {
                         if (_selectedAvatar == null) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
-                                  "Debes selccionar un avatar para poder avanzar")));
+                                  "Debes seleccionar un avatar para poder avanzar.")));
                         } else {
                           sendData();
                         }

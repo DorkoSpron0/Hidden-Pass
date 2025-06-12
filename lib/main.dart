@@ -22,12 +22,12 @@ import 'UI/PROVIDERS/theme_provider.dart'; // Para usar Timer
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  if (!Platform.isWindows && !Platform.isLinux && !Platform.isMacOS) {
-    final dir = await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-  } else {
-    Hive.init(Directory.current.path);
-  }
+  // if (!Platform.isWindows && !Platform.isLinux && !Platform.isMacOS) {
+  //   final dir = await getApplicationDocumentsDirectory();
+  //   Hive.init(dir.path);
+  // } else {
+  //   Hive.init(Directory.current.path);
+  // }
 
   // Bloquear solo orientación vertical
   await SystemChrome.setPreferredOrientations([
@@ -142,7 +142,7 @@ class HomeScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 130, vertical: 20),
             ),
             child: Text(
-              'Registrarse',
+              'Registrarse.',
               style: TextStyle(
                 color: Colors.white,
               ),
@@ -161,14 +161,14 @@ class HomeScreen extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => UserLogin()));
             },
             child: Text(
-              'Ya tengo una cuenta',
+              'Ya tengo una cuenta.',
               style: TextStyle(color: Colors.white),
             ),
           ),
           SizedBox(height: 20),
           InkWell(
             child: Text(
-              'Ingresar sin iniciar sesion',
+              'Ingresar sin iniciar sesión.',
               style: TextStyle(color: Colors.grey),
             ),
             onTap: () => Navigator.push(

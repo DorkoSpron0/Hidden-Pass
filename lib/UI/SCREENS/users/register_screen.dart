@@ -71,7 +71,7 @@ class RegisterScreen extends StatelessWidget {
                           side: const BorderSide(color: Color(0xff5d5d5d), width: 2),
                         ),
                         child: Text(
-                          'Continuar',
+                          'Continuar.',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: isSmallScreen ? 14 : 18,
@@ -98,7 +98,7 @@ class RegisterScreen extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          "Volver",
+                          "Volver.  ",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: isSmallScreen ? 14 : 18,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
   import 'package:hidden_pass/UI/SCREENS/users/register_password_screen.dart';
+import 'package:hidden_pass/UI/SCREENS/users/register_username_screen.dart';
 
 class RegisterMail extends StatefulWidget {
   final String username;
@@ -44,7 +46,7 @@ class _RegisterMailState extends State<RegisterMail> {
                       SizedBox(
                         width: containerWidth,
                         child: Text(
-                          "Ingresa tu correo electrónico",
+                          "Ingresa tu correo electrónico.*",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: isSmallScreen ? 20 : 28,
@@ -68,10 +70,13 @@ class _RegisterMailState extends State<RegisterMail> {
                           ],
                         ),
                         child: TextField(
+                          inputFormatters: [
+                              FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                            ],
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
-                            hintText: "Correo electrónico",
+                            hintText: "ejemplo@ejemplo.com",
                             hintStyle: TextStyle(color: Colors.grey),
                             border: InputBorder.none,
                             prefixIcon: Icon(Icons.email, color: Colors.grey),
@@ -90,7 +95,8 @@ class _RegisterMailState extends State<RegisterMail> {
                   iconSize: 36,
                   icon: Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.push(context
+                    , MaterialPageRoute(builder: (context) => RegisterUsername()));
                   },
                 ),
               ),
