@@ -66,7 +66,7 @@ class _UserLoginState extends State<UserLogin> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => PricipalPageScreen()),
+        MaterialPageRoute(builder: (context) => PricipalPageScreen(initialIndex: 0)),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

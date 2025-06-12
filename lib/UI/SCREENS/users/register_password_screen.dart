@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hidden_pass/UI/SCREENS/users/register_avatar_screen.dart';
+import 'package:hidden_pass/UI/SCREENS/users/register_mail_screen.dart';
 
 class RegisterPassword extends StatefulWidget {
   final String username;
@@ -47,7 +49,7 @@ class _RegisterPasswordState extends State<RegisterPassword> {
                       SizedBox(
                         width: containerWidth,
                         child: Text(
-                          "Ingresa tu contraseña",
+                          "Ingresa tu contraseña.*",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: isSmallScreen ? 20 : 28,
@@ -71,10 +73,13 @@ class _RegisterPasswordState extends State<RegisterPassword> {
                           ],
                         ),
                         child: TextField(
+                          inputFormatters: [
+                              FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                            ],
                           controller: _passwordController,
                           obscureText: !_isPasswordVisible, // Cambiar visibilidad de la contraseña
                           decoration: InputDecoration(
-                            hintText: "Contraseña",
+                            hintText: "Ejemplo123@",
                             hintStyle: TextStyle(color: Colors.grey),
                             border: InputBorder.none,
                             prefixIcon: Icon(Icons.lock, color: Colors.grey),
@@ -104,7 +109,8 @@ class _RegisterPasswordState extends State<RegisterPassword> {
                   iconSize: 36,
                   icon: Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.push(context,
+                     MaterialPageRoute(builder: (context) => RegisterMail(username: widget.username)));
                   },
                 ),
               ),
@@ -131,9 +137,9 @@ class _RegisterPasswordState extends State<RegisterPassword> {
                     onPressed: () {
                       String password = _passwordController.text.trim();
                       if (password.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Por favor ingresa una contraseña")));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Por favor, ingresa una contraseña.")));
                       } else if (!_isValidPassword(password)) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("La contraseña debe contener al menos 8 caracteres, una letra mayúscula, una minúscula, un número y un carácter especial")));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("La contraseña debe contener al menos 8 caracteres, una letra mayúscula, una minúscula, un número y un carácter especial.")));
                       } else {
                         Navigator.push(
                           context,

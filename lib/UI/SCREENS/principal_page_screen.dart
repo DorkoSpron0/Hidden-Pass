@@ -14,15 +14,22 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 
 class PricipalPageScreen extends StatefulWidget {
-  const PricipalPageScreen({super.key});
+  final int initialIndex;
+
+  const PricipalPageScreen({super.key, this.initialIndex = 0});
 
   @override
   State<PricipalPageScreen> createState() => _PricipalPageScreenState();
 }
 
 class _PricipalPageScreenState extends State<PricipalPageScreen> {
+  get initialIndex => null;
+
   @override
   Widget build(BuildContext context) {
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<NavigationProvider>().setNavigationIndex(index: initialIndex);
+      });
     final watch = context.watch<NavigationProvider>();
     final authProvider = context.watch<TokenAuthProvider>();
     final bool showFolders = authProvider.username != null &&

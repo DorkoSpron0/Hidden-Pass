@@ -99,7 +99,7 @@ class SettingsScreen extends StatelessWidget {
                 }
                 
               },
-              child: buildListTile("Cerrar sesion"),
+              child: buildListTile("Cerrar sesión."),
             ),
           ],
         ),

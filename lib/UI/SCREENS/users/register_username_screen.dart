@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hidden_pass/UI/SCREENS/users/register_mail_screen.dart';
 import 'package:hidden_pass/UI/SCREENS/users/register_screen.dart';
 
@@ -37,7 +38,7 @@ class _RegisterUsernameState extends State<RegisterUsername> {
                       SizedBox(
                         width: containerWidth,
                         child: Text(
-                          "Ingresa tu nombre de usuario",
+                          "Ingresa tu nombre de usuario.*",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: isSmallScreen ? 20 : 28,
@@ -63,11 +64,14 @@ class _RegisterUsernameState extends State<RegisterUsername> {
                         child: TextField(
                           controller: _usernameController,
                           decoration: InputDecoration(
-                            hintText: "Nombre de usuario",
+                            hintText: "ejemplo123",
                             hintStyle: TextStyle(color: Colors.grey),
                             border: InputBorder.none,
                             prefixIcon: Icon(Icons.account_circle, color: Colors.grey),
                           ),
+                          inputFormatters: [
+                              FilteringTextInputFormatter.deny(RegExp(r'\s')),
+                            ],
                         ),
                       ),
                     ],
