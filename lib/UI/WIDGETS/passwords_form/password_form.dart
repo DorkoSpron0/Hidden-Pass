@@ -23,7 +23,6 @@ class _PasswordFormState extends State<PasswordForm> {
   List<Map<String, dynamic>> folders = [];
   String? _selectedFolderName;
   bool isLoading = false;
-
   PasswordOptions options = PasswordOptions();
   bool _showPassword = false;
   String _generatedPassword = '';
