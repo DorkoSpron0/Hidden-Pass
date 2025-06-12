@@ -22,33 +22,38 @@ class EditPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+    return GestureDetector(
+      onTap: () {
+        // Quita el focus de cualquier campo activo
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          title: const Text('Editar contraseña'),
+          titleTextStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+          iconTheme: Theme.of(context).appBarTheme.iconTheme,
         ),
-        title: const Text('Editar contraseña'),
-        titleTextStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.bold,
-          fontSize: 18,
-        ),
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        iconTheme: Theme.of(context).appBarTheme.iconTheme,
-      ),
-      body: Center(
-        child: EditPasswordWidget(
-          nombre: nombre,
-          description: description,
-          email_user: email_user,
-          password: password,
-          url: url,
-          id: id_password,
+        body: Center(
+          child: EditPasswordWidget(
+            nombre: nombre,
+            description: description,
+            email_user: email_user,
+            password: password,
+            url: url,
+            id: id_password,
+          ),
         ),
       ),
     );
