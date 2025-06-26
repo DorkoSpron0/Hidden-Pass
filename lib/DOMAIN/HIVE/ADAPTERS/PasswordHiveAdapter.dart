@@ -1,4 +1,3 @@
-import 'package:hidden_pass/DOMAIN/HIVE/NoteHiveObject.dart';
 import 'package:hidden_pass/DOMAIN/HIVE/PasswordHiveObject.dart';
 import 'package:hive/hive.dart';
 

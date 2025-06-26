@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hidden_pass/UI/UTILS/theme_data.dart';
 import 'package:hidden_pass/UI/WIDGETS/folder_widgets/folder_widget.dart';
 
 
@@ -17,10 +16,6 @@ class _FoldersListScreenState extends State<FoldersListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          titleTextStyle: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-          actions: <Widget>[],
-        ),
         body: Center( 
           child: FolderListWidget(),
         ),

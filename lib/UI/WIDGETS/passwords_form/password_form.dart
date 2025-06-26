@@ -4,6 +4,7 @@ import 'package:hidden_pass/DOMAIN/HIVE/PasswordHiveObject.dart';
 import 'package:hidden_pass/DOMAIN/MODELS/password_options.dart';
 import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
+import 'package:hidden_pass/UI/PROVIDERS/password_list_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:hive/hive.dart';
 import 'dart:math';
@@ -208,7 +209,9 @@ class _PasswordFormState extends State<PasswordForm> {
         print("Status code: ${response.statusCode}");
 
         if (response.statusCode == 201) {
-          print("Contraseña guardada correctamente!");
+
+          Provider.of<DataListProvider>(context, listen: false).reloadPasswordList([]);
+
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -281,7 +284,7 @@ class _PasswordFormState extends State<PasswordForm> {
     child: Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
-    const Text('Nombre*', style: TextStyle(color: Colors.white)),
+      Text('Nombre*', style: TextStyle(color: colorScheme.tertiary)),
     TextField(
     controller: _accountNameController,
     focusNode: _accountNameFocus,
@@ -307,8 +310,7 @@ class _PasswordFormState extends State<PasswordForm> {
     ),
     ),
     ),
-    const SizedBox(height: 16),
-    const Text('Descripción', style: TextStyle(color: Colors.white)),
+    const SizedBox(height: 16), Text('Descripción', style: TextStyle(color: colorScheme.tertiary)),
     TextField(
     controller: _descriptionController,
     focusNode: _descriptionFocus,
@@ -333,8 +335,7 @@ class _PasswordFormState extends State<PasswordForm> {
     BorderSide(color: colorScheme.secondary, width: 2),
     ),
     )),
-    const SizedBox(height: 16),
-    const Text('Sitio web', style: TextStyle(color: Colors.white)),
+    const SizedBox(height: 16), Text('Sitio web', style: TextStyle(color: colorScheme.tertiary)),
     TextField(
     controller: _urlController,
     focusNode: _urlFocus,
@@ -359,9 +360,8 @@ class _PasswordFormState extends State<PasswordForm> {
     BorderSide(color: colorScheme.secondary, width: 2),
     ),
     )),
-    const SizedBox(height: 16),
-    const Text('Correo electrónico',
-    style: TextStyle(color: Colors.white)),
+    const SizedBox(height: 16), Text('Correo electrónico',
+    style: TextStyle(color: colorScheme.tertiary)),
     TextField(
     controller: _emailController,
     focusNode: _emailFocus,
@@ -466,7 +466,7 @@ class _PasswordFormState extends State<PasswordForm> {
         validator: (value) => null,
       ),
       const SizedBox(height: 16),
-      const Text('Carácteres', style: TextStyle(color: Colors.white)),
+      Text('Carácteres', style: TextStyle(color: colorScheme.tertiary)),
       Slider(
         value: options.length.toDouble(),
         min: 8,
@@ -555,8 +555,8 @@ class _PasswordFormState extends State<PasswordForm> {
           backgroundColor: Colors.blue,
           minimumSize: const Size.fromHeight(50),
         ),
-        child: const Text('Guardar',
-            style: TextStyle(color: Colors.white)),
+        child: Text('Guardar',
+            style: TextStyle(color: colorScheme.tertiary)),
       ),
       isLoading
           ? Center(

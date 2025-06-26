@@ -73,7 +73,7 @@ class _PasswordListBodyWidgetState extends State<PasswordListBodyWidget> {
 
         setState(() {
           passwordList =
-              filteredPass.map((json) => AllPasswordModel.fromJson(json)).toList();
+              data.map((json) => AllPasswordModel.fromJson(json)).toList();
         });
 
         isLoading = false;

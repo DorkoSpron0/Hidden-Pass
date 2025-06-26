@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 
@@ -15,7 +14,6 @@ class DataListProvider with ChangeNotifier {
   List<Map<String, dynamic>> get folderList => _folderList;
 
   void reloadPasswordList(List<AllPasswordModel> passwords){
-
     _passwordList = passwords;
     notifyListeners();
   }

@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:hidden_pass/UI/SCREENS/users/user_login_screen.dart';
 
 Future<bool> cerrarSesion(BuildContext context) async {
   return await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('Cerrar sesión.'),
+      title: const Text('Cerrar sesión'),
       content: const Text('¿Estás seguro que deseas cerrar sesión?.'),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: const Text(
-            'Cancelar.',
+            'Cancelar',
             style: TextStyle(color: Colors.white),
           ),
         ),
@@ -21,7 +20,7 @@ Future<bool> cerrarSesion(BuildContext context) async {
           ),
           onPressed: () => Navigator.of(context).pop(true),
           child: const Text(
-            'Cerrar.',
+            'Cerrar',
             style: TextStyle(color: Colors.white),
           ),
         ),

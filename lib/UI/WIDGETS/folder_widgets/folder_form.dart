@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
+import 'package:hidden_pass/UI/PROVIDERS/password_list_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
@@ -58,6 +59,12 @@ class _FolderFormState extends State<FolderForm> {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        Provider.of<DataListProvider>(context, listen: false).reloadFolderList([]);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Carpeta creada correctamente')),
+        );
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const PricipalPageScreen()),

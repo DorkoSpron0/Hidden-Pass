@@ -3,7 +3,6 @@ import 'package:hidden_pass/LOGICA/api_config.dart';
 import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/password_list_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
-import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 

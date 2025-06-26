@@ -117,7 +117,8 @@ class _FolderPasswordListWidgetState extends State<FolderPasswordListWidget> {
                     itemBuilder: (context, index) {
                       final password = _passwordsList[index];
                       final accountName = password['name'] ?? 'Sin nombre';
-                      final passwordValue = password['password'] ?? '******';
+                      final emailValue = password['email_user'] ?? '';
+                      final passwordValue = password['password'] ?? '';
 
                       return Container(
                         width: double.infinity,
@@ -135,7 +136,7 @@ class _FolderPasswordListWidgetState extends State<FolderPasswordListWidget> {
                             ),
                           ),
                           title: Text(accountName, style: theme.textTheme.titleMedium),
-                          subtitle: Text(passwordValue, style: theme.textTheme.bodySmall),
+                          subtitle: Text(emailValue, style: theme.textTheme.bodySmall),
                           trailing: IconButton(
                             icon: const Icon(Icons.copy, color: Colors.grey),
                             onPressed: () {

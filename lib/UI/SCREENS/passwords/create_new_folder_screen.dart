@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/WIDGETS/folder_widgets/folder_form.dart';
-import 'package:hidden_pass/UI/WIDGETS/passwords_form/password_form.dart';
-import 'package:hidden_pass/UI/UTILS/theme_data.dart';
-import 'package:provider/provider.dart';
 
 void main() => runApp(const CreateNewFolderScreen());
 
@@ -23,9 +19,9 @@ class CreateNewFolderScreen extends StatelessWidget {
           title: const Text('Nueva carpeta'),
           titleTextStyle: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.tertiary),
         ),
-        body: SingleChildScrollView( // Cambiado aquí
+        body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(16.0), // Añadir padding si es necesario
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               children: const [
                 FolderForm(),

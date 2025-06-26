@@ -146,10 +146,10 @@ class _FolderListWidgetState extends State<FolderListWidget> {
 
     return GestureDetector(
       onTap: () => goToFolderDetail(folder),
-      child: Card(
-        color: Colors.black.withAlpha(1),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.black.withAlpha(30),
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Stack(
           children: [

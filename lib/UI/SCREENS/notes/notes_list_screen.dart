@@ -9,7 +9,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
 
-import '../../../DOMAIN/HIVE/PasswordHiveObject.dart';
 import '../../PROVIDERS/password_list_provider.dart';
 
 class NotesListScreen extends StatefulWidget {

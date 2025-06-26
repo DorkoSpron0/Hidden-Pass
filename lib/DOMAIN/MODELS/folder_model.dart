@@ -1,4 +1,3 @@
-import 'package:hidden_pass/DOMAIN/MODELS/password_model.dart';
 
 class FolderModel {
   final String name;

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hidden_pass/DOMAIN/HIVE/NoteHiveObject.dart';
 import 'package:hidden_pass/DOMAIN/MODELS/notes_model.dart';
 import 'package:hidden_pass/LOGICA/api_config.dart';
-import 'package:hidden_pass/UI/PROVIDERS/id_user_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/password_list_provider.dart';
 import 'package:hidden_pass/UI/PROVIDERS/token_auth_provider.dart';
 import 'package:hidden_pass/UI/SCREENS/principal_page_screen.dart';
