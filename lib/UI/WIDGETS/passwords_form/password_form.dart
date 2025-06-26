@@ -234,6 +234,12 @@ class _PasswordFormState extends State<PasswordForm> {
   }
 
   void _onSavePressed() {
+    // Validación del campo nombre
+    if (_accountNameController.text.trim().isEmpty) {
+      _showSnackBar('El nombre no debe estar vacío');
+      return;
+    }
+
     if (!_canSave) {
       _showSnackBar('Todos los campos están vacíos, ingresa los datos de la cuenta para continuar.');
       return;
@@ -275,7 +281,7 @@ class _PasswordFormState extends State<PasswordForm> {
     child: Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
-    const Text('Nombre', style: TextStyle(color: Colors.white)),
+    const Text('Nombre*', style: TextStyle(color: Colors.white)),
     TextField(
     controller: _accountNameController,
     focusNode: _accountNameFocus,
@@ -336,97 +342,97 @@ class _PasswordFormState extends State<PasswordForm> {
     decoration: InputDecoration(
     hintText: 'Ingresa el URL de la página',
     hintStyle: TextStyle(
-        color: colorScheme.onSurface.withOpacity(0.6)),
-      filled: true,
-      fillColor: colorScheme.surface,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: colorScheme.outline),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide(color: colorScheme.outline),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide:
-        BorderSide(color: colorScheme.secondary, width: 2),
-      ),
+    color: colorScheme.onSurface.withOpacity(0.6)),
+    filled: true,
+    fillColor: colorScheme.surface,
+    border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10),
+    borderSide: BorderSide(color: colorScheme.outline),
+    ),
+    enabledBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10),
+    borderSide: BorderSide(color: colorScheme.outline),
+    ),
+    focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10),
+    borderSide:
+    BorderSide(color: colorScheme.secondary, width: 2),
+    ),
     )),
-      const SizedBox(height: 16),
-      const Text('Correo electrónico',
-          style: TextStyle(color: Colors.white)),
-      TextField(
-          controller: _emailController,
-          focusNode: _emailFocus,
-          style: TextStyle(color: colorScheme.onSurface),
-          decoration: InputDecoration(
-            hintText: 'tucorreo@gmail.com',
-            hintStyle: TextStyle(
-                color: colorScheme.onSurface.withOpacity(0.6)),
-            filled: true,
-            fillColor: colorScheme.surface,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: colorScheme.outline),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: colorScheme.outline),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide:
-              BorderSide(color: colorScheme.secondary, width: 2),
-            ),
-          )),
-      const SizedBox(height: 24),
-      Text('Contraseña',
-          style: TextStyle(
-              color: colorScheme.secondary,
-              fontSize: 16,
-              fontWeight: FontWeight.bold)),
-      Row(
-        children: [
-          Expanded(
-            child: TextField(
-                obscureText: !_showPassword,
-                controller: _passwordController,
-                focusNode: _passwordFocus,
-                style: TextStyle(color: colorScheme.onSurface),
-                decoration: InputDecoration(
-                  hintText: 'GhYjmJUynNJ.Mhn',
-                  hintStyle: TextStyle(
-                      color: colorScheme.onSurface.withOpacity(0.6)),
-                  filled: true,
-                  fillColor: colorScheme.surface,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: colorScheme.outline),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: colorScheme.outline),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(
-                        color: colorScheme.secondary, width: 2),
-                  ),
-                )),
-          ),
-          IconButton(
-            onPressed: () {
-              setState(() {
-                _showPassword = !_showPassword;
-              });
-            },
-            icon: Icon(
-                _showPassword ? Icons.visibility : Icons.visibility_off,
-                color: Colors.grey),
-          ),
-        ],
-      ),
+    const SizedBox(height: 16),
+    const Text('Correo electrónico',
+    style: TextStyle(color: Colors.white)),
+    TextField(
+    controller: _emailController,
+    focusNode: _emailFocus,
+    style: TextStyle(color: colorScheme.onSurface),
+    decoration: InputDecoration(
+    hintText: 'tucorreo@gmail.com',
+    hintStyle: TextStyle(
+    color: colorScheme.onSurface.withOpacity(0.6)),
+    filled: true,
+    fillColor: colorScheme.surface,
+    border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10),
+    borderSide: BorderSide(color: colorScheme.outline),
+    ),
+    enabledBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10),
+    borderSide: BorderSide(color: colorScheme.outline),
+    ),
+    focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10),
+    borderSide:
+    BorderSide(color: colorScheme.secondary, width: 2),
+    ),
+    )),
+    const SizedBox(height: 24),
+    Text('Contraseña',
+    style: TextStyle(
+    color: colorScheme.secondary,
+    fontSize: 16,
+    fontWeight: FontWeight.bold)),
+    Row(
+    children: [
+    Expanded(
+    child: TextField(
+    obscureText: !_showPassword,
+    controller: _passwordController,
+    focusNode: _passwordFocus,
+    style: TextStyle(color: colorScheme.onSurface),
+    decoration: InputDecoration(
+    hintText: 'GhYjmJUynNJ.Mhn',
+    hintStyle: TextStyle(
+    color: colorScheme.onSurface.withOpacity(0.6)),
+    filled: true,
+    fillColor: colorScheme.surface,
+    border: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10),
+    borderSide: BorderSide(color: colorScheme.outline),
+    ),
+    enabledBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10),
+    borderSide: BorderSide(color: colorScheme.outline),
+    ),
+    focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10),
+    borderSide: BorderSide(
+    color: colorScheme.secondary, width: 2),
+    ),
+    )),
+    ),
+    IconButton(
+    onPressed: () {
+    setState(() {
+    _showPassword = !_showPassword;
+    });
+    },
+    icon: Icon(
+    _showPassword ? Icons.visibility : Icons.visibility_off,
+    color: Colors.grey),
+    ),
+    ],
+    ),
       const SizedBox(height: 18),
       Text('Selecciona una carpeta',
           style: TextStyle(color: colorScheme.secondary, fontSize: 16)),
